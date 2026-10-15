@@ -1,0 +1,44 @@
+{
+  "allow_dirty": true,
+  "argv": [
+    "experiments/spectral/f0_0_validity.py",
+    "--jobs",
+    "4",
+    "--allow-dirty"
+  ],
+  "config_hash": "e55b3002b40854e6d7a98ac10b7c554a416a010fa3d641d73a69e9d1ec6718b4",
+  "environment": {
+    "aihwkit_version": "1.1.0",
+    "crosssim_version": "unknown",
+    "cupy_version": null,
+    "gpu_available": false,
+    "gpu_driver_version": null,
+    "gpu_name": null,
+    "hostname": "local-workstation",
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "python_version": "3.12.14",
+    "torch_cuda_version": null,
+    "torch_version": "2.14.0"
+  },
+  "extra": {
+    "checkpoint_sha256": {
+      "101": "59f6901f0a1c9b275a3e9198026f6e400fd81f66b940003af3f3f5826ccecb5f",
+      "102": "2e16d5e18b9d310a3131875fefdd8d40ff5f7fb84e0b68e8b84d07a9ad534f10",
+      "42": "995f917e871e0eb06ec1028b0a3e588dccdb644ba2672597274398fdba231429"
+    },
+    "criteria_file": "f0_validity.yaml",
+    "criteria_sha256": "6e25eb2a74729a04081f53b06e321fbd78a82b0db83944ac3b653c2cf6e96605",
+    "jobs": 4,
+    "note": "F0.8a-c are out of scope for this script (need bridge); overall INCONCLUSIVE is by construction",
+    "original_probe_stdout": "tile=256  read-noise=2% of wmax  trials=200\n\nlayer                       tile  s1/s2 | stuck: eig SNR med  det% | probe SNR med row-loc% | drift eig SNR drift probe\nlayer1.0.0.weight       128x256    1.03 |              0.085   0.5 |          3.16     62.5 |          84.5         1.3\nres1.conv_a.weight      128x256    1.11 |              0.054   0.0 |          3.05     62.0 |          19.9         3.5\nlayer3.0.0.weight       256x256    1.07 |              0.060   0.0 |          3.16     60.5 |         258.7         2.6\nres2.conv_b.weight      256x256    1.02 |              0.059   0.0 |          3.19     55.0 |         214.4         7.0\n",
+    "variant": "full"
+  },
+  "git": {
+    "branch": "spectral-diagnosis",
+    "commit": "8cb7364691dbcab83a79963049151082c47a2c6d",
+    "dirty": true
+  },
+  "run_id": "20261008T204618_e55b3002_s0",
+  "seed": 0,
+  "written_at_unix": 1791472579.0278358
+}

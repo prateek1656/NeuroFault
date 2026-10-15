@@ -1,0 +1,24 @@
+# Same arm as no_mitigation.yaml but on MNIST - the lighter/faster secondary
+# benchmark, for quicker
+# iteration during development than a full CIFAR-10 run.
+name: no_mitigation_mnist
+simulator: crosssim
+dataset: mnist
+epochs: 15
+num_batches: 128
+batch_size: 32
+train_samples: 2000
+test_samples: 1000
+eval_interval: 3
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 8
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

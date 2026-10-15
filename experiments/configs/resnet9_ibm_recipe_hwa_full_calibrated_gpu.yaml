@@ -1,0 +1,47 @@
+# Same base as resnet9_ibm_recipe_hwa_calibrated_gpu.yaml (float pretrain, gentle finetune LR, ADC output-range calibration) - adds calibrate_dac on top, the real, SEPARATE
+# input-side fix found and verified after the earlier 45.98%/46.76% result.
+#
+# Real motivation: calibrate_adc only fixes the ADC's (output-side) quantization range.
+# Instrumenting CrossSim's actual DAC call directly found a second, independent bug: the DAC
+# (digitizes each layer's real INPUT activations before the analog multiply) was left at
+# CrossSim's own hardcoded [-1, 1] clip range the whole time - untouched by calibrate_adc, never
+# calibrated against real data. Real activations in this network reach ~5.6; 7.57% of one layer's
+# real input values were measured being silently clipped to 1.0 on every single forward pass,
+# regardless of adc_resolution/dac_resolution bit depth (a fixed clip range isn't fixed by more
+# precision - this is exactly why an earlier bit-depth sweep "saturated": resolution was never
+# the bottleneck). Verified fix: isolated single-layer cosine 0.9723->0.9997, full 9-layer network
+# logits cosine 0.6252->0.9839 (8-bit) / ->1.0000 (16-bit), eval accuracy on a real pretrained
+# model's held-out batch 0.156->0.500 (exactly matching the float model's own accuracy on that
+# batch). This is a much larger effect size than the ADC fix alone (+0.42pp in isolation) - the
+# real test is whether it holds up at full 50-epoch GPU scale the way the earlier combination did.
+name: resnet9_ibm_recipe_hwa_full_calibrated_gpu
+simulator: crosssim
+epochs: 50
+float_pretrain_epochs: 10
+finetune_learning_rate: 0.001
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+lr_one_cycle: true
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  use_gpu: true
+  calibrate_adc: true
+  adc_calibration_images: 320
+  calibrate_dac: true
+fault:
+  density: 0.0
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

@@ -1,0 +1,32 @@
+# Ferroelectric (FeFET/FTJ) device technology on the CrossSim backend. CrossSim has no swappable
+# per-technology device class (see devices/registry.py's docstring) - only
+# the conductance range (r_on/r_off) differs by technology on this backend,
+# not switching dynamics. r_on/r_off below give a real 45x (Gmax/Gmin)
+# dynamic range, matching Jerry, Chen, Zhang, et al. (incl. Ni), "Ferroelectric
+# FET analog synapse for acceleration of deep neural network training",
+# IEDM 2017 (IEEE Xplore 8268338) - the same paper devices/presets.py's
+# FeFETPresetDevice (aihwkit backend) is fit to.
+name: device_fefet_crosssim
+simulator: crosssim
+epochs: 15
+num_batches: 128
+batch_size: 32
+train_samples: 2000
+test_samples: 1000
+eval_interval: 3
+device:
+  name: fefet
+  r_on: 100.0
+  r_off: 4500.0  # r_off/r_on = 45x, the paper's reported dynamic range
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 8
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

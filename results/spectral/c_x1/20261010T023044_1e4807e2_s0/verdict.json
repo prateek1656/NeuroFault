@@ -1,0 +1,524 @@
+{
+  "criteria_id": "c_claims",
+  "criteria_sha256": "d56d709ea765153c550b1d1a579d3431b3d051e3c5df37fbf00a624262e075a8",
+  "overall": "KILL",
+  "overall_pass_rule": "any",
+  "by_scope": {
+    "C1": "KILL",
+    "C1_C3_park": "KILL",
+    "C2": "INCONCLUSIVE",
+    "C2_park": "INCONCLUSIVE",
+    "C3": "INCONCLUSIVE",
+    "reproduction_gate": "INCONCLUSIVE"
+  },
+  "n_rows": 2268,
+  "criteria": [
+    {
+      "id": "C-X0",
+      "kind": "pass",
+      "scope": "reproduction_gate",
+      "source": "plan-C \u00a75.2 C-X0; master plan P2.7",
+      "description": "Re-implement the \u00a74.1 table via F0's simulator and confirm within 10% of the scratch numbers. Gate: if not, update \u00a75 before any other run.",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "rel_dev_vs_scratch",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.1,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'rel_dev_vs_scratch' missing"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S1",
+      "kind": "pass",
+      "scope": "C1",
+      "source": "plan-C \u00a75.2 C-X1 Support S1",
+      "description": "Exists a (beta, f, amplitude-mode) setting with warm t_loc90 <= 1.0 * t_MVM(8b) AND localization >= 90% at output noise matched to B1's 90%-accuracy noise level, in >= 75% of (layer, tile, seed) cells, with purity >= 0.98 and no latch.\n",
+      "note": "Script emits per-cell bool s1_cell_ok (all conditions); setting = (beta, f, amp_mode). Pass when the best setting has >= 75% ok cells.",
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "s1_cell_ok",
+            "aggregation": "max",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.0,
+            "n": 126,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "K1a",
+      "kind": "kill",
+      "scope": "C1",
+      "source": "plan-C \u00a75.2 C-X1 Kill K1a; plan-C \u00a72 C1 Kill K1",
+      "description": "For every setting, t_loc90 > 3 * t_MVM(8b) in >= 50% of cells.",
+      "note": null,
+      "status": "KILL",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "t_loc90_gt_3x_mvm8",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 0.5,
+            "value": 1.0,
+            "n": 126,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "K1b",
+      "kind": "kill",
+      "scope": "C1",
+      "source": "plan-C \u00a75.2 C-X1 Kill K1b",
+      "description": "SNR(loop at the setting achieving S1 timing) < SNR(B1)/3 so that matching B1's localization accuracy needs >= 3 repeated settles (latency parity lost).",
+      "note": null,
+      "status": "KILL",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "snr_loop_over_snr_b1",
+            "aggregation": "median",
+            "comparator": "<",
+            "threshold": 0.3333333333333333,
+            "value": 0.24145185196410018,
+            "n": 406,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "K1c",
+      "kind": "kill",
+      "scope": "C1",
+      "source": "plan-C \u00a75.2 C-X1 Kill K1c",
+      "description": "The only fast settings require unrealistic G_l precision < 0.1% of sigma_1 or reference-servo bandwidth > 0.3*GBW.",
+      "note": "Evaluated over the settings that meet S1 timing (s1_timing_setting == true).",
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "any",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "required_gl_precision_frac",
+            "aggregation": "max",
+            "comparator": "<",
+            "threshold": 0.001,
+            "value": 0.03,
+            "n": 406,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "servo_bw_over_gbw",
+            "aggregation": "min",
+            "comparator": ">",
+            "threshold": 0.3,
+            "value": 0.01,
+            "n": 406,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "S2",
+      "kind": "pass",
+      "scope": "C1",
+      "source": "plan-C \u00a75.2 C-X2 Support S2",
+      "description": "L1 achieves >= 90% single-fault row localization at 2% cell noise with EDAP <= 0.5 * EDAP(best of B1, B3, B4) in >= 60% of cells and at least one parameter point of the literature ranges (\u00a73.1) keeps this true.\n",
+      "note": "Script emits per-cell bool s2_cell_ok and the count of literature-range parameter points where S2 holds.",
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "s2_cell_ok",
+            "aggregation": "mean",
+            "comparator": ">=",
+            "threshold": 0.6,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 's2_cell_ok' missing"
+          },
+          {
+            "metric": "n_literature_points_s2_ok",
+            "aggregation": "max",
+            "comparator": ">=",
+            "threshold": 1,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'n_literature_points_s2_ok' missing"
+          }
+        ]
+      }
+    },
+    {
+      "id": "K2",
+      "kind": "kill",
+      "scope": "C1",
+      "source": "plan-C \u00a75.2 C-X2 Kill K2; plan-C \u00a72 C1 Kill K2",
+      "description": "EDAP(L1) > EDAP(B3) at every point of the literature ranges (expected), or L1 localization < B1 localization at equal time in >= 80% of cells.",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "any",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "edap_l1_over_b3",
+            "aggregation": "min",
+            "comparator": ">",
+            "threshold": 1.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'edap_l1_over_b3' missing"
+          },
+          {
+            "metric": "l1_loc_below_b1_at_equal_time",
+            "aggregation": "mean",
+            "comparator": ">=",
+            "threshold": 0.8,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'l1_loc_below_b1_at_equal_time' missing"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S3",
+      "kind": "pass",
+      "scope": "C2",
+      "source": "plan-C \u00a75.2 C-X3 Support S3",
+      "description": "Loop on E localizes single stuck faults (>= 90% row AND column) at amplitude / noise settings where K=64 probes need >= 2x the energy*latency of the loop, and EDAP(L2) <= EDAP(64 probes) at the same area (reference array counted at 100% unless sharing across >= 8 tiles is justified by a measured/ literature drift-correlation number from A's fixtures).\n",
+      "note": "Exists-a-setting: at least one row meeting all conditions together.",
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "row_loc",
+            "aggregation": "count",
+            "comparator": ">=",
+            "threshold": 1,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: UndefinedVariableError(\"name 'row_loc' is not defined\")"
+          }
+        ]
+      }
+    },
+    {
+      "id": "K3",
+      "kind": "kill",
+      "scope": "C2",
+      "source": "plan-C \u00a75.2 C-X3 Kill K3; plan-C \u00a72 C2 Kill K3",
+      "description": "Independent-drift floor above fault amplitude at f_ind >= 10% (realistic for PCM per-device nu variation 22%), or parity K_p <= 8 localizes at lower EDAP, or EDAP(L2) > EDAP(64 probes). Expected outcome: parity wins (B3 ~3% area).\n",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "any",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "floor_over_fault_amplitude",
+            "aggregation": "min",
+            "comparator": ">",
+            "threshold": 1.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('f_ind')"
+          },
+          {
+            "metric": "parity_edap_over_l2",
+            "aggregation": "median",
+            "comparator": "<",
+            "threshold": 1.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('parity_Kp')"
+          },
+          {
+            "metric": "edap_l2_over_probe64",
+            "aggregation": "median",
+            "comparator": ">",
+            "threshold": 1.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'edap_l2_over_probe64' missing"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S4",
+      "kind": "pass",
+      "scope": "C3",
+      "source": "plan-C \u00a75.2 C-X4 Support S4",
+      "description": "Loop watchdog AUC >= GDC-read AUC at structured non-uniform drift (A's fixtures) AND cost (energy*latency) <= 0.5x.",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "loop_minus_gdc_auc",
+            "aggregation": "median",
+            "comparator": ">=",
+            "threshold": 0.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'loop_minus_gdc_auc' missing"
+          },
+          {
+            "metric": "loop_over_gdc_energy_latency",
+            "aggregation": "median",
+            "comparator": "<=",
+            "threshold": 0.5,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'loop_over_gdc_energy_latency' missing"
+          }
+        ]
+      }
+    },
+    {
+      "id": "K4",
+      "kind": "kill",
+      "scope": "C3",
+      "source": "plan-C \u00a75.2 C-X4 Kill K4; plan-C \u00a72 C3 Kill K4",
+      "description": "A's signal experiment fails (sigma_1 or slope not better than GDC scalar / per-column on structured non-uniform drift at equal reads), or reference-conductance precision required is worse than any available reference, or t_loop >= t_MVM(calibration read). Run only after A reports.\n",
+      "note": "The reference-precision sub-condition has no numeric threshold in the plan and is NOT encoded (needs human judgement). a_signal_beats_gdc comes from A's results (0/1).\n",
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "any",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "a_signal_beats_gdc",
+            "aggregation": "max",
+            "comparator": "==",
+            "threshold": 0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'a_signal_beats_gdc' missing"
+          },
+          {
+            "metric": "t_loop_over_t_mvm_cal",
+            "aggregation": "median",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 't_loop_over_t_mvm_cal' missing"
+          }
+        ]
+      }
+    },
+    {
+      "id": "D1",
+      "kind": "kill",
+      "scope": "C1_C3_park",
+      "source": "plan-C \u00a78 Decision point D1",
+      "description": "PARK C1 (pilot loop) and C3 if any of: K1a/K1b/K1c triggered; or K2 triggered; or the AGC/servo bandwidth required for a latch-free linear regime pushes warm latency above 3x t_MVM.\n",
+      "note": null,
+      "status": "KILL",
+      "condition": true,
+      "detail": {
+        "combine": "any",
+        "result": true,
+        "clauses": [
+          {
+            "ref": "K1a",
+            "result": true
+          },
+          {
+            "ref": "K1b",
+            "result": true
+          },
+          {
+            "ref": "K1c",
+            "result": false
+          },
+          {
+            "ref": "K2",
+            "result": null
+          },
+          {
+            "metric": "warm_latency_over_t_mvm_latch_free",
+            "aggregation": "min",
+            "comparator": ">",
+            "threshold": 3.0,
+            "value": 0.03234985555944948,
+            "n": 1149,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "D2",
+      "kind": "kill",
+      "scope": "C2_park",
+      "source": "plan-C \u00a78 Decision point D2",
+      "description": "PARK C2 if K3 triggers (floor above fault amplitude at f_ind >= 10%, or parity/EDAP beats it). Expected outcome: park (~75%).",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "ref": "K3",
+            "result": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "C2-continue-prestudy",
+      "kind": "report",
+      "scope": "C2",
+      "source": "plan-C \u00a78 Decision point D1 (second paragraph)",
+      "description": "Continue C2 independently of C1 only if S2 is not triggered as a kill AND the C-X3 pre-study (1 day) shows the independent-drift floor is below a realistic stuck amplitude at f_ind = 10%; otherwise skip C-X3 and park everything.\n",
+      "note": "Only the pre-study half is encoded (floor/amplitude < 1 at f_ind = 0.10); the 'S2 not a kill' half is read from K2.",
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "floor_over_fault_amplitude",
+            "aggregation": "max",
+            "comparator": "<",
+            "threshold": 1.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('f_ind')"
+          }
+        ]
+      }
+    },
+    {
+      "id": "KX1",
+      "kind": "kill",
+      "scope": "C1_C3_park",
+      "source": "plan-C \u00a72 cross-cutting KX1 (research-04)",
+      "description": "Behavioral ODE with finite GBW shows loop is not faster/cheaper than one MVM + comparator => C1, C3 die.",
+      "note": "AMBIGUOUS 'faster/cheaper': read as BOTH latency and energy ratios (loop/MVM+comparator) >= 1.",
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "t_loop_over_t_mvm_cmp",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": 0.0025060997353707946,
+            "n": 2268,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "energy_loop_over_mvm_cmp",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": 0.00618080983028415,
+            "n": 2268,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "KX3",
+      "kind": "kill",
+      "scope": "C1_C3_park",
+      "source": "plan-C \u00a72 cross-cutting KX3 (research-01)",
+      "description": "If EDAP(loop) > EDAP(best baseline) for every parameter setting inside the pre-registered literature ranges (\u00a73.4), direction dies.",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "edap_loop_over_best_baseline",
+            "aggregation": "min",
+            "comparator": ">",
+            "threshold": 1.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'edap_loop_over_best_baseline' missing"
+          }
+        ]
+      }
+    }
+  ],
+  "variant": "full"
+}

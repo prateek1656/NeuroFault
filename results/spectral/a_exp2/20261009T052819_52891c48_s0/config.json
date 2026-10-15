@@ -1,0 +1,104 @@
+{
+  "_variant": "full",
+  "ckpt_seeds": [
+    42,
+    101,
+    102
+  ],
+  "evalsets": {
+    "W1": {
+      "core": [
+        "gdc",
+        "b8",
+        "ada256",
+        "ada2600",
+        "m4_16",
+        "m4_64",
+        "m4ada_16"
+      ],
+      "full": [
+        "none",
+        "gdc",
+        "b8",
+        "ada64",
+        "ada256",
+        "ada2600",
+        "col_ada256",
+        "m4_8",
+        "m4_16",
+        "m4_64",
+        "m4ada_16"
+      ]
+    },
+    "W2": {
+      "core": [
+        "gdc",
+        "b8",
+        "m4_16",
+        "m4_64"
+      ],
+      "full": [
+        "none",
+        "gdc",
+        "b8",
+        "m4_8",
+        "m4_16",
+        "m4_64"
+      ]
+    }
+  },
+  "master_seed": 0,
+  "n_eval": 2500,
+  "scenarios": [
+    {
+      "field": "",
+      "model": "D2",
+      "name": "D2",
+      "rho": 0.0,
+      "tier": "full",
+      "workloads": [
+        "W1",
+        "W2"
+      ]
+    },
+    {
+      "field": "hotspot",
+      "model": "D3",
+      "name": "D3_hotspot_r1",
+      "rho": 1.0,
+      "tier": "full",
+      "workloads": [
+        "W1",
+        "W2"
+      ]
+    },
+    {
+      "field": "row_gradient",
+      "model": "D3",
+      "name": "D3_row_gradient_r2",
+      "rho": 2.0,
+      "tier": "core",
+      "workloads": [
+        "W1"
+      ]
+    },
+    {
+      "field": "",
+      "model": "D4",
+      "name": "D4",
+      "rho": 1.0,
+      "tier": "core",
+      "workloads": [
+        "W1",
+        "W2"
+      ]
+    }
+  ],
+  "sigma": 0.02,
+  "times": {
+    "1d": 86400.0,
+    "1h": 3600.0,
+    "1yr": 31557600.0,
+    "30d": 2592000.0
+  }
+}

@@ -1,0 +1,42 @@
+# classic mitigation 'soft_mitigation' in the SAME fault setting as resnet9_cont_c_living / resnet9_cont_d:
+# failure_model density, no secondary drift fault, 3 waves of 10% every 5200 batches, 15% spares (30% where named), same training recipe.
+# Only the mitigation differs: retraining.policy none (health-gated dispatch, no canary, no bursts); remap_order random (as C-prime).
+# Residual difference: no held-out canary, so the main stream is 50,000 images (390 batches/epoch), not 48,976.
+# Score = last 'accuracy' value in metrics.json (test accuracy, logged every 100 batches), compare with end_of_run_test_acc of C-prime/D.
+name: resnet9_cont_next_classic_soft_mitigation
+simulator: crosssim
+epochs: 50
+float_pretrain_epochs: 10
+finetune_learning_rate: 0.001
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+lr_one_cycle: true
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  redundancy_factor: 0.15
+  use_gpu: true
+  calibrate_adc: true
+  adc_calibration_images: 320
+  calibrate_dac: true
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+mitigation:
+  enable_soft_mitigation: true
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false
+retraining:
+  policy: none
+  remap_order: random

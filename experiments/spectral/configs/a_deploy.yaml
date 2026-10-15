@@ -1,0 +1,35 @@
+# Phase H arm H5 (criteria/a_deploy.yaml, frozen 2026-10-10, committed in 37af453 before any run). `smoke` never counts.
+# Platform = a_bnfold (W2 BN-folded ResNet-9, CIFAR-10 + CIFAR-100, ckpt seeds 42/101/102, 2% per-cell probe read
+# noise, 10k-image eval, 4 time points, 8 scenarios) with every random stream offset +3000. Activation statistics for
+# B8's selection / bias, the mean-bias xbar and every covariance come from AUGMENTED TRAIN images only.
+# M4 = strict FieldFit cos order 4 (8 fwd + 7 bwd + 1 mean-bias read = 16 MVMs/tile); M4-r1/r2/full are its deployable
+# G-form rank truncations (methods_a.deployable_correction). Nothing here is tuned on results.
+full:
+  datasets: [cifar10, cifar100]
+  ckpt_seeds: [42, 101, 102]
+  seed_offset: 3000
+  sigma: 0.02
+  n_eval: 10000
+  act_images: 5000        # augmented train images for the im2col caches (a_common convention: 16 positions, 4096 cols)
+  times: {1h: 3600.0, 1d: 86400.0, 30d: 2592000.0, 1yr: 31557600.0}
+  ablation: {dataset: cifar10, times: [1d, 1yr], orders: [1, 2, 3, 4], p_total: 15}
+  scenarios:
+    - {name: D2, model: D2, field: "", rho: 0.0}
+    - {name: D3_hotspot_r1, model: D3, field: hotspot, rho: 1.0}
+    - {name: D3_hotspot_r2, model: D3, field: hotspot, rho: 2.0}
+    - {name: D3_rank_r_r1, model: D3, field: rank_r, rho: 1.0}
+    - {name: D3_rank_r_r2, model: D3, field: rank_r, rho: 2.0}
+    - {name: D3_row_gradient_r1, model: D3, field: row_gradient, rho: 1.0}
+    - {name: D3_row_gradient_r2, model: D3, field: row_gradient, rho: 2.0}
+    - {name: D4, model: D4, field: "", rho: 1.0}
+smoke:
+  datasets: [cifar10, cifar100]
+  ckpt_seeds: [101]
+  seed_offset: 3000
+  sigma: 0.02
+  n_eval: 1000
+  act_images: 500
+  times: {1d: 86400.0, 1yr: 31557600.0}
+  ablation: {dataset: cifar10, times: [1d, 1yr], orders: [1, 2, 3, 4], p_total: 15}
+  scenarios:
+    - {name: D3_hotspot_r1, model: D3, field: hotspot, rho: 1.0}

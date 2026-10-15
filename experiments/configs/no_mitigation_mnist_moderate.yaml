@@ -1,0 +1,26 @@
+# Same arm as no_mitigation_mnist.yaml (MNIST dataset), with
+# injection_interval recalibrated to the non-saturating moderate fault
+# regime - see no_mitigation_moderate.yaml's comment for the full
+# rationale. Establishes whether the moderate regime and the fixed
+# pipeline generalize to a different (lighter) dataset.
+name: no_mitigation_mnist_moderate
+simulator: crosssim
+dataset: mnist
+epochs: 15
+num_batches: 128
+batch_size: 32
+train_samples: 2000
+test_samples: 1000
+eval_interval: 3
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 315
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

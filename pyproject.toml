@@ -1,0 +1,73 @@
+[project]
+name = "neurofault"
+version = "1.0.0"
+description = "Simulation study of fault-tolerant memristive crossbars for DNN inference: spare-cell repair, retraining, and few-read fault localization"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "BSD-3-Clause-Clear"
+license-files = ["LICENSE"]
+authors = [{ name = "Prateek Yadav" }]
+dependencies = [
+    # No upper bound on torch: CrossSim and AIHWKit both resolved against a recent torch.
+    "torch>=2.2",
+    "torchvision>=0.17",
+    "numpy>=1.26,<2.0",
+    "pandas>=2.2,<3.0",
+    "matplotlib>=3.8,<4.0",
+    "pyyaml>=6.0,<7.0",
+    # Runtime: neurofault.retraining.recovery_model curve fits (also a transitive dep of CrossSim).
+    "scipy>=1.11,<2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/prateek1656/NeuroFault"
+Repository = "https://github.com/prateek1656/NeuroFault"
+
+[project.optional-dependencies]
+# CrossSim and AIHWKit are the two supported backends. MemTorch and XBTorch were
+# evaluated and dropped (MemTorch: unmaintained, broken packaging; XBTorch: its
+# forward pass did not consume the crossbar conductance state).
+# CrossSim is not on PyPI. It is pinned to the v3.2.1 tag (pure Python/NumPy/SciPy,
+# no C++ build). Its import name is "simulator", not "crosssim".
+crosssim = [
+    "CrossSim @ git+https://github.com/sandialabs/cross-sim.git@v3.2.1",
+]
+aihwkit = [
+    "aihwkit>=1.1.0",
+]
+# Only needed on a CUDA machine with crossbar.use_gpu=true (CrossbarConfig.use_gpu in
+# config.py): CrossSim swaps its array module to cupy in GPU mode. cupy-cuda12x
+# targets CUDA 12.x.
+gpu = [
+    "cupy-cuda12x>=13.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0,<9.0",
+    "ruff>=0.6,<1.0",
+    # tests/invariants/ only: property-based fuzzing for the deep correctness
+    # suite (scipy, also used there for kstest/binomtest, is now a runtime dep).
+    "hypothesis>=6.100,<7.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/neurofault"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "statistical: many-trial/many-seed goodness-of-fit checks (tests/invariants/) - a tiny, documented false-failure rate at any fixed significance threshold, not a flaky test to retry.",
+    "slow: real ResNet-9 through CrossSim (goldens, full-network fault injection, canary/repro/artifact runs) - run before trusting any real experiment; deselect with -m \"not slow\" for the fast loop (logic tests use model_arch=tiny_cnn).",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

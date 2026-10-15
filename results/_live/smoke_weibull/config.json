@@ -1,0 +1,55 @@
+{
+  "name": "smoke_weibull",
+  "seed": 42,
+  "simulator": "crosssim",
+  "dataset": "cifar10",
+  "train_samples": 32,
+  "test_samples": 16,
+  "batch_size": 4,
+  "learning_rate": 0.001,
+  "epochs": 1,
+  "num_batches": 30,
+  "eval_interval": 5,
+  "device": {
+    "name": "vteam",
+    "r_on": 100.0,
+    "r_off": 10000.0,
+    "time_series_resolution": 1e-10,
+    "extra_params": {}
+  },
+  "crossbar": {
+    "scheme": "DoubleColumn",
+    "tile_shape": null,
+    "patch_layer_types": [
+      "Linear"
+    ],
+    "max_input_voltage": 0.3,
+    "adc_resolution": 8,
+    "dac_resolution": 8,
+    "redundancy_factor": 0.15,
+    "redundancy_scheme": "idealized_per_cell",
+    "redundancy_condemn_threshold": 0.5
+  },
+  "fault": {
+    "density": 0.1,
+    "distribution": "random",
+    "injection_interval": 1,
+    "failure_model": "weibull",
+    "weibull_shape": 2.0,
+    "weibull_scale": 50,
+    "exponential_rate": null,
+    "arrhenius_activation_energy_ev": null,
+    "temperature_kelvin": 300.0,
+    "reference_temperature_kelvin": 300.0
+  },
+  "mitigation": {
+    "enable_soft_mitigation": false,
+    "enable_remapping": false,
+    "enable_layer_reset": false,
+    "enable_predictive": false,
+    "force_remapping": false,
+    "health_threshold": 75.0,
+    "health_check_interval": 10
+  },
+  "output_dir": "results"
+}

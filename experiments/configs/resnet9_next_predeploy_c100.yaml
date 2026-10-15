@@ -1,0 +1,47 @@
+# CIFAR-100 clean pre-deploy net, trained longer (44 epochs = 40 float + 4 analog; the old 14 epochs plateaued at 51%).
+# Fault-aware retraining rebuild: train the CLEAN pre-fault checkpoint that every
+# deployment-regime arm starts from. Same training recipe as the continuous-regime
+# resnet9_fault_*_no_mitigation arms (10 float + 4 analog epochs; ~88.8% in the verified
+# runs), but with NO fault injection (save_pre_deploy_checkpoint) and a diagonal-Fisher
+# tracker accumulating through the analog phase. Writes
+# results/<name>/pre_deploy.pt = {model_state_dict, fisher_state, config_hash, final_test_acc}
+# and stops. Run once per seed (--seed N renames the output dir to <name>_seedN).
+# Deployment configs point pre_deploy_checkpoint at that file.
+name: resnet9_next_predeploy_c100
+simulator: crosssim
+dataset: cifar100
+num_classes: 100
+regime: deployment
+save_pre_deploy_checkpoint: true
+epochs: 44
+float_pretrain_epochs: 40
+finetune_learning_rate: 0.001
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+lr_one_cycle: true
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+save_checkpoint: true  # also keep the plain analog state_dict, like the continuous arms
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  use_gpu: true
+  calibrate_adc: true
+  adc_calibration_images: 320
+  calibrate_dac: true
+fault:
+  density: 0.1  # unused here (nothing is injected); kept equal to the deployment arms
+  distribution: random
+  injection_interval: 5200
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

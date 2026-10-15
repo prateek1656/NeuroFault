@@ -1,0 +1,24 @@
+# E1c: regime crossover. Fault density where probing stops beating
+# full readout (A1 = 256 reads on a 256x256 tile). Probing "wins" at a density if some probing
+# design reaches median cell-F1 >= win_f1 with median reads < A1's reads, at the primary sigma.
+experiment: e1c
+ckpt_seeds: [42, 101, 102]
+layers: [layer2.0.0.weight, layer3.0.0.weight]
+tile_size: 256
+tiles_per_layer: 2
+fault_seeds: 5
+sigmas: [0.01, 0.02]
+primary_sigma: 0.01
+densities: [0.0001, 0.0003, 0.001, 0.003, 0.01, 0.03, 0.1]
+encoding: {kind: offset_refcol, g_min_frac: 0.01}
+fault: {kind: stuck_random, rail: mixed, device: pos}
+visible_frac: 0.1
+win_f1: 0.9
+fa: 0.1
+smoke:
+  ckpt_seeds: [42]
+  layers: [layer2.0.0.weight]
+  tiles_per_layer: 1
+  fault_seeds: 2
+  sigmas: [0.01]
+  densities: [0.0003, 0.003, 0.03]

@@ -1,0 +1,39 @@
+{
+  "_variant": "full",
+  "a_trials": 200,
+  "b_levels": [
+    0.05,
+    0.2,
+    0.4,
+    0.6,
+    0.8,
+    1.0
+  ],
+  "b_n_devices": 100000,
+  "b_times_s": [
+    60.0,
+    3600.0,
+    86400.0,
+    31536000.0
+  ],
+  "c_layers": [
+    "layer1.0.0.weight",
+    "res1.conv_a.weight",
+    "layer3.0.0.weight",
+    "res2.conv_b.weight"
+  ],
+  "c_times_s": [
+    3600.0,
+    86400.0,
+    31536000.0
+  ],
+  "c_trials": 20,
+  "ckpt_seeds": [
+    42,
+    101,
+    102
+  ],
+  "d_seeds": 3,
+  "e_T": 256,
+  "master_seed": 0
+}

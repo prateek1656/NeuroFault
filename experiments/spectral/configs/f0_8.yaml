@@ -1,0 +1,33 @@
+# F0.8 network-bridge validation (criteria/f0_validity.yaml F0.8a-c, frozen 2026-10-08) plus the
+# report-only a_bnfold re-check on the CrossSim tier. `smoke` never counts.
+# Reduced vs the ideal grid (CPU budget, shared machine): 5000 test images (the repo's own test
+# protocol, = the images the stored final_test_acc was measured on); two scenarios (D2, D3 hotspot
+# rho 2); arms none/b8/m4 on the standard network, b8/m4 on the BN-folded one; standard network
+# at {1d, 30d} (+1yr on seed 42 so seed 42 has three time points), folded at all four times.
+full:
+  ckpt_seeds: [42, 101, 102]
+  n_eval: 5000
+  sigma: 0.02
+  scenarios:
+    - {name: D2, model: D2, field: "", rho: 0.0}
+    - {name: D3_hotspot_r2, model: D3, field: hotspot, rho: 2.0}
+  std_times: {1d: 86400.0, 30d: 2592000.0}
+  std_extra_times_seed42: {1yr: 31557600.0}
+  folded_times: {1h: 3600.0, 1d: 86400.0, 30d: 2592000.0, 1yr: 31557600.0}
+  std_arms: [none, b8, m4]
+  folded_arms: [b8, m4]
+  t3_times: {1h: 3600.0, 1d: 86400.0, 30d: 2592000.0, 1yr: 31557600.0}
+  t3_realizations: 3
+smoke:
+  ckpt_seeds: [42]
+  n_eval: 500
+  sigma: 0.02
+  scenarios:
+    - {name: D2, model: D2, field: "", rho: 0.0}
+  std_times: {1d: 86400.0}
+  std_extra_times_seed42: {}
+  folded_times: {1d: 86400.0}
+  std_arms: [none, b8]
+  folded_arms: [m4]
+  t3_times: {1d: 86400.0}
+  t3_realizations: 1

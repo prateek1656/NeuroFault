@@ -1,0 +1,92 @@
+{
+  "_variant": "full",
+  "act_images": 5000,
+  "ages": {
+    "120d": 10368000.0,
+    "14d": 1209600.0,
+    "1d": 86400.0,
+    "1h": 3600.0,
+    "240d": 20736000.0,
+    "30d": 2592000.0,
+    "365d": 31536000.0,
+    "3d": 259200.0,
+    "3h": 10800.0,
+    "60d": 5184000.0,
+    "7d": 604800.0,
+    "8h": 28800.0
+  },
+  "cache_dir": "<archive-root>/results/spectral/a_refresh/_cache",
+  "ckpt_seeds": [
+    42,
+    101,
+    102
+  ],
+  "commission_s": 86400.0,
+  "datasets": [
+    "cifar10",
+    "cifar100"
+  ],
+  "lam_log10": [
+    -7.0,
+    1.0
+  ],
+  "master_seed": 0,
+  "n_eval": 10000,
+  "n_lam": 16,
+  "scenarios": [
+    {
+      "field": "",
+      "model": "D2",
+      "name": "D2",
+      "rho": 0.0
+    },
+    {
+      "field": "hotspot",
+      "model": "D3",
+      "name": "D3_hotspot_r1",
+      "rho": 1.0
+    },
+    {
+      "field": "hotspot",
+      "model": "D3",
+      "name": "D3_hotspot_r2",
+      "rho": 2.0
+    },
+    {
+      "field": "rank_r",
+      "model": "D3",
+      "name": "D3_rank_r_r1",
+      "rho": 1.0
+    },
+    {
+      "field": "rank_r",
+      "model": "D3",
+      "name": "D3_rank_r_r2",
+      "rho": 2.0
+    },
+    {
+      "field": "row_gradient",
+      "model": "D3",
+      "name": "D3_row_gradient_r1",
+      "rho": 1.0
+    },
+    {
+      "field": "row_gradient",
+      "model": "D3",
+      "name": "D3_row_gradient_r2",
+      "rho": 2.0
+    },
+    {
+      "field": "",
+      "model": "D4",
+      "name": "D4",
+      "rho": 1.0
+    }
+  ],
+  "seed_offset": 4000,
+  "sigma": 0.02,
+  "targets": {
+    "T1d": "1d",
+    "T30d": "30d"
+  }
+}

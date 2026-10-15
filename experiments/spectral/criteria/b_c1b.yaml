@@ -1,0 +1,75 @@
+schema_version: 1
+id: b_c1b
+title: "Direction B follow-up C1b: margin-calibrated bidirectional localization on 128/256 tiles"
+source_plan: "plan-B §1.6 (registered 2026-10-09, AFTER the pre-registered C1 KILL / L15; must be reported next to L15)"
+frozen: "2026-10-09"
+overall_pass: all
+note: >
+  Registered after seeing the C1 KILL (results/spectral/b_c1_prereg/20261009T035140_0fdb78ed_s0), whose
+  failures were held-out F1 of the frozen bidirectional config landing at 0.857-0.899. Changes vs C1,
+  all declared before running: (1) config selection rule uses a margin - per (tile, k, sigma) and family
+  pick the fewest-reads config among those with CALIBRATION mean F1 >= 0.93 (fallback: highest F1);
+  (2) calibration split = tile index 1, fault seeds 1000-1019; (3) evaluation on FRESH fault seeds 20-39
+  (never used), tile index 0, 3 ckpts (42/101/102) x all conv layers with a full tile; (4) the claim
+  covers tile sizes 128 and 256 only (the sizes used by current analog tiles). NOTE this scope was chosen
+  after tile 512 failed C1; tile 512 is still run under the identical protocol and reported (scope
+  T512_report) but is not part of the claim. Forward-only side gets the same selection rule.
+  Columns: tile_size, k, sigma_c, cell_f1_bidir, cell_f1_fwd, reads_fwd, reads_bidir, reads_ratio,
+  reads_ratio_ci_upper, c1b_row_ok = (cell_f1_bidir >= 0.9 and reads_ratio <= 0.7 and
+  reads_ratio_ci_upper <= 0.8).
+criteria:
+  - id: C1b-128
+    source: "plan-B §1.6 C1b"
+    kind: pass
+    scope: C1b
+    description: "Tile 128: >= 3 of k in {1,2,4,8,16} qualify at BOTH sigma_c in {1%, 2%}."
+    clauses:
+      - metric: c1b_row_ok
+        filter: {tile_size: 128, sigma_c: [0.01, 0.02], k: [1, 2, 4, 8, 16]}
+        per_group: {by: [k], aggregation: min}
+        aggregation: sum
+        comparator: ">="
+        threshold: 3
+  - id: C1b-256
+    source: "plan-B §1.6 C1b"
+    kind: pass
+    scope: C1b
+    description: "Tile 256: >= 3 of k in {1,2,4,8,16} qualify at BOTH sigma_c in {1%, 2%}."
+    clauses:
+      - metric: c1b_row_ok
+        filter: {tile_size: 256, sigma_c: [0.01, 0.02], k: [1, 2, 4, 8, 16]}
+        per_group: {by: [k], aggregation: min}
+        aggregation: sum
+        comparator: ">="
+        threshold: 3
+  - id: C1b-kill
+    source: "plan-B §1.6 C1b-kill"
+    kind: kill
+    scope: C1b
+    description: "Kill if fewer than 1 k qualifies on tile 128 OR on tile 256."
+    combine: any
+    clauses:
+      - metric: c1b_row_ok
+        filter: {tile_size: 128, sigma_c: [0.01, 0.02], k: [1, 2, 4, 8, 16]}
+        per_group: {by: [k], aggregation: min}
+        aggregation: sum
+        comparator: "<"
+        threshold: 1
+      - metric: c1b_row_ok
+        filter: {tile_size: 256, sigma_c: [0.01, 0.02], k: [1, 2, 4, 8, 16]}
+        per_group: {by: [k], aggregation: min}
+        aggregation: sum
+        comparator: "<"
+        threshold: 1
+  - id: T512-report
+    source: "plan-B §1.6 (supplementary)"
+    kind: report
+    scope: T512_report
+    description: "Tile 512 under the identical protocol: number of qualifying k (reported, no claim)."
+    clauses:
+      - metric: c1b_row_ok
+        filter: {tile_size: 512, sigma_c: [0.01, 0.02], k: [1, 2, 4, 8, 16]}
+        per_group: {by: [k], aggregation: min}
+        aggregation: sum
+        comparator: ">="
+        threshold: 3

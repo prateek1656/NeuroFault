@@ -1,0 +1,47 @@
+{
+  "_variant": "full",
+  "amps_all_f": [
+    "agc_ideal"
+  ],
+  "amps_f05": [
+    "servo_0.5",
+    "servo_2"
+  ],
+  "base_overrides": {
+    "v_target_frac": 0.9
+  },
+  "betas": [
+    1.0,
+    2.0,
+    3.0,
+    5.0,
+    10.0
+  ],
+  "ckpt_seeds": [
+    42,
+    101,
+    102
+  ],
+  "fs": [
+    0.5
+  ],
+  "gv_betas": [],
+  "gv_draws": 0,
+  "gv_sigmas": [],
+  "n_cal_faults": 400,
+  "n_faults": 16,
+  "n_samples": 160,
+  "noise_draws": 8,
+  "t_end_cap": 6000.0,
+  "tiles": {
+    "128": [
+      "res1.conv_a.weight",
+      "layer3.0.0.weight"
+    ],
+    "64": [
+      "res1.conv_a.weight",
+      "layer3.0.0.weight"
+    ]
+  },
+  "variants": []
+}

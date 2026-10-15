@@ -1,0 +1,64 @@
+{
+  "name": "no_mitigation_mnist_moderate_seed42",
+  "seed": 42,
+  "simulator": "crosssim",
+  "dataset": "mnist",
+  "train_samples": 2000,
+  "test_samples": 1000,
+  "batch_size": 32,
+  "learning_rate": 0.001,
+  "epochs": 15,
+  "num_batches": 128,
+  "eval_interval": 3,
+  "device": {
+    "name": "vteam",
+    "r_on": 100.0,
+    "r_off": 10000.0,
+    "time_series_resolution": 1e-10,
+    "extra_params": {}
+  },
+  "crossbar": {
+    "scheme": "DoubleColumn",
+    "tile_shape": null,
+    "patch_layer_types": [
+      "Linear",
+      "Conv2d"
+    ],
+    "max_input_voltage": 0.3,
+    "adc_resolution": 8,
+    "dac_resolution": 8,
+    "redundancy_factor": 0.15,
+    "redundancy_scheme": "idealized_per_cell",
+    "redundancy_condemn_threshold": 0.5,
+    "circuit_topology": null,
+    "devices_per_synapse": 1
+  },
+  "fault": {
+    "density": 0.1,
+    "distribution": "random",
+    "injection_interval": 315,
+    "failure_model": "density",
+    "weibull_shape": 2.0,
+    "weibull_scale": null,
+    "exponential_rate": null,
+    "arrhenius_activation_energy_ev": null,
+    "temperature_kelvin": 300.0,
+    "reference_temperature_kelvin": 300.0
+  },
+  "mitigation": {
+    "enable_soft_mitigation": false,
+    "enable_remapping": false,
+    "enable_layer_reset": false,
+    "enable_predictive": false,
+    "force_remapping": false,
+    "health_threshold": 75.0,
+    "health_check_interval": 10,
+    "detection_method": "full_diff",
+    "checksum_tolerance": 0.1,
+    "layer_reset_cooldown_checks": 10
+  },
+  "retraining": {
+    "enable_fault_aware": false
+  },
+  "output_dir": "results"
+}

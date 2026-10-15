@@ -1,0 +1,101 @@
+{
+  "_variant": "full",
+  "cap_ks": [
+    4,
+    8,
+    16
+  ],
+  "captures": true,
+  "ckpt_seeds": [
+    42,
+    101,
+    102
+  ],
+  "d4": true,
+  "enc": "EncodingSpec(kind='diff_pair', g_max_uS=25.0, g_min_frac=0.01, scale_policy='tile_absmax')",
+  "fields": [
+    "row_gradient",
+    "col_gradient",
+    "row_plus_col",
+    "rank_r",
+    "hotspot"
+  ],
+  "jacobian": true,
+  "layers": [
+    "prep.0.weight",
+    "layer1.0.0.weight",
+    "res1.conv_a.weight",
+    "res1.conv_b.weight",
+    "layer2.0.0.weight",
+    "layer3.0.0.weight",
+    "res2.conv_a.weight",
+    "res2.conv_b.weight"
+  ],
+  "master_seed": 0,
+  "methods": [
+    "gdc",
+    "row",
+    "col",
+    "bi",
+    "m4cos",
+    "m4r1",
+    "m3",
+    "b5"
+  ],
+  "n_eval": 1000,
+  "net_methods": [
+    "none",
+    "b8",
+    "b8o16"
+  ],
+  "net_scenarios": [
+    {
+      "model": "D2",
+      "rho": 0.0,
+      "scale": 1.0
+    },
+    {
+      "field": "row_gradient",
+      "model": "D3",
+      "rho": 1.0,
+      "scale": 1.0
+    },
+    {
+      "field": "row_gradient",
+      "model": "D3",
+      "rho": 2.0,
+      "scale": 1.0
+    },
+    {
+      "field": "rank_r",
+      "model": "D3",
+      "rho": 1.0,
+      "scale": 1.0
+    }
+  ],
+  "net_times": {
+    "t1e4": 10000.0,
+    "t1e6": 1000000.0,
+    "t1e8": 100000000.0
+  },
+  "p": 8,
+  "prog": "ProgNoise(kind='aihwkit_pcm_poly', rel_sigma=0.0)",
+  "rhos": [
+    0.25,
+    0.5,
+    1.0,
+    2.0,
+    4.0
+  ],
+  "sigmas": [
+    0.0,
+    0.02
+  ],
+  "tiles_per_layer": 1,
+  "times": [
+    "1h",
+    "1d",
+    "30d",
+    "1yr"
+  ]
+}

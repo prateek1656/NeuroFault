@@ -1,0 +1,52 @@
+# Arm 2/6 of the ResNet-9 fault-tolerance comparison - see resnet9_fault_no_mitigation.yaml
+# for the shared fault-schedule derivation (density=0.1, injection_interval=5200, ~3 cycles,
+# ~27% final stuck fraction, all verified empirically on this exact 9-crossbar network).
+#
+# Real, load-bearing caveat, verified directly during development (not a guess): under
+# failure_model="density" (stuck-at faults, used here), enable_soft_mitigation is a
+# PROVEN NO-OP. `dispatch.py` only ever routes soft_mitigation at cells in
+# monitor.drift_mask, which stuck-at injection never sets - only failure_model="drift"
+# does (see resnet9_fault_soft_mitigation_drift.yaml). Confirmed via a real probe: same
+# seed, same fault schedule, enable_soft_mitigation on vs off -> bit-identical loss/accuracy
+# trajectories, soft_mitigations count stays 0 in both. Regression-guarded in
+# tests/invariants/test_fault_injection_full_network.py::test_soft_mitigation_is_a_noop_under_density_faults.
+#
+# Kept as its own arm anyway (rather than dropped) so the campaign's writeup can honestly
+# report the real result - statistically indistinguishable from no_mitigation - instead of
+# silently omitting the strategy the way the old moderate-regime comparison's "+2.56pp
+# soft_mitigation helps" claim implicitly assumed without ever actually exercising the
+# mechanism.
+name: resnet9_fault_soft_mitigation
+simulator: crosssim
+epochs: 50
+float_pretrain_epochs: 10
+finetune_learning_rate: 0.001
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+lr_one_cycle: true
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+save_checkpoint: true  # real, reported-number run
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  use_gpu: true
+  calibrate_adc: true
+  adc_calibration_images: 320
+  calibrate_dac: true
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+mitigation:
+  enable_soft_mitigation: true
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

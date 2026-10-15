@@ -1,0 +1,174 @@
+schema_version: 1
+id: b_claims
+title: "Direction B (LOCATE) claim-level criteria C1-C6 and vertical go / no-go"
+source_plan: "plan-B-probe-localization §5.1-5.2; master plan v3 (C4 deferred)"
+frozen: "2026-10-08"
+overall_pass: any
+note: >
+  Thresholds are on HELD-OUT fault seeds; decoder thresholds/lambda are calibrated on a separate
+  calibration split, never on evaluation faults (item-4 discipline). Overall = PASS if ANY of the
+  pass claims holds (plan-B §5.2: GO if C1 or C3 passes ...); the per-claim picture is in by_scope.
+  C4 is DEFERRED to the cross-vertical step (master plan v3) and is not evaluated.
+criteria:
+  - id: C1
+    source: "plan-B §5.1 C1"
+    kind: pass
+    scope: C1
+    description: >
+      Bidirectional: over 3 ckpts x all layers x 20 seeds, at sigma_c in {1%, 2%}: for >= 3 of k in
+      {1,2,4,8,16}, the best bidirectional design reaches cell-F1 >= 0.9 with <= 0.7x the reads of the
+      best forward-only design (95% CI upper bound of the ratio <= 0.8), where the forward-only side
+      gets the SAME tuning effort (adaptive and non-adaptive best-of).
+    note: >
+      AMBIGUOUS: whether a k must qualify at BOTH sigma_c. Transcribed strictly (both). Script emits
+      per-row bool c1_row_ok = (cell_f1_bidir >= 0.9 and reads_ratio <= 0.7 and
+      reads_ratio_ci_upper <= 0.8); k qualifies when min over sigma_c of c1_row_ok is 1.
+    clauses:
+      - metric: c1_row_ok
+        filter: {sigma_c: [0.01, 0.02], k: [1, 2, 4, 8, 16]}
+        per_group: {by: [k], aggregation: min}
+        aggregation: sum
+        comparator: ">="
+        threshold: 3
+  - id: C1-kill
+    source: "plan-B §5.1 C1 (Kill / downgrade)"
+    kind: kill
+    scope: C1
+    description: "Fewer than 1 qualifying k -> drop 'bidirectional' as a contribution (research-03 E1-a)."
+    clauses:
+      - metric: c1_row_ok
+        filter: {sigma_c: [0.01, 0.02], k: [1, 2, 4, 8, 16]}
+        per_group: {by: [k], aggregation: min}
+        aggregation: sum
+        comparator: "<"
+        threshold: 1
+  - id: C1prime
+    source: "plan-B §5.1 C1' practical floor"
+    kind: pass
+    scope: C1prime
+    description: "F1 >= 0.9 at <= 32 total reads for k=8 at 2% noise (single 256 tile)."
+    clauses:
+      - {metric: reads_to_f1_0p9, aggregation: median, filter: {k: 8, sigma_c: 0.02, tile_size: 256}, comparator: "<=", threshold: 32}
+  - id: C1prime-fail
+    source: "plan-B §5.1 C1' (Kill / downgrade)"
+    kind: redirect
+    scope: C1prime
+    description: "Otherwise declare practical single-tile localization infeasible at that noise (research-03 E1-b); the paper becomes a bound/regime-map paper."
+    clauses:
+      - {metric: reads_to_f1_0p9, aggregation: median, filter: {k: 8, sigma_c: 0.02, tile_size: 256}, comparator: ">", threshold: 32}
+  - id: C2
+    source: "plan-B §5.1 C2 noise rule"
+    kind: pass
+    scope: C2
+    description: "The measured optimal probe weight vs noise model agrees with T3's prediction within a factor 2 across both noise models."
+    clauses:
+      - {metric: optimal_weight_meas_over_pred, aggregation: max, comparator: "<=", threshold: 2.0}
+      - {metric: optimal_weight_meas_over_pred, aggregation: min, comparator: ">=", threshold: 0.5}
+  - id: C2-fail
+    source: "plan-B §5.1 C2 (Kill / downgrade)"
+    kind: redirect
+    scope: C2
+    description: "If not, report an empirical rule only and drop the theorem."
+    combine: any
+    clauses:
+      - {metric: optimal_weight_meas_over_pred, aggregation: max, comparator: ">", threshold: 2.0}
+      - {metric: optimal_weight_meas_over_pred, aggregation: min, comparator: "<", threshold: 0.5}
+  - id: C3
+    source: "plan-B §5.1 C3 line/cluster"
+    kind: pass
+    scope: C3
+    description: >
+      For row/col/block faults, bidir line-level F1 >= 0.95 at <= 8 reads; and >= 2x fewer reads than
+      the best fwd-only at cell level for r x c blocks with rc >= 16.
+    clauses:
+      - {metric: line_f1_at_8_reads, aggregation: median, comparator: ">=", threshold: 0.95}
+      - {metric: fwd_to_bidir_reads_ratio, aggregation: median, filter: {fault_kind: block, block_cells: {">=": 16}}, comparator: ">=", threshold: 2.0}
+  - id: C3-kill
+    source: "plan-B §5.1 C3 (Kill / downgrade)"
+    kind: kill
+    scope: C3
+    description: "If fwd-only matches, drop C3."
+    note: "AMBIGUOUS 'matches': read as fwd_to_bidir_reads_ratio <= 1.0 (forward-only needs no more reads than bidirectional)."
+    clauses:
+      - {metric: fwd_to_bidir_reads_ratio, aggregation: median, filter: {fault_kind: block, block_cells: {">=": 16}}, comparator: "<=", threshold: 1.0}
+  - id: C4
+    source: "plan-B §5.1 C4 system value (E7); master plan v3 Deferred X.1"
+    kind: pass
+    scope: C4
+    deferred: true
+    description: >
+      DEFERRED to the cross-vertical step. At the spare budget where oracle remap beats no-remap by
+      > 2 across-seed std: estimated-map remap (total probe cost <= 64 reads per tile per wave) is within
+      1 across-seed std of oracle accuracy and beats `prefix` order from a blind policy by > 1 std.
+      Kill: estimated map loses > 1 std at 2% noise (report FP vs FN vs ordering); if the loss is
+      < 0.5 std even for row/col-level maps (E8) -> reframe as a cheap-map result.
+    clauses:
+      - {metric: estmap_gap_to_oracle_in_std, aggregation: median, comparator: "<=", threshold: 1.0}
+      - {metric: estmap_minus_blind_prefix_in_std, aggregation: median, comparator: ">", threshold: 1.0}
+  - id: C5
+    source: "plan-B §5.1 C5 concurrent"
+    kind: pass
+    scope: C5
+    description: >
+      Concurrent regression reaches 99% detection within 64 inferences (with conv im2col samples) for
+      deltas >= 0.5 range at 2% noise, and localizes to the line with F1 >= 0.9 within 256.
+    clauses:
+      - {metric: inferences_to_99pct_detection, aggregation: median, filter: {delta_frac_of_range: {">=": 0.5}, sigma_c: 0.02}, comparator: "<=", threshold: 64}
+      - {metric: line_f1_at_256_inferences, aggregation: median, filter: {delta_frac_of_range: {">=": 0.5}, sigma_c: 0.02}, comparator: ">=", threshold: 0.9}
+  - id: C5-checksum
+    source: "plan-B §5.1 C5 (Kill / downgrade), research-03 E5"
+    kind: redirect
+    scope: C5
+    description: "If a single checksum column already reaches 99% detection within 8 inferences, the concurrent contribution is localization-only."
+    clauses:
+      - {metric: checksum_inferences_to_99pct_detection, aggregation: median, comparator: "<=", threshold: 8}
+  - id: C5-T7
+    source: "plan-B §5.1 C5 (Kill / downgrade), T7 identifiability"
+    kind: redirect
+    scope: C5
+    description: "If identifiability (T7) shows > 20% of columns never observed, concurrent-only is dead and the hybrid A9 is the claim."
+    clauses:
+      - {metric: frac_columns_never_observed, aggregation: median, comparator: ">", threshold: 0.20}
+  - id: C6
+    source: "plan-B §5.1 C6 drift vs stuck"
+    kind: pass
+    scope: C6
+    description: "3-way classification >= 90% at 2% noise AND low-rank+sparse cell-F1 >= 2x sparse-only on mixed scenes (research-03 E3)."
+    clauses:
+      - {metric: threeway_accuracy, aggregation: median, filter: {sigma_c: 0.02}, comparator: ">=", threshold: 0.90}
+      - {metric: lowrank_sparse_over_sparse_only_f1, aggregation: median, filter: {scene: mixed}, comparator: ">=", threshold: 2.0}
+  - id: C6-kill
+    source: "plan-B §5.1 C6 (Kill / downgrade)"
+    kind: kill
+    scope: C6
+    description: "Else drop C6 entirely."
+    combine: any
+    clauses:
+      - {metric: threeway_accuracy, aggregation: median, filter: {sigma_c: 0.02}, comparator: "<", threshold: 0.90}
+      - {metric: lowrank_sparse_over_sparse_only_f1, aggregation: median, filter: {scene: mixed}, comparator: "<", threshold: 2.0}
+  - id: Theory
+    source: "plan-B §5.1 Theory"
+    kind: report
+    manual: true
+    description: >
+      T2 + T3 proven with measured agreement; T6 stated with the loss-weighted recall; others may be
+      conjectures labelled as such. If T2/T3 cannot be made non-trivial (no gap between fwd-only and
+      bidir bounds) -> empirical paper at ASP-DAC/ISQED/workshop level. Human judgement.
+  - id: NOGO-A2
+    source: "plan-B §5.2 NO-GO"
+    kind: kill
+    scope: vertical_B
+    description: >
+      NO-GO if HPE test-vector binary search reproduced as A2 matches A4 within 20% reads at equal
+      area on all of E1 and E6 (then the novelty reduces to an analysis of known practice).
+    note: "'On all' => max over E1/E6 rows of |reads(A2)-reads(A4)|/reads(A4) <= 0.2. Script emits a2_vs_a4_reads_rel_diff."
+    clauses:
+      - {metric: a2_vs_a4_reads_rel_diff, aggregation: max, filter: {experiment: [E1, E6], equal_area: true}, comparator: "<=", threshold: 0.2}
+  - id: NOGO-E1c
+    source: "plan-B §5.2 NO-GO"
+    kind: kill
+    scope: vertical_B
+    description: "NO-GO if the full-readout crossover (E1c) shows probing wins only below density 1e-4 where no spare budget matters."
+    note: "Script emits probing_win_max_density (largest fault density at which probing still beats full readout)."
+    clauses:
+      - {metric: probing_win_max_density, aggregation: median, comparator: "<", threshold: 0.0001}

@@ -1,0 +1,203 @@
+{
+  "criteria_id": "a_bnfold",
+  "criteria_sha256": "b81d4754d4fae7c8a198e12774fabfbc847e233c2aaf0dd791776e343852e82e",
+  "overall": "PASS",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "BF": "PASS"
+  },
+  "n_rows": 192,
+  "criteria": [
+    {
+      "id": "BF1",
+      "kind": "pass",
+      "scope": "BF",
+      "source": "plan-A \u00a71.6 BF1",
+      "description": "Accuracy recovery: M4 is within 0.5 pt of the programmed network - median over all rows of (acc_prog - acc_m4) <= 0.5, separately for CIFAR-10 and CIFAR-100.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "gap_prog_minus_m4_pt",
+            "aggregation": "median",
+            "comparator": "<=",
+            "threshold": 0.5,
+            "value": 0.1300000000000025,
+            "n": 96,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "gap_prog_minus_m4_pt",
+            "aggregation": "median",
+            "comparator": "<=",
+            "threshold": 0.5,
+            "value": -0.14499999999999955,
+            "n": 96,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "BF2",
+      "kind": "pass",
+      "scope": "BF",
+      "source": "plan-A \u00a71.6 BF2",
+      "description": "Margin over every cheap method: pooled over scenarios, M4 - B8 >= 2.0 pt with paired-CI lower bound > 0 at >= 3 of the 4 time points, for each dataset.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "gain_m4_minus_b8_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.75,
+            "n": 4,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "gain_ci_lower_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 1.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "gain_m4_minus_b8_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.75,
+            "n": 4,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "gain_ci_lower_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 1.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "BF3",
+      "kind": "pass",
+      "scope": "BF",
+      "source": "plan-A \u00a71.6 BF3",
+      "description": "Budget: M4 uses <= 16 calibration MVMs per tile on every row.",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "m4_mvm_per_tile",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 16,
+            "value": 16.0,
+            "n": 192,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "BF-noharm",
+      "kind": "kill",
+      "scope": "BF",
+      "source": "plan-A \u00a71.6 BF-noharm",
+      "description": "Kill if M4 is worse than B8 on unstructured iid drift (D2): mean gain < -0.3 pt on either dataset.",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "any",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "gain_m4_minus_b8_pt",
+            "aggregation": "mean",
+            "comparator": "<",
+            "threshold": -0.3,
+            "value": 3.574166666666668,
+            "n": 12,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "gain_m4_minus_b8_pt",
+            "aggregation": "mean",
+            "comparator": "<",
+            "threshold": -0.3,
+            "value": 3.4524999999999992,
+            "n": 12,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "BF-kill",
+      "kind": "kill",
+      "scope": "BF",
+      "source": "plan-A \u00a71.6 BF-kill",
+      "description": "Kill if the pooled paired-CI lower bound of M4 - B8 is <= 0 at every time point for either dataset.",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "any",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "gain_ci_lower_pt",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.0,
+            "value": 9.808885416666667,
+            "n": 96,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "gain_ci_lower_pt",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.0,
+            "value": 8.677885416666667,
+            "n": 96,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    }
+  ],
+  "metrics_csv": "results/spectral/a_bnfold_v2/20261010T022159_fca882d8_s0/metrics.csv"
+}

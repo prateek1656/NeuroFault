@@ -1,0 +1,44 @@
+# F0.1 sparse-fault re-run. `full` is the pre-registered run; `smoke` never counts.
+# Reduced after a first launch was projected >3 h on a CPU shared with other jobs:
+# 2 tiles per cell (1 for g_min 0.01/0.05), n_neg 300, n_pos 150, n_shift 80.
+# Reductions vs the plan grid (stated in the script docstring / final report): fault amplitude 0.5
+# and top-r singular-vector deformation are not run; OFAT noise/prog conditions use 1 tile per cell
+# and two encodings; g_min 0.01/0.05 headline cells use 2 tiles.
+full:
+  ckpt_seeds: [42, 101, 102]
+  layers: [layer1.0.0.weight, res1.conv_a.weight, res1.conv_b.weight, layer2.0.0.weight,
+           layer3.0.0.weight, res2.conv_a.weight, res2.conv_b.weight]
+  tile_sizes: [64, 128, 256, 512]
+  max_tiles: 2
+  max_tiles_light: 1
+  enc_full: [signed_ideal, diff_pair_g0]
+  enc_light: [diff_pair_g0.01, diff_pair_g0.05]
+  enc_ofat: [signed_ideal, diff_pair_g0.01]
+  n_neg: 300
+  n_pos: 150
+  n_shift: 80
+  k_sweep: [1, 2, 4, 8, 16, 32, 64]
+  clustered_k: [8, 64]
+  ofat_k: [1, 8, 64]
+  ofat_noise: [[per_cell, 0.005], [per_cell, 0.01], [per_cell, 0.04],
+               [output_referred, 0.02], [both, 0.02]]
+  ofat_prog: true
+  old_probe_trials: 200
+smoke:
+  ckpt_seeds: [42]
+  layers: [layer1.0.0.weight, layer3.0.0.weight]
+  tile_sizes: [64, 128, 256]
+  max_tiles: 1
+  max_tiles_light: 1
+  enc_full: [signed_ideal, diff_pair_g0]
+  enc_light: [diff_pair_g0.01]
+  enc_ofat: [signed_ideal]
+  n_neg: 20
+  n_pos: 10
+  n_shift: 8
+  k_sweep: [1, 4, 16]
+  clustered_k: [8]
+  ofat_k: [1, 16]
+  ofat_noise: [[output_referred, 0.02]]
+  ofat_prog: true
+  old_probe_trials: 10

@@ -1,0 +1,141 @@
+{
+  "criteria_id": "b_vs_prior",
+  "criteria_sha256": "66b3b84a0f73c617fa2ceae9deb4a1845938242f01e309647e3eef65d529fd15",
+  "overall": "PASS",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "H8": "PASS",
+    "H8_report": "INCONCLUSIVE"
+  },
+  "n_rows": 12,
+  "criteria": [
+    {
+      "id": "H8-CS-2x",
+      "kind": "pass",
+      "scope": "H8",
+      "source": "master plan \u00a710 H8",
+      "description": "CS (both directions) localizes with >= 2x fewer reads than the Wei & Roth code (or ROTH misses F1 0.9 while CS reaches it) on >= 3 of 4 k at EACH of sigma 1% and 2%.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "row_ok_2x",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 3,
+            "value": 3.0,
+            "n": 2,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H8-CS-4x",
+      "kind": "pass",
+      "scope": "H8",
+      "source": "master plan \u00a710 H8 (the leaderboard's 4-7x wording)",
+      "description": "Same as H8-CS-2x with >= 4x fewer reads (ratio <= 0.25, CI upper <= 0.33) on >= 3 of 4 k at each of 1% and 2%.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "row_ok_4x",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 3,
+            "value": 3.0,
+            "n": 2,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H8-CSF-2x",
+      "kind": "pass",
+      "scope": "H8",
+      "source": "master plan \u00a710 H8 (forward-only decoder, needs no transposable array)",
+      "description": "CS forward-only: >= 2x fewer reads than the Wei & Roth code (or ROTH misses) on >= 3 of 4 k at each of 1% and 2%.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "row_ok_fwd_2x",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 3,
+            "value": 3.0,
+            "n": 2,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H8-kill",
+      "kind": "kill",
+      "scope": "H8",
+      "source": "master plan \u00a710 H8 kill",
+      "description": "Kill the CS-vs-prior-art claim if CS (both directions) needs at least as many reads as the Wei & Roth code (median ratio over the 8 rows at 1-2% >= 1.0) or its held-out F1 falls below 0.8 on any 1-2% row.\n",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "any",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "ratio_csb_roth",
+            "aggregation": "median",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": 0.18986866791744839,
+            "n": 8,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "f1_csb",
+            "aggregation": "min",
+            "comparator": "<",
+            "threshold": 0.8,
+            "value": 0.9255853174603176,
+            "n": 8,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H8-report",
+      "kind": "report",
+      "scope": "H8_report",
+      "source": "master plan \u00a710 H8 (report only)",
+      "description": "sigma 4% rows, HPE reads/F1, selected configs, per-instance reads/F1 (eval_instances.csv).\n",
+      "note": null,
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "reason": "requires human judgement"
+      }
+    }
+  ],
+  "metrics_csv": "results/spectral/b_vs_prior/20261011T210412_0ec5ea78_s0/verdict_metrics.csv"
+}

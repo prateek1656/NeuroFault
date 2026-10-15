@@ -1,0 +1,22 @@
+path,run,seed,live,sha12,start,gpu
+results/_live10/vit_net3_predeploy_seed103,vit_net3_predeploy,103,_live10,e6b655d287a8,2026-10-12 10:19:20,NVIDIA GeForce RTX 4060 Ti
+results/_live10/vit_net3_predeploy_seed104,vit_net3_predeploy,104,_live10,7741d3119e9b,2026-10-12 10:36:00,NVIDIA GeForce RTX 4060 Ti
+results/_live11/resnet9_predeploy_seed103,resnet9_predeploy,103,_live11,6a0d6673848d,2026-10-12 11:02:41,NVIDIA GeForce RTX 4060 Ti
+results/_live11/resnet9_predeploy_seed104,resnet9_predeploy,104,_live11,75c14e79a193,2026-10-12 11:54:25,NVIDIA GeForce RTX 4060 Ti
+results/_live12/vgg6_net2_predeploy_seed103,vgg6_net2_predeploy,103,_live12,1b36f2e8a918,2026-10-12 10:30:29,NVIDIA RTX A4000
+results/_live12/vgg6_net2_predeploy_seed104,vgg6_net2_predeploy,104,_live12,c9b51fb80b84,2026-10-12 11:01:16,NVIDIA RTX A4000
+results/_live2/resnet9_predeploy_seed101,resnet9_predeploy,101,_live2,59f6901f0a1c,2026-10-06 13:50:12,NVIDIA RTX A4000
+results/_live2/resnet9_predeploy_seed102,resnet9_predeploy,102,_live2,2e16d5e18b9d,2026-10-06 15:01:02,NVIDIA RTX A4000
+results/_live2/resnet9_predeploy_seed42,resnet9_predeploy,42,_live2,995f917e871e,2026-10-06 12:11:34,NVIDIA RTX A4000
+results/_live5/resnet9_predeploy_c100_seed101,resnet9_predeploy_c100,101,_live5,5c1396d9ed06,2026-10-08 10:25:24,NVIDIA RTX A4000
+results/_live5/resnet9_predeploy_c100_seed102,resnet9_predeploy_c100,102,_live5,72ea43d8a91a,2026-10-08 10:37:05,NVIDIA RTX A4000
+results/_live5/resnet9_predeploy_c100_seed42,resnet9_predeploy_c100,42,_live5,dd7b60720aef,2026-10-08 10:13:45,NVIDIA RTX A4000
+results/_live6/resnet9_next_predeploy_c100_seed101,resnet9_next_predeploy_c100,101,_live6,9970c14a19c4,2026-10-09 05:54:14,NVIDIA RTX A4000
+results/_live6/resnet9_next_predeploy_c100_seed102,resnet9_next_predeploy_c100,102,_live6,69f53cb8ecd9,2026-10-09 06:37:16,NVIDIA RTX A4000
+results/_live6/resnet9_next_predeploy_c100_seed42,resnet9_next_predeploy_c100,42,_live6,dfac8f95202e,2026-10-09 04:05:10,NVIDIA RTX A4000
+results/_live7/vgg6_net2_predeploy_seed101,vgg6_net2_predeploy,101,_live7,b057bd51b12a,2026-10-09 10:40:38,NVIDIA RTX A4000
+results/_live7/vgg6_net2_predeploy_seed102,vgg6_net2_predeploy,102,_live7,c6575fdad771,2026-10-09 10:49:25,NVIDIA RTX A4000
+results/_live7/vgg6_net2_predeploy_seed42,vgg6_net2_predeploy,42,_live7,a89feda464c2,2026-10-09 10:31:51,NVIDIA RTX A4000
+results/_live8/vit_net3_predeploy_seed101,vit_net3_predeploy,101,_live8,f56060b5bbc7,2026-10-10 12:26:37,NVIDIA RTX A4000
+results/_live8/vit_net3_predeploy_seed102,vit_net3_predeploy,102,_live8,d5e2f6be40c3,2026-10-10 12:43:17,NVIDIA RTX A4000
+results/_live8/vit_net3_predeploy_seed42,vit_net3_predeploy,42,_live8,b0e073266896,2026-10-10 12:11:56,NVIDIA RTX A4000

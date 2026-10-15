@@ -1,0 +1,452 @@
+[
+  {
+    "epoch": 0,
+    "batch": 0,
+    "layers": {
+      "embed_crossbar_0": {
+        "avg_health": 94.99783325195312,
+        "min_health": 0.0,
+        "avg_stability": 0.9549804329872131,
+        "avg_failure_prob": 0.23151369392871857,
+        "critical_count": 461,
+        "detection_cost": 0
+      },
+      "blocks.0.attn.qkv_crossbar_0": {
+        "avg_health": 94.99964141845703,
+        "min_health": 0.0,
+        "avg_stability": 0.9549967646598816,
+        "avg_failure_prob": 0.23150214552879333,
+        "critical_count": 5530,
+        "detection_cost": 0
+      },
+      "blocks.0.attn.proj_crossbar_0": {
+        "avg_health": 95.00054168701172,
+        "min_health": 0.0,
+        "avg_stability": 0.9550048112869263,
+        "avg_failure_prob": 0.23149660229682922,
+        "critical_count": 1843,
+        "detection_cost": 0
+      },
+      "blocks.0.fc1_crossbar_0": {
+        "avg_health": 95.00054168701172,
+        "min_health": 0.0,
+        "avg_stability": 0.9550049304962158,
+        "avg_failure_prob": 0.23149649798870087,
+        "critical_count": 3686,
+        "detection_cost": 0
+      },
+      "blocks.0.fc2_crossbar_0": {
+        "avg_health": 95.00054168701172,
+        "min_health": 0.0,
+        "avg_stability": 0.9550048112869263,
+        "avg_failure_prob": 0.23149652779102325,
+        "critical_count": 3686,
+        "detection_cost": 0
+      },
+      "blocks.1.attn.qkv_crossbar_0": {
+        "avg_health": 94.99964141845703,
+        "min_health": 0.0,
+        "avg_stability": 0.9549967646598816,
+        "avg_failure_prob": 0.23150217533111572,
+        "critical_count": 5530,
+        "detection_cost": 0
+      },
+      "blocks.1.attn.proj_crossbar_0": {
+        "avg_health": 95.00054168701172,
+        "min_health": 0.0,
+        "avg_stability": 0.9550048112869263,
+        "avg_failure_prob": 0.23149660229682922,
+        "critical_count": 1843,
+        "detection_cost": 0
+      },
+      "blocks.1.fc1_crossbar_0": {
+        "avg_health": 95.00054168701172,
+        "min_health": 0.0,
+        "avg_stability": 0.9550049304962158,
+        "avg_failure_prob": 0.23149649798870087,
+        "critical_count": 3686,
+        "detection_cost": 0
+      },
+      "blocks.1.fc2_crossbar_0": {
+        "avg_health": 95.00054168701172,
+        "min_health": 0.0,
+        "avg_stability": 0.9550048112869263,
+        "avg_failure_prob": 0.23149649798870087,
+        "critical_count": 3686,
+        "detection_cost": 0
+      },
+      "blocks.2.attn.qkv_crossbar_0": {
+        "avg_health": 94.99964141845703,
+        "min_health": 0.0,
+        "avg_stability": 0.9549967646598816,
+        "avg_failure_prob": 0.23150216042995453,
+        "critical_count": 5530,
+        "detection_cost": 0
+      },
+      "blocks.2.attn.proj_crossbar_0": {
+        "avg_health": 95.00054168701172,
+        "min_health": 0.0,
+        "avg_stability": 0.9550049304962158,
+        "avg_failure_prob": 0.23149660229682922,
+        "critical_count": 1843,
+        "detection_cost": 0
+      },
+      "blocks.2.fc1_crossbar_0": {
+        "avg_health": 95.00054168701172,
+        "min_health": 0.0,
+        "avg_stability": 0.9550049304962158,
+        "avg_failure_prob": 0.23149649798870087,
+        "critical_count": 3686,
+        "detection_cost": 0
+      },
+      "blocks.2.fc2_crossbar_0": {
+        "avg_health": 95.00054168701172,
+        "min_health": 0.0,
+        "avg_stability": 0.9550049304962158,
+        "avg_failure_prob": 0.23149649798870087,
+        "critical_count": 3686,
+        "detection_cost": 0
+      },
+      "blocks.3.attn.qkv_crossbar_0": {
+        "avg_health": 94.99964141845703,
+        "min_health": 0.0,
+        "avg_stability": 0.9549967646598816,
+        "avg_failure_prob": 0.23150216042995453,
+        "critical_count": 5530,
+        "detection_cost": 0
+      },
+      "blocks.3.attn.proj_crossbar_0": {
+        "avg_health": 95.00054168701172,
+        "min_health": 0.0,
+        "avg_stability": 0.9550049304962158,
+        "avg_failure_prob": 0.23149660229682922,
+        "critical_count": 1843,
+        "detection_cost": 0
+      },
+      "blocks.3.fc1_crossbar_0": {
+        "avg_health": 95.00054168701172,
+        "min_health": 0.0,
+        "avg_stability": 0.9550048112869263,
+        "avg_failure_prob": 0.23149649798870087,
+        "critical_count": 3686,
+        "detection_cost": 0
+      },
+      "blocks.3.fc2_crossbar_0": {
+        "avg_health": 95.00054168701172,
+        "min_health": 0.0,
+        "avg_stability": 0.9550049304962158,
+        "avg_failure_prob": 0.23149649798870087,
+        "critical_count": 3686,
+        "detection_cost": 0
+      },
+      "fc_crossbar_0": {
+        "avg_health": 95.00000762939453,
+        "min_health": 0.0,
+        "avg_stability": 0.9550000429153442,
+        "avg_failure_prob": 0.23149999976158142,
+        "critical_count": 96,
+        "detection_cost": 0
+      }
+    }
+  },
+  {
+    "epoch": 1,
+    "batch": 5200,
+    "layers": {
+      "embed_crossbar_0": {
+        "avg_health": 90.41883850097656,
+        "min_health": 0.0,
+        "avg_stability": 0.9137696027755737,
+        "avg_failure_prob": 0.26036134362220764,
+        "critical_count": 883,
+        "detection_cost": 0
+      },
+      "blocks.0.attn.qkv_crossbar_0": {
+        "avg_health": 90.50383758544922,
+        "min_health": 0.0,
+        "avg_stability": 0.9145345687866211,
+        "avg_failure_prob": 0.259825736284256,
+        "critical_count": 10502,
+        "detection_cost": 0
+      },
+      "blocks.0.attn.proj_crossbar_0": {
+        "avg_health": 90.49478912353516,
+        "min_health": 0.0,
+        "avg_stability": 0.9144532084465027,
+        "avg_failure_prob": 0.2598828077316284,
+        "critical_count": 3504,
+        "detection_cost": 0
+      },
+      "blocks.0.fc1_crossbar_0": {
+        "avg_health": 90.49208068847656,
+        "min_health": 0.0,
+        "avg_stability": 0.9144287109375,
+        "avg_failure_prob": 0.2598998248577118,
+        "critical_count": 7010,
+        "detection_cost": 0
+      },
+      "blocks.0.fc2_crossbar_0": {
+        "avg_health": 90.51107025146484,
+        "min_health": 0.0,
+        "avg_stability": 0.9145996570587158,
+        "avg_failure_prob": 0.2597801983356476,
+        "critical_count": 6996,
+        "detection_cost": 0
+      },
+      "blocks.1.attn.qkv_crossbar_0": {
+        "avg_health": 90.48484802246094,
+        "min_health": 0.0,
+        "avg_stability": 0.91436368227005,
+        "avg_failure_prob": 0.2599453330039978,
+        "critical_count": 10523,
+        "detection_cost": 0
+      },
+      "blocks.1.attn.proj_crossbar_0": {
+        "avg_health": 90.49208068847656,
+        "min_health": 0.0,
+        "avg_stability": 0.9144287109375,
+        "avg_failure_prob": 0.25989988446235657,
+        "critical_count": 3505,
+        "detection_cost": 0
+      },
+      "blocks.1.fc1_crossbar_0": {
+        "avg_health": 90.47987365722656,
+        "min_health": 0.0,
+        "avg_stability": 0.9143189191818237,
+        "avg_failure_prob": 0.25997671484947205,
+        "critical_count": 7019,
+        "detection_cost": 0
+      },
+      "blocks.1.fc2_crossbar_0": {
+        "avg_health": 90.4758071899414,
+        "min_health": 0.0,
+        "avg_stability": 0.9142822623252869,
+        "avg_failure_prob": 0.26000234484672546,
+        "critical_count": 7022,
+        "detection_cost": 0
+      },
+      "blocks.2.attn.qkv_crossbar_0": {
+        "avg_health": 90.49659729003906,
+        "min_health": 0.0,
+        "avg_stability": 0.9144694209098816,
+        "avg_failure_prob": 0.25987130403518677,
+        "critical_count": 10510,
+        "detection_cost": 0
+      },
+      "blocks.2.attn.proj_crossbar_0": {
+        "avg_health": 90.48123168945312,
+        "min_health": 0.0,
+        "avg_stability": 0.9143311381340027,
+        "avg_failure_prob": 0.25996825098991394,
+        "critical_count": 3509,
+        "detection_cost": 0
+      },
+      "blocks.2.fc1_crossbar_0": {
+        "avg_health": 90.50971221923828,
+        "min_health": 0.0,
+        "avg_stability": 0.9145874381065369,
+        "avg_failure_prob": 0.25978875160217285,
+        "critical_count": 6997,
+        "detection_cost": 0
+      },
+      "blocks.2.fc2_crossbar_0": {
+        "avg_health": 90.52598571777344,
+        "min_health": 0.0,
+        "avg_stability": 0.91473388671875,
+        "avg_failure_prob": 0.2596862018108368,
+        "critical_count": 6985,
+        "detection_cost": 0
+      },
+      "blocks.3.attn.qkv_crossbar_0": {
+        "avg_health": 90.51558685302734,
+        "min_health": 0.0,
+        "avg_stability": 0.9146403074264526,
+        "avg_failure_prob": 0.25975167751312256,
+        "critical_count": 10489,
+        "detection_cost": 0
+      },
+      "blocks.3.attn.proj_crossbar_0": {
+        "avg_health": 90.46224212646484,
+        "min_health": 0.0,
+        "avg_stability": 0.9141601920127869,
+        "avg_failure_prob": 0.26008787751197815,
+        "critical_count": 3516,
+        "detection_cost": 0
+      },
+      "blocks.3.fc1_crossbar_0": {
+        "avg_health": 90.49478912353516,
+        "min_health": 0.0,
+        "avg_stability": 0.9144530892372131,
+        "avg_failure_prob": 0.25988271832466125,
+        "critical_count": 7008,
+        "detection_cost": 0
+      },
+      "blocks.3.fc2_crossbar_0": {
+        "avg_health": 90.46088409423828,
+        "min_health": 0.0,
+        "avg_stability": 0.9141479134559631,
+        "avg_failure_prob": 0.26009634137153625,
+        "critical_count": 7033,
+        "detection_cost": 0
+      },
+      "fc_crossbar_0": {
+        "avg_health": 90.26042175292969,
+        "min_health": 0.0,
+        "avg_stability": 0.9123438000679016,
+        "avg_failure_prob": 0.26135939359664917,
+        "critical_count": 187,
+        "detection_cost": 0
+      }
+    }
+  },
+  {
+    "epoch": 2,
+    "batch": 10400,
+    "layers": {
+      "embed_crossbar_0": {
+        "avg_health": 86.46918487548828,
+        "min_health": 0.0,
+        "avg_stability": 0.8782227039337158,
+        "avg_failure_prob": 0.2852441370487213,
+        "critical_count": 1247,
+        "detection_cost": 0
+      },
+      "blocks.0.attn.qkv_crossbar_0": {
+        "avg_health": 86.43211364746094,
+        "min_health": 0.0,
+        "avg_stability": 0.8778889775276184,
+        "avg_failure_prob": 0.2854776084423065,
+        "critical_count": 15005,
+        "detection_cost": 0
+      },
+      "blocks.0.attn.proj_crossbar_0": {
+        "avg_health": 86.42578125,
+        "min_health": 0.0,
+        "avg_stability": 0.8778320550918579,
+        "avg_failure_prob": 0.2855175733566284,
+        "critical_count": 5004,
+        "detection_cost": 0
+      },
+      "blocks.0.fc1_crossbar_0": {
+        "avg_health": 86.41899871826172,
+        "min_health": 0.0,
+        "avg_stability": 0.8777710795402527,
+        "avg_failure_prob": 0.2855602204799652,
+        "critical_count": 10013,
+        "detection_cost": 0
+      },
+      "blocks.0.fc2_crossbar_0": {
+        "avg_health": 86.44070434570312,
+        "min_health": 0.0,
+        "avg_stability": 0.8779663443565369,
+        "avg_failure_prob": 0.28542348742485046,
+        "critical_count": 9997,
+        "detection_cost": 0
+      },
+      "blocks.1.attn.qkv_crossbar_0": {
+        "avg_health": 86.46466064453125,
+        "min_health": 0.0,
+        "avg_stability": 0.8781819343566895,
+        "avg_failure_prob": 0.2852725386619568,
+        "critical_count": 14969,
+        "detection_cost": 0
+      },
+      "blocks.1.attn.proj_crossbar_0": {
+        "avg_health": 86.38780212402344,
+        "min_health": 0.0,
+        "avg_stability": 0.8774902820587158,
+        "avg_failure_prob": 0.28575682640075684,
+        "critical_count": 5018,
+        "detection_cost": 0
+      },
+      "blocks.1.fc1_crossbar_0": {
+        "avg_health": 86.47867584228516,
+        "min_health": 0.0,
+        "avg_stability": 0.8783081769943237,
+        "avg_failure_prob": 0.28518426418304443,
+        "critical_count": 9969,
+        "detection_cost": 0
+      },
+      "blocks.1.fc2_crossbar_0": {
+        "avg_health": 86.42442321777344,
+        "min_health": 0.0,
+        "avg_stability": 0.8778198957443237,
+        "avg_failure_prob": 0.2855260372161865,
+        "critical_count": 10009,
+        "detection_cost": 0
+      },
+      "blocks.2.attn.qkv_crossbar_0": {
+        "avg_health": 86.43572998046875,
+        "min_health": 0.0,
+        "avg_stability": 0.8779215216636658,
+        "avg_failure_prob": 0.28545480966567993,
+        "critical_count": 15001,
+        "detection_cost": 0
+      },
+      "blocks.2.attn.proj_crossbar_0": {
+        "avg_health": 86.45561981201172,
+        "min_health": 0.0,
+        "avg_stability": 0.8781006336212158,
+        "avg_failure_prob": 0.28532955050468445,
+        "critical_count": 4993,
+        "detection_cost": 0
+      },
+      "blocks.2.fc1_crossbar_0": {
+        "avg_health": 86.43120574951172,
+        "min_health": 0.0,
+        "avg_stability": 0.8778809309005737,
+        "avg_failure_prob": 0.28548330068588257,
+        "critical_count": 10004,
+        "detection_cost": 0
+      },
+      "blocks.2.fc2_crossbar_0": {
+        "avg_health": 86.55599212646484,
+        "min_health": 0.0,
+        "avg_stability": 0.8790039420127869,
+        "avg_failure_prob": 0.28469717502593994,
+        "critical_count": 9912,
+        "detection_cost": 0
+      },
+      "blocks.3.attn.qkv_crossbar_0": {
+        "avg_health": 86.45742797851562,
+        "min_health": 0.0,
+        "avg_stability": 0.8781169056892395,
+        "avg_failure_prob": 0.2853181064128876,
+        "critical_count": 14977,
+        "detection_cost": 0
+      },
+      "blocks.3.attn.proj_crossbar_0": {
+        "avg_health": 86.3742446899414,
+        "min_health": 0.0,
+        "avg_stability": 0.8773682117462158,
+        "avg_failure_prob": 0.28584226965904236,
+        "critical_count": 5023,
+        "detection_cost": 0
+      },
+      "blocks.3.fc1_crossbar_0": {
+        "avg_health": 86.44341278076172,
+        "min_health": 0.0,
+        "avg_stability": 0.8779907822608948,
+        "avg_failure_prob": 0.2854064106941223,
+        "critical_count": 9995,
+        "detection_cost": 0
+      },
+      "blocks.3.fc2_crossbar_0": {
+        "avg_health": 86.36610412597656,
+        "min_health": 0.0,
+        "avg_stability": 0.8772949576377869,
+        "avg_failure_prob": 0.28589344024658203,
+        "critical_count": 10052,
+        "detection_cost": 0
+      },
+      "fc_crossbar_0": {
+        "avg_health": 86.25000762939453,
+        "min_health": 0.0,
+        "avg_stability": 0.8762500882148743,
+        "avg_failure_prob": 0.2866250276565552,
+        "critical_count": 264,
+        "detection_cost": 0
+      }
+    }
+  }
+]

@@ -1,0 +1,55 @@
+{
+  "_variant": "full",
+  "ckpt_seeds": [
+    42,
+    101,
+    102
+  ],
+  "folded_arms": [
+    "b8",
+    "m4"
+  ],
+  "folded_times": {
+    "1d": 86400.0,
+    "1h": 3600.0,
+    "1yr": 31557600.0,
+    "30d": 2592000.0
+  },
+  "master_seed": 0,
+  "n_eval": 5000,
+  "scenarios": [
+    {
+      "field": "",
+      "model": "D2",
+      "name": "D2",
+      "rho": 0.0
+    },
+    {
+      "field": "hotspot",
+      "model": "D3",
+      "name": "D3_hotspot_r2",
+      "rho": 2.0
+    }
+  ],
+  "seed_offset": 1000,
+  "sigma": 0.02,
+  "std_arms": [
+    "none",
+    "b8",
+    "m4"
+  ],
+  "std_extra_times_seed42": {
+    "1yr": 31557600.0
+  },
+  "std_times": {
+    "1d": 86400.0,
+    "30d": 2592000.0
+  },
+  "t3_realizations": 3,
+  "t3_times": {
+    "1d": 86400.0,
+    "1h": 3600.0,
+    "1yr": 31557600.0,
+    "30d": 2592000.0
+  }
+}

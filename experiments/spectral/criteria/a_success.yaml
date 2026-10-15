@@ -1,0 +1,120 @@
+schema_version: 1
+id: a_success
+title: "Direction A pre-registered success (S1-S4) and kill (K1-K5) criteria"
+source_plan: "plan-A-structured-drift §6"
+frozen: "2026-10-08"
+overall_pass: any
+note: >
+  Primary endpoint: W1 ResNet-9 top-1 on CIFAR-10 test, paired by seed and drift realization, at
+  t/t0 in {1e4,1e6,1e8}. Overall PASS = ANY of S1/S2/S3 (they are alternative wins; S4 is always
+  delivered). Scopes: C1 (S1), C1_cost (S2), C2 (S3). Methods, k and thresholds are fixed from
+  Gate 0' seed-42 data only (anti-p-hacking, plan-A §6).
+criteria:
+  - id: S1
+    source: "plan-A §6 S1"
+    kind: pass
+    scope: C1
+    description: >
+      On D3 or D4 with r in the stated sourced range and on PCM, M2 or M3 beats B8 by >= 1.0 pt at
+      >= 2 of 3 time points at matched calibration MVM budget (B <= 64/tile), sign-consistent in all
+      seeds (paired 95% CI lower bound > 0), not worse than B8 by > 0.3 pt on D1/D2.
+    note: >
+      Script emits, per (method, model, device): s1_n_timepoints_gain_ge_1pt, s1_ci_lower_paired_pt,
+      s1_sign_consistent_all_seeds, and per-row delta_vs_b8_pt on D1/D2. 'Stated sourced range' of r
+      is not numerically stated in the plan; the script must record its choice.
+    clauses:
+      - {metric: s1_n_timepoints_gain_ge_1pt, aggregation: max, filter: {model: [D3, D4], device: PCM, mvm_budget_per_tile: {"<=": 64}}, comparator: ">=", threshold: 2}
+      - {metric: s1_ci_lower_paired_pt, aggregation: max, filter: {model: [D3, D4], device: PCM, mvm_budget_per_tile: {"<=": 64}}, comparator: ">", threshold: 0.0}
+      - {metric: s1_sign_consistent_all_seeds, aggregation: max, filter: {model: [D3, D4], device: PCM}, comparator: "==", threshold: 1}
+      - {metric: delta_vs_b8_pt, aggregation: min, filter: {model: [D1, D2]}, comparator: ">=", threshold: -0.3}
+  - id: S1plus
+    source: "plan-A §6 S1 (stronger version S1+)"
+    kind: report
+    scope: C1
+    description: "S1+: same as S1 with AdaBS-N=256 stacked on both arms."
+    note: "Stronger version, reported not required: kind report. Same metrics restricted to stacked_adabs256 == true."
+    clauses:
+      - {metric: s1_n_timepoints_gain_ge_1pt, aggregation: max, filter: {model: [D3, D4], device: PCM, stacked_adabs256: true}, comparator: ">=", threshold: 2}
+      - {metric: s1_ci_lower_paired_pt, aggregation: max, filter: {model: [D3, D4], device: PCM, stacked_adabs256: true}, comparator: ">", threshold: 0.0}
+  - id: S2
+    source: "plan-A §6 S2"
+    kind: pass
+    scope: C1_cost
+    description: "Cost win vs AdaBS: some method matches AdaBS-N=2600 within 0.3 pt using <= 1/10 of its MVM-equivalent cost, on >= 2 of 3 devices."
+    note: "One row per (method, device). A device counts if a row meets both conditions; devices counted as distinct values."
+    clauses:
+      - metric: device
+        aggregation: nunique
+        filter: {query: "abs_gap_vs_adabs2600_pt <= 0.3 and cost_ratio_vs_adabs2600 <= 0.1"}
+        comparator: ">="
+        threshold: 2
+  - id: S3
+    source: "plan-A §6 S3"
+    kind: pass
+    scope: C2
+    description: >
+      C2 positive: the M1/H2 trigger needs <= 1/3 of the recalibrations of the best of {timer tuned on
+      nominal, free GDC-factor threshold} to stay within 1 pt (D7 mismatch + temperature events), with
+      detection lag <= 1 time-grid step and false-trigger rate <= 5%. Or equal recalibration count with
+      >= 1 pt higher accuracy-time mean.
+    note: >
+      AMBIGUOUS: 'equal recalibration count' transcribed as ratio <= 1.0 (equal or fewer). Script emits
+      recal_ratio_vs_best_baseline (ours / best baseline) and acc_time_mean_gain_pt. The lag and
+      false-trigger conditions are applied to both alternatives.
+    clauses:
+      - combine: any
+        clauses:
+          - {metric: recal_ratio_vs_best_baseline, aggregation: median, comparator: "<=", threshold: 0.3333333333333333}
+          - combine: all
+            clauses:
+              - {metric: recal_ratio_vs_best_baseline, aggregation: median, comparator: "<=", threshold: 1.0}
+              - {metric: acc_time_mean_gain_pt, aggregation: median, comparator: ">=", threshold: 1.0}
+      - {metric: detection_lag_grid_steps, aggregation: max, comparator: "<=", threshold: 1}
+      - {metric: false_trigger_rate, aggregation: max, comparator: "<=", threshold: 0.05}
+  - id: S4
+    source: "plan-A §6 S4"
+    kind: report
+    manual: true
+    description: "C3 boundary result: always delivered - crossover map of structured:iid ratio at which each method beats per-column, with silicon-spread overlay."
+  - id: K1
+    source: "plan-A §6 K1"
+    kind: kill
+    scope: C1
+    description: "No method reaches S1 or S2 on any structured model with r <= 1 -> corrector claim dead; report S4 as negative result."
+    note: "Script emits bool reaches_s1_or_s2 per (method, model, r); kill when the count of True rows with r <= 1 is 0."
+    clauses:
+      - {metric: reaches_s1_or_s2, aggregation: sum, filter: {r: {"<=": 1}}, comparator: "==", threshold: 0}
+  - id: K2
+    source: "plan-A §6 K2"
+    kind: kill
+    scope: A_headroom
+    description: >
+      AdaBS-N=256 stacked on per-column leaves < 1.0 pt to the oracle on W1 at all t AND W2 shows no
+      corrector > 1.0 pt -> headroom is gone; stop at S4.
+    clauses:
+      - {metric: adabs256_percol_gap_to_oracle_pt, aggregation: max, filter: {workload: W1}, comparator: "<", threshold: 1.0}
+      - {metric: corrector_gain_pt, aggregation: max, filter: {workload: W2}, comparator: "<=", threshold: 1.0}
+  - id: K3
+    source: "plan-A §6 K3"
+    kind: kill
+    scope: C2
+    description: "M1/H2 partial AUC < 0.7 conditional on GDC factor, or trigger saves < 2x recalibrations vs free statistics -> drop C2."
+    combine: any
+    clauses:
+      - {metric: m1_partial_auc_given_gdc, aggregation: median, comparator: "<", threshold: 0.7}
+      - {metric: recal_savings_factor_vs_free_stats, aggregation: median, comparator: "<", threshold: 2.0}
+  - id: K4
+    source: "plan-A §6 K4"
+    kind: kill
+    scope: C1
+    description: "Gains vanish when the device/drift family changes (positive only on one assumed drift model) -> report as model-specific, do not claim C1."
+    note: "Script emits n_families_meeting_s1 (count of drift families where S1 holds). Kill when <= 1, i.e. positive on at most one family."
+    clauses:
+      - {metric: n_families_meeting_s1, aggregation: max, comparator: "<=", threshold: 1}
+  - id: K5
+    source: "plan-A §6 K5 (-> plan-A §4)"
+    kind: redirect
+    scope: A_corrector
+    description: "G0-b fails (gain not drift-structure specific) -> relabel/hold per Section 4."
+    clauses:
+      - {metric: specificity_gap, aggregation: max, filter: {r: {">=": 1}, k: {"<=": 16}}, comparator: "<", threshold: 0.15}

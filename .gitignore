@@ -1,0 +1,36 @@
+# Environments and datasets
+.venv/
+/venv/
+data/
+
+# Python caches and tool state
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+.DS_Store
+
+# Model checkpoints (large; provided separately, see REPRODUCE.md)
+results/**/*.pt
+results/**/checkpoint.pt
+
+# Spectral vertical: regenerable caches. Run directories keep the metrics.
+results/spectral/activations/
+results/spectral/activations*/
+results/spectral/**/_cells*/
+results/spectral/**/_cache/
+
+# LaTeX build outputs. Figure PDFs under papers/**/figs/ are committed.
+papers/**/*.pdf
+!papers/**/figs/*.pdf
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz

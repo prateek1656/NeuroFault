@@ -1,0 +1,27 @@
+# E1b: probe weight w (active inputs per probe) vs noise model (C2).
+# Models: per_cell = white per-cell read noise (sd sigma_c*max|w|*sqrt(w) per output);
+# output_fixed = probe-independent TIA/ADC output noise with sd sigma_c*max|w|*sqrt(n) (equal to the
+# per-cell value at the dense probe w=n). The repo's ReadNoise "output_referred" scales with
+# rms(y) ~ sqrt(w) for random-sign W and is therefore NOT a fixed floor; C2 needs the floor.
+experiment: e1b
+ckpt_seeds: [42, 101, 102]
+layers: [layer2.0.0.weight]
+tile_size: 256
+tiles_per_layer: 1
+fault_seeds: 8
+ks: [4]
+sigmas: [0.0025, 0.005, 0.01, 0.02]
+encoding: {kind: offset_refcol, g_min_frac: 0.01}
+fault: {kind: stuck_random, rail: mixed, device: pos}
+visible_frac: 0.1
+fa: 0.1
+target_f1: 0.9
+weights: [4, 8, 16, 32, 64, 128, 256]
+budgets: [8, 12, 16, 24, 32, 48, 64, 96, 128, 192, 256]
+
+smoke:
+  ckpt_seeds: [42]
+  fault_seeds: 2
+  sigmas: [0.02]
+  weights: [4, 8, 16, 32, 64, 128, 256]
+  budgets: [16, 32, 64, 128, 256]

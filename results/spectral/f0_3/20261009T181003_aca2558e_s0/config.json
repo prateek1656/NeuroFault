@@ -1,0 +1,121 @@
+{
+  "_variant": "full",
+  "captures": false,
+  "ckpt_seeds": [
+    42,
+    101,
+    102
+  ],
+  "d2_scales": [
+    2.0
+  ],
+  "d4": true,
+  "enc": "EncodingSpec(kind='diff_pair', g_max_uS=25.0, g_min_frac=0.01, scale_policy='tile_absmax')",
+  "fields": [
+    "row_gradient",
+    "col_gradient",
+    "row_plus_col",
+    "rank_r",
+    "hotspot"
+  ],
+  "jacobian": false,
+  "layers": [
+    "prep.0.weight",
+    "layer1.0.0.weight",
+    "res1.conv_a.weight",
+    "res1.conv_b.weight",
+    "layer2.0.0.weight",
+    "layer3.0.0.weight",
+    "res2.conv_a.weight",
+    "res2.conv_b.weight"
+  ],
+  "master_seed": 0,
+  "methods": [
+    "gdc",
+    "row",
+    "col",
+    "bi",
+    "m4cos",
+    "m4r1",
+    "b5s"
+  ],
+  "n_eval": 1000,
+  "net_methods": [
+    "none",
+    "gdc",
+    "row",
+    "col",
+    "bi",
+    "b8",
+    "gdc_adabs",
+    "timer",
+    "b1a"
+  ],
+  "net_scenarios": [
+    {
+      "model": "D2",
+      "rho": 0.0,
+      "scale": 1.0
+    },
+    {
+      "model": "D2",
+      "rho": 0.0,
+      "scale": 1.25
+    },
+    {
+      "model": "D2",
+      "rho": 0.0,
+      "scale": 1.5
+    },
+    {
+      "model": "D2",
+      "rho": 0.0,
+      "scale": 2.0
+    },
+    {
+      "field": "row_gradient",
+      "model": "D3",
+      "rho": 1.0,
+      "scale": 1.0
+    },
+    {
+      "field": "row_gradient",
+      "model": "D3",
+      "rho": 2.0,
+      "scale": 1.0
+    },
+    {
+      "field": "rank_r",
+      "model": "D3",
+      "rho": 2.0,
+      "scale": 1.0
+    },
+    {
+      "model": "D4",
+      "rho": 0.0,
+      "scale": 1.0
+    }
+  ],
+  "net_times": {
+    "1d": 86400.0,
+    "1h": 3600.0,
+    "1yr": 31557600.0,
+    "30d": 2592000.0
+  },
+  "p": 8,
+  "prog": "ProgNoise(kind='aihwkit_pcm_poly', rel_sigma=0.0)",
+  "rhos": [
+    1.0,
+    2.0
+  ],
+  "sigmas": [
+    0.0
+  ],
+  "tiles_per_layer": 2,
+  "times": [
+    "1h",
+    "1d",
+    "30d",
+    "1yr"
+  ]
+}

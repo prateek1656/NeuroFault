@@ -1,0 +1,86 @@
+schema_version: 1
+id: x_loop
+title: "Closed loop X.1/X.2: item-4 controller D repairs from a probe-ESTIMATED fault map (no oracle)"
+source_plan: "master plan §4 Deferred X.1/X.2 + §10 CONCLUSION; plan-B §7 (registered 2026-10-12 before the full run)"
+frozen: "2026-10-12"
+overall_pass: all
+note: >
+  Question: does the best repair we have (item-4 controller D: saliency-ranked paced remap, BN recalibration, canary
+  gate, adaptive burst; mitigation paper) keep its accuracy when its fault map comes from counted, noisy probe reads
+  instead of the injector's truth, and how many reads does that cost?
+  Hook: HealthMonitor.decision_stuck = believed_stuck (estimated) instead of stuck_mask (oracle default, byte-identical:
+  fast suite 610 passed / same 4 pre-existing failures as before the hook; golden suites rerun). Physics stays on truth.
+  Estimator (src/neurofault/spectral/closed_loop.py): per 256x256 tile, white per-cell read noise sigma = 2% of tile
+  max|w| (H8 regime), reference = the controller's digital weights + deviations it already believes. Locator
+  "adaptive" (ours) = A5 forward CS (24 dense Rademacher probes, OMP cap 64) with per-tile fallback to full readout
+  (256 reads) when the OMP hits its cap; 8 calibration reads per tile charged. A full-readout SHADOW runs on the same
+  state every wave for read-cost / recall comparison (logging only).
+  Platform: ResNet-9 CIFAR-10, CrossSim on an RTX A4000 (same GPU type as the S1 oracle runs), seeds 42/101/102,
+  pre-deploy checkpoints of the mitigation paper, per-cell spares 15%.
+  DENSE regime = the mitigation paper's S1 Weibull scenario (waves 1.3-10.8%, 27.1% stuck at the end), configs
+  unchanged except name/output dir. Oracle references (D, C'-matched, R1) are the existing S1 runs
+  results/_live9/resnet9_real_s1_*; D-oracle seed 42 is rerun as a reproducibility check (report). C'-matched-est burst
+  length = round(D-est total burst steps / n), n = R1-est waves with believed unrepaired cells (as gpu_real_main.sh).
+  SPARSE regime: same D config, wave schedule A = [0.0002, 0.0004, 0.0006, 0.0008, 0.001] (~0.3% stuck at the end), the smallest of A/B/C (x1/x2/x4) whose R0 final accuracy drops >= 5 pt (seed 42 box calibration: deploy 88.9; R0 final A 83.88, B 71.36, C 27.76; rule fixed in the plan before the calibration). Its last wave averages ~65 new faults per 256-tile, at the CS cap (64), so part of it falls back to full readout - known before freezing. Floor = R0 (no remap, no retraining).
+  Rows of verdict_metrics.csv (experiments/spectral/x_loop_summary.py): one per (regime, seed): d_est, d_oracle,
+  c_est, c_oracle, floor (final test accuracy %), gap_d = d_est - d_oracle, d_est_minus_c_oracle, d_est_minus_c_est,
+  closure = (d_est - floor) / (d_oracle - floor), recall_vis_min (min over waves of newly found / new visible stuck
+  cells, visible = |deviation| >= 0.1 layer max|w|), reads_ratio (adaptive reads / full-readout shadow reads, lifetime).
+  Disclosed before this file: synthetic estimator checks, tiny-CPU integration tests, and the sparse-schedule R0
+  calibration (seed 42, R0 only; no D / estimator result was seen before freezing). Smoke runs never count.
+criteria:
+  - id: X-dense-pass
+    source: "plan X.1 (estimated vs oracle map driving the item-4 controller)"
+    kind: pass
+    scope: dense
+    description: >
+      Dense: D on the estimated map loses at most 1.0 pt (mean) vs D on the oracle map, and still beats the oracle
+      C'-matched in >= 2 of 3 seeds.
+    clauses:
+      - {metric: gap_d, filter: {regime: [dense]}, aggregation: mean, comparator: ">=", threshold: -1.0}
+      - {metric: d_est_minus_c_oracle, filter: {regime: [dense]}, aggregation: frac, inner: {comparator: ">", threshold: 0.0}, comparator: ">=", threshold: 0.66}
+  - id: X-dense-edge
+    source: "plan X.1 (D's lead must survive estimation)"
+    kind: pass
+    scope: dense
+    description: >
+      Dense: D-est beats C'-matched-est (both on estimated maps, compute matched) in >= 2 of 3 seeds.
+    clauses:
+      - {metric: d_est_minus_c_est, filter: {regime: [dense]}, aggregation: frac, inner: {comparator: ">", threshold: 0.0}, comparator: ">=", threshold: 0.66}
+  - id: X-sparse-pass
+    source: "plan X.2 (LOCATE cost in the regime where CS applies)"
+    kind: pass
+    scope: sparse
+    description: >
+      Sparse: D-est within 0.5 pt of D-oracle (mean) AND the adaptive locator uses <= 0.25 x the reads of full
+      readout over the lifetime on every seed.
+    clauses:
+      - {metric: gap_d, filter: {regime: [sparse]}, aggregation: mean, comparator: ">=", threshold: -0.5}
+      - {metric: reads_ratio, filter: {regime: [sparse]}, aggregation: max, comparator: "<=", threshold: 0.25}
+  - id: X-gap
+    source: "master plan X.2 target (close >= 50% of the no-repair-to-oracle gap)"
+    kind: pass
+    scope: all
+    description: >
+      In each regime the estimated loop closes >= 50% of the floor-to-oracle gap (mean closure per regime >= 0.5).
+    clauses:
+      - {metric: closure, per_group: {by: [regime], aggregation: mean}, aggregation: min, comparator: ">=", threshold: 0.5}
+  - id: X-kill
+    source: "plan X.1 kill"
+    kind: kill
+    scope: all
+    description: >
+      Kill the "no oracle needed" claim if D-est is more than 2 pt below D-oracle (mean) in either regime, or the
+      estimated map misses more than 10% of the new visible faults in any wave of any run.
+    combine: any
+    clauses:
+      - {metric: gap_d, per_group: {by: [regime], aggregation: mean}, aggregation: min, comparator: "<", threshold: -2.0}
+      - {metric: recall_vis_min, aggregation: min, comparator: "<", threshold: 0.9}
+  - id: X-report
+    source: "report only"
+    kind: report
+    scope: report
+    description: >
+      Per-wave precision/recall, false-positive spares, fallback fraction, reads per wave, burst steps, wall time,
+      shadow full-readout recall, D-oracle seed-42 reproducibility vs _live9.
+    manual: true

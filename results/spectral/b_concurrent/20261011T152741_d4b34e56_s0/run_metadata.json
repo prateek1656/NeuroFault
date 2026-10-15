@@ -1,0 +1,43 @@
+{
+  "allow_dirty": true,
+  "argv": [
+    "experiments/spectral/b_concurrent.py",
+    "--jobs",
+    "2",
+    "--allow-dirty"
+  ],
+  "config_hash": "d4b34e564af0668d81904d8b86a42509a6b9ae9424a7eb9c977e337ff37c34e4",
+  "environment": {
+    "aihwkit_version": "1.1.0",
+    "crosssim_version": "unknown",
+    "cupy_version": null,
+    "gpu_available": false,
+    "gpu_driver_version": null,
+    "gpu_name": null,
+    "hostname": "local-workstation",
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "python_version": "3.12.14",
+    "torch_cuda_version": null,
+    "torch_version": "2.14.0"
+  },
+  "extra": {
+    "checkpoint_sha256": {
+      "101": "59f6901f0a1c9b275a3e9198026f6e400fd81f66b940003af3f3f5826ccecb5f",
+      "102": "2e16d5e18b9d310a3131875fefdd8d40ff5f7fb84e0b68e8b84d07a9ad534f10",
+      "42": "995f917e871e0eb06ec1028b0a3e588dccdb644ba2672597274398fdba231429"
+    },
+    "criteria_file": "b_concurrent.yaml",
+    "criteria_sha256": "09a86da3dc24192de6cb27e59f168a043661f86ca0665feb3415111607eab7e6",
+    "jobs": 2,
+    "note": "H7 concurrent detection/localization (plan-B E5)",
+    "variant": "full"
+  },
+  "git": {
+    "branch": "spectral-diagnosis",
+    "commit": "d6bc34dcfb470e025491d78980cfe5573c96f224",
+    "dirty": true
+  },
+  "run_id": "20261011T152741_d4b34e56_s0",
+  "seed": 0,
+  "written_at_unix": 1791712661.942931
+}

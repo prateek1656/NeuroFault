@@ -1,0 +1,78 @@
+schema_version: 1
+id: a_hardening_deploy
+title: "Hardening H2b: DEPLOYABLE M4 vs the H2 baselines (paired with a_hardening)"
+source_plan: "master plan §10 H2b (registered 2026-10-10 after seeing provisional H2/H5 numbers, before any H2b run)"
+frozen: "2026-10-10"
+overall_pass: all
+note: >
+  Why: a_hardening (H2) compared the digital-reference M4 form W(t) - W0 o F_hat, which needs the stored
+  digital weights at inference and is not deployable (found from provisional H5). H2b re-evaluates M4 in its
+  deployable in-array G-form (methods_a.deployable_correction): M4D_full (rank <= 4, up to 3 extra analog passes
+  per inference) and M4D_r1 (rank 1, 0 extra passes), against the H2 baselines.
+  Pairing: same platform, streams (+2000), tiles, drift realizations, M4 probe streams (reader 'read2') and
+  bias reads as a_hardening; baseline rows (B8, HB1_N8, HB1_N32, HB2, HB3) are taken from the final
+  a_hardening run dir, not recomputed. Validity gate: the script recomputes the H2 M4 (ideal) accuracy on every
+  row; if any row differs from the a_hardening value by > 0.05 pt the pairing is broken and the run is
+  INVALID (reported, not judged). H2's own verdict stands as recorded and is reported as an upper reference.
+  Columns per row (dataset, ckpt_seed, scenario, model, t_s, method): acc, and for each baseline b in
+  {HB1_N8, HB1_N32, HB2, HB3, B8}: m4d_minus_<b>_pt (M4D_full acc minus b acc), m4r1_minus_<b>_pt (M4D_r1 minus
+  b), pairing_abs_diff_pt.
+criteria:
+  - id: H2b-NI-HB1_N8
+    source: "master plan §10 H2b"
+    kind: pass
+    scope: H2b
+    description: "Deployable M4 (full) non-inferior to HB1_N8: per dataset, scenario-mean (M4D_full - HB1_N8) >= -0.3 pt at >= 3 of 4 times."
+    clauses:
+      - {metric: m4d_minus_HB1_N8_pt, filter: {dataset: cifar10}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+      - {metric: m4d_minus_HB1_N8_pt, filter: {dataset: cifar100}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+  - id: H2b-NI-HB1_N32
+    source: "master plan §10 H2b"
+    kind: pass
+    scope: H2b
+    description: "Deployable M4 (full) non-inferior to HB1_N32 (same rule; mirrors H2)."
+    clauses:
+      - {metric: m4d_minus_HB1_N32_pt, filter: {dataset: cifar10}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+      - {metric: m4d_minus_HB1_N32_pt, filter: {dataset: cifar100}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+  - id: H2b-NI-HB2
+    source: "master plan §10 H2b"
+    kind: pass
+    scope: H2b
+    description: "Deployable M4 (full) non-inferior to HB2 (same rule)."
+    clauses:
+      - {metric: m4d_minus_HB2_pt, filter: {dataset: cifar10}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+      - {metric: m4d_minus_HB2_pt, filter: {dataset: cifar100}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+  - id: H2b-NI-HB3
+    source: "master plan §10 H2b"
+    kind: pass
+    scope: H2b
+    description: "Deployable M4 (full) non-inferior to HB3 (same rule)."
+    clauses:
+      - {metric: m4d_minus_HB3_pt, filter: {dataset: cifar10}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+      - {metric: m4d_minus_HB3_pt, filter: {dataset: cifar100}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+  - id: H2b-kill-cheaper-wins
+    source: "master plan §10 H2b kill"
+    kind: kill
+    scope: H2b
+    description: >
+      Kill deployable-M4 superiority if a baseline costing <= M4 in calibration MVM-equivalents (HB2, HB3) beats
+      M4D_full by >= 1.0 pt (scenario mean) at >= 3 of 4 times on either dataset. (HB1 costs >> M4 and is reported.)
+    combine: any
+    clauses:
+      - {metric: m4d_minus_HB2_pt, filter: {dataset: cifar10}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: "<=", threshold: -1.0}, comparator: ">=", threshold: 0.75}
+      - {metric: m4d_minus_HB2_pt, filter: {dataset: cifar100}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: "<=", threshold: -1.0}, comparator: ">=", threshold: 0.75}
+      - {metric: m4d_minus_HB3_pt, filter: {dataset: cifar10}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: "<=", threshold: -1.0}, comparator: ">=", threshold: 0.75}
+      - {metric: m4d_minus_HB3_pt, filter: {dataset: cifar100}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: "<=", threshold: -1.0}, comparator: ">=", threshold: 0.75}
+  - id: H2b-pairing-gate
+    source: "master plan §10 H2b validity"
+    kind: kill
+    scope: H2b_validity
+    description: "Pairing broken: max |recomputed ideal M4 acc - a_hardening M4 acc| > 0.05 pt (run INVALID)."
+    clauses:
+      - {metric: pairing_abs_diff_pt, aggregation: max, comparator: ">", threshold: 0.05}
+  - id: H2b-report
+    source: "master plan §10 H2b (report only)"
+    kind: report
+    scope: H2b_report
+    description: "M4D_full / M4D_r1 vs every baseline per dataset and time, with extra inference passes and HB1 cost."
+    manual: true

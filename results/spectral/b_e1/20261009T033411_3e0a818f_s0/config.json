@@ -1,0 +1,87 @@
+{
+  "ckpt_seeds": [
+    42,
+    101,
+    102
+  ],
+  "encoding": {
+    "g_min_frac": 0.01,
+    "kind": "offset_refcol"
+  },
+  "experiment": "e1",
+  "fa": 0.1,
+  "fault": {
+    "device": "pos",
+    "kind": "stuck_random",
+    "rail": "mixed"
+  },
+  "fault_seeds": 5,
+  "ks": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64
+  ],
+  "layers": [
+    "layer2.0.0.weight",
+    "layer3.0.0.weight"
+  ],
+  "n_boot": 400,
+  "sigmas": [
+    0.0025,
+    0.005,
+    0.01,
+    0.02,
+    0.03,
+    0.04
+  ],
+  "subsets": [
+    {
+      "ckpt_seeds": [
+        42
+      ],
+      "fault_seeds": 5,
+      "ks": [
+        1,
+        4,
+        16
+      ],
+      "layers": [
+        "layer2.0.0.weight"
+      ],
+      "sigmas": [
+        0.01,
+        0.02
+      ],
+      "tile_size": 128,
+      "tiles_per_layer": 2
+    },
+    {
+      "ckpt_seeds": [
+        42
+      ],
+      "fault_seeds": 4,
+      "ks": [
+        1,
+        4,
+        16
+      ],
+      "layers": [
+        "layer3.0.0.weight"
+      ],
+      "sigmas": [
+        0.01,
+        0.02
+      ],
+      "tile_size": 512,
+      "tiles_per_layer": 1
+    }
+  ],
+  "target_f1": 0.9,
+  "tile_size": 256,
+  "tiles_per_layer": 2,
+  "visible_frac": 0.1
+}

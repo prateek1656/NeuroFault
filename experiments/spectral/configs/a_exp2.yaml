@@ -1,0 +1,37 @@
+# Direction A Exp 2 = master-plan arm P4.3 (C1' calibration-cost reduction vs AdaBS). `smoke` never counts.
+# Methods and k fixed from Gate-0' seed-42 data (M4 'cos' order 4 won on every structured model);
+# nothing here is tuned on the results below.
+full:
+  ckpt_seeds: [42, 101, 102]
+  sigma: 0.02            # per-cell analog read noise on every probe MVM (fraction of max|w|)
+  n_eval: 2500           # reduced from 5000 (CPU budget, shared box); headline 10k not feasible
+  times: {1h: 3600.0, 1d: 86400.0, 30d: 2592000.0, 1yr: 31557600.0}
+  evalsets:
+    W1:
+      core: [gdc, b8, ada256, ada2600, m4_16, m4_64, m4ada_16]
+      full: [none, gdc, b8, ada64, ada256, ada2600, col_ada256, m4_8, m4_16, m4_64, m4ada_16]
+    W2:
+      core: [gdc, b8, m4_16, m4_64]
+      full: [none, gdc, b8, m4_8, m4_16, m4_64]
+  scenarios:
+    - {name: D2, model: D2, field: "", rho: 0.0, tier: full, workloads: [W1, W2]}
+    - {name: D3_hotspot_r1, model: D3, field: hotspot, rho: 1.0, tier: full, workloads: [W1, W2]}
+    - {name: D3_row_gradient_r2, model: D3, field: row_gradient, rho: 2.0, tier: core, workloads: [W1]}
+    - {name: D4, model: D4, field: "", rho: 1.0, tier: core, workloads: [W1, W2]}
+smoke:
+  ckpt_seeds: [101]
+  sigma: 0.02
+  n_eval: 500
+  times: {1d: 86400.0}
+  evalsets:
+    W1:
+      min: [none, gdc, b8, ada256, ada2600, m4_16, m4_64]
+      core: [none, gdc, b8, ada256, ada2600, col_ada256, m4_16, m4_64, m4ada_16]
+      full: [none, gdc, b8, ada64, ada256, ada1024, ada2600, col_ada256, b8_ada256,
+             m4_8, m4_16, m4_32, m4_64, m4ada_16, m4ada_64]
+    W2:
+      min: [none, gdc, b8, m4_16, m4_64]
+      core: [none, gdc, b8, m4_16, m4_64]
+      full: [none, gdc, b8, m4_8, m4_16, m4_32, m4_64]
+  scenarios:
+    - {name: D3_hotspot_r1, model: D3, field: hotspot, rho: 1.0, tier: full, workloads: [W1, W2]}

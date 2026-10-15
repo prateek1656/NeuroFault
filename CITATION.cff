@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below, and cite the relevant paper if you use its results."
+type: software
+title: neurofault
+version: 1.0.0
+date-released: 2026-10-15
+license: BSD-3-Clause-Clear
+repository-code: "https://github.com/prateek1656/NeuroFault"
+abstract: >-
+  Simulation study of fault-tolerant memristive crossbars for deep-neural-network
+  inference: what repairs an aging crossbar, and how to find faulty cells with few reads.
+authors:
+  - family-names: Yadav
+    given-names: Prateek
+references:
+  - type: article
+    title: "It Was the Learning Rate: Compute-Matched Baselines Erase the Apparent Gains of a Memristor Crossbar Repair Controller"
+    authors:
+      - family-names: Yadav
+        given-names: Prateek
+    year: 2026
+    status: preprint
+    notes: "Paper A, papers/controller/"
+  - type: article
+    title: "Don't Read Every Cell: Few-Read Fault Localization and Drift Calibration in Analog Crossbars"
+    authors:
+      - family-names: Yadav
+        given-names: Prateek
+    year: 2026
+    status: preprint
+    notes: "Paper B, papers/spectral/"

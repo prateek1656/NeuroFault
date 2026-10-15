@@ -1,0 +1,45 @@
+# Direction A Gate 0' (criteria/a_gate0.yaml). `smoke` never counts.
+# Anti-p-hacking: design on seed 42 only; seeds 101/102 are confirmation. Reported
+# metrics here are seed-means; per-seed tables are in the side tables.
+full:
+  ckpt_seeds: [42, 101, 102]
+  layers: ["prep.0.weight", "layer1.0.0.weight", "res1.conv_a.weight", "res1.conv_b.weight",
+           "layer2.0.0.weight", "layer3.0.0.weight", "res2.conv_a.weight", "res2.conv_b.weight"]
+  tiles_per_layer: 1
+  fields: [row_gradient, col_gradient, row_plus_col, rank_r, hotspot]
+  rhos: [0.25, 0.5, 1.0, 2.0, 4.0]
+  d4: true
+  sigmas: [0.0, 0.02]
+  times: [1h, 1d, 30d, 1yr]
+  methods: [gdc, row, col, bi, m4cos, m4r1, m3, b5]
+  p: 8
+  captures: true
+  cap_ks: [4, 8, 16]
+  jacobian: true
+  net_scenarios:
+    - {model: D2, rho: 0.0, scale: 1.0}
+    - {model: D3, field: row_gradient, rho: 1.0, scale: 1.0}
+    - {model: D3, field: row_gradient, rho: 2.0, scale: 1.0}
+    - {model: D3, field: rank_r, rho: 1.0, scale: 1.0}
+  net_times: {t1e4: 10000.0, t1e6: 1000000.0, t1e8: 100000000.0}
+  net_methods: [none, b8, b8o16]
+  n_eval: 1000
+smoke:
+  ckpt_seeds: [42]
+  layers: ["layer1.0.0.weight", "layer3.0.0.weight"]
+  tiles_per_layer: 1
+  fields: [row_gradient, rank_r]
+  rhos: [1.0, 2.0]
+  d4: true
+  sigmas: [0.0, 0.02]
+  times: [1d]
+  methods: [gdc, row, col, bi, m4cos, m4r1, m3, b5]
+  p: 8
+  captures: true
+  cap_ks: [8, 16]
+  jacobian: true
+  net_scenarios:
+    - {model: D3, field: row_gradient, rho: 1.0, scale: 1.0}
+  net_times: {t1e6: 1000000.0}
+  net_methods: [none, b8, b8o16]
+  n_eval: 300

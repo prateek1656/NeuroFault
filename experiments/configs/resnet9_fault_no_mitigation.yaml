@@ -1,0 +1,60 @@
+# First re-introduction of fault injection on the confirmed, ADC/DAC-calibrated ResNet-9
+# pipeline (89.79% mean fault-free baseline across 4 seeds). Every prior
+# ResNet-9 run used fault.density=0.0 deliberately (baseline phase) - this is arm 1 of a
+# 6-arm fault-tolerance comparison (no_mitigation / soft_mitigation / remapping /
+# layer_reset / combined, all failure_model="density", plus a 6th soft_mitigation_drift arm
+# under failure_model="drift" - see that config's own header for why it's separate).
+#
+# injection_interval derivation (verified empirically, not just formula-trusted): failure_model="density" is memoryless per call,
+# so expected final stuck fraction after k injection cycles is 1-(1-density)^k, confirmed to
+# match observed values on this exact 9-crossbar network to within 0.01pp for k=1..4 (a
+# direct probe: k=3 predicted 0.2710, observed 0.2709 overall, 0.2668-0.2713 per-layer
+# range across all 9 crossbars) - i.e. genuinely architecture/crossbar-size-independent,
+# unlike the old pre-ResNet9 `_moderate` configs' per-arm-different-epoch-count tuning.
+# Target: same ~3-cycle, ~27% final stuck fraction the old moderate regime used (comfortably
+# below the 15% default redundancy_factor... note redundancy capacity is only consumed by
+# remapping's arm, not this one).
+#
+# Full-scale analog-phase batch count: (epochs - float_pretrain_epochs) * num_batches =
+# (50-10)*390 = 15,600. injection_interval = 15600/3 = 5200 gives exactly 3 injection
+# cycles (global_batch continues from pretrain_final_batch=3900 into the analog loop, so
+# the three firings land at global_batch 5200/10400/15600, all within [3900, 19500)).
+#
+# Deliberately identical fault schedule across all 5 density-model arms (unlike the old
+# project's per-arm-different-epoch/interval pattern) - mitigation strategy doesn't change
+# how many faults get injected, only how the system responds, so holding the fault schedule
+# fixed removes a confound between arms.
+name: resnet9_fault_no_mitigation
+simulator: crosssim
+epochs: 50
+float_pretrain_epochs: 10
+finetune_learning_rate: 0.001
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+lr_one_cycle: true
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+save_checkpoint: true  # real, reported-number run
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  use_gpu: true
+  calibrate_adc: true
+  adc_calibration_images: 320
+  calibrate_dac: true
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

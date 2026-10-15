@@ -1,0 +1,494 @@
+{
+  "criteria_id": "b_claims",
+  "criteria_sha256": "471f5af0fdb2e5fcc3d85aecc56bc9a5f9f992ea094c5ad47f3fbef6d97151b0",
+  "overall": "INCONCLUSIVE",
+  "overall_pass_rule": "any",
+  "by_scope": {
+    "C1": "INCONCLUSIVE",
+    "C1prime": "INCONCLUSIVE",
+    "C2": "PASS",
+    "C3": "INCONCLUSIVE",
+    "C4": "INCONCLUSIVE",
+    "C5": "INCONCLUSIVE",
+    "C6": "INCONCLUSIVE",
+    "vertical_B": "INCONCLUSIVE"
+  },
+  "n_rows": 12,
+  "criteria": [
+    {
+      "id": "C1",
+      "kind": "pass",
+      "scope": "C1",
+      "source": "plan-B \u00a75.1 C1",
+      "description": "Bidirectional: over 3 ckpts x all layers x 20 seeds, at sigma_c in {1%, 2%}: for >= 3 of k in {1,2,4,8,16}, the best bidirectional design reaches cell-F1 >= 0.9 with <= 0.7x the reads of the best forward-only design (95% CI upper bound of the ratio <= 0.8), where the forward-only side gets the SAME tuning effort (adaptive and non-adaptive best-of).\n",
+      "note": "AMBIGUOUS: whether a k must qualify at BOTH sigma_c. Transcribed strictly (both). Script emits per-row bool c1_row_ok = (cell_f1_bidir >= 0.9 and reads_ratio <= 0.7 and reads_ratio_ci_upper <= 0.8); k qualifies when min over sigma_c of c1_row_ok is 1.\n",
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "c1_row_ok",
+            "aggregation": "sum",
+            "comparator": ">=",
+            "threshold": 3,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('k')"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C1-kill",
+      "kind": "kill",
+      "scope": "C1",
+      "source": "plan-B \u00a75.1 C1 (Kill / downgrade)",
+      "description": "Fewer than 1 qualifying k -> drop 'bidirectional' as a contribution (research-03 E1-a).",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "c1_row_ok",
+            "aggregation": "sum",
+            "comparator": "<",
+            "threshold": 1,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('k')"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C1prime",
+      "kind": "pass",
+      "scope": "C1prime",
+      "source": "plan-B \u00a75.1 C1' practical floor",
+      "description": "F1 >= 0.9 at <= 32 total reads for k=8 at 2% noise (single 256 tile).",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "reads_to_f1_0p9",
+            "aggregation": "median",
+            "comparator": "<=",
+            "threshold": 32,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('k')"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C1prime-fail",
+      "kind": "redirect",
+      "scope": "C1prime",
+      "source": "plan-B \u00a75.1 C1' (Kill / downgrade)",
+      "description": "Otherwise declare practical single-tile localization infeasible at that noise (research-03 E1-b); the paper becomes a bound/regime-map paper.",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "reads_to_f1_0p9",
+            "aggregation": "median",
+            "comparator": ">",
+            "threshold": 32,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('k')"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C2",
+      "kind": "pass",
+      "scope": "C2",
+      "source": "plan-B \u00a75.1 C2 noise rule",
+      "description": "The measured optimal probe weight vs noise model agrees with T3's prediction within a factor 2 across both noise models.",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "optimal_weight_meas_over_pred",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 2.0,
+            "value": 1.0416160106505847,
+            "n": 6,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "optimal_weight_meas_over_pred",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 0.5,
+            "value": 0.6385808419780442,
+            "n": 6,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "C2-fail",
+      "kind": "redirect",
+      "scope": "C2",
+      "source": "plan-B \u00a75.1 C2 (Kill / downgrade)",
+      "description": "If not, report an empirical rule only and drop the theorem.",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "any",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "optimal_weight_meas_over_pred",
+            "aggregation": "max",
+            "comparator": ">",
+            "threshold": 2.0,
+            "value": 1.0416160106505847,
+            "n": 6,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "optimal_weight_meas_over_pred",
+            "aggregation": "min",
+            "comparator": "<",
+            "threshold": 0.5,
+            "value": 0.6385808419780442,
+            "n": 6,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "C3",
+      "kind": "pass",
+      "scope": "C3",
+      "source": "plan-B \u00a75.1 C3 line/cluster",
+      "description": "For row/col/block faults, bidir line-level F1 >= 0.95 at <= 8 reads; and >= 2x fewer reads than the best fwd-only at cell level for r x c blocks with rc >= 16.\n",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "line_f1_at_8_reads",
+            "aggregation": "median",
+            "comparator": ">=",
+            "threshold": 0.95,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'line_f1_at_8_reads' missing"
+          },
+          {
+            "metric": "fwd_to_bidir_reads_ratio",
+            "aggregation": "median",
+            "comparator": ">=",
+            "threshold": 2.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('fault_kind')"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C3-kill",
+      "kind": "kill",
+      "scope": "C3",
+      "source": "plan-B \u00a75.1 C3 (Kill / downgrade)",
+      "description": "If fwd-only matches, drop C3.",
+      "note": "AMBIGUOUS 'matches': read as fwd_to_bidir_reads_ratio <= 1.0 (forward-only needs no more reads than bidirectional).",
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "fwd_to_bidir_reads_ratio",
+            "aggregation": "median",
+            "comparator": "<=",
+            "threshold": 1.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('fault_kind')"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C4",
+      "kind": "pass",
+      "scope": "C4",
+      "source": "plan-B \u00a75.1 C4 system value (E7); master plan v3 Deferred X.1",
+      "description": "DEFERRED to the cross-vertical step. At the spare budget where oracle remap beats no-remap by > 2 across-seed std: estimated-map remap (total probe cost <= 64 reads per tile per wave) is within 1 across-seed std of oracle accuracy and beats `prefix` order from a blind policy by > 1 std. Kill: estimated map loses > 1 std at 2% noise (report FP vs FN vs ordering); if the loss is < 0.5 std even for row/col-level maps (E8) -> reframe as a cheap-map result.\n",
+      "note": null,
+      "status": "DEFERRED",
+      "condition": null,
+      "detail": {}
+    },
+    {
+      "id": "C5",
+      "kind": "pass",
+      "scope": "C5",
+      "source": "plan-B \u00a75.1 C5 concurrent",
+      "description": "Concurrent regression reaches 99% detection within 64 inferences (with conv im2col samples) for deltas >= 0.5 range at 2% noise, and localizes to the line with F1 >= 0.9 within 256.\n",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "inferences_to_99pct_detection",
+            "aggregation": "median",
+            "comparator": "<=",
+            "threshold": 64,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('delta_frac_of_range')"
+          },
+          {
+            "metric": "line_f1_at_256_inferences",
+            "aggregation": "median",
+            "comparator": ">=",
+            "threshold": 0.9,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('delta_frac_of_range')"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C5-checksum",
+      "kind": "redirect",
+      "scope": "C5",
+      "source": "plan-B \u00a75.1 C5 (Kill / downgrade), research-03 E5",
+      "description": "If a single checksum column already reaches 99% detection within 8 inferences, the concurrent contribution is localization-only.",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "checksum_inferences_to_99pct_detection",
+            "aggregation": "median",
+            "comparator": "<=",
+            "threshold": 8,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'checksum_inferences_to_99pct_detection' missing"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C5-T7",
+      "kind": "redirect",
+      "scope": "C5",
+      "source": "plan-B \u00a75.1 C5 (Kill / downgrade), T7 identifiability",
+      "description": "If identifiability (T7) shows > 20% of columns never observed, concurrent-only is dead and the hybrid A9 is the claim.",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "frac_columns_never_observed",
+            "aggregation": "median",
+            "comparator": ">",
+            "threshold": 0.2,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'frac_columns_never_observed' missing"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C6",
+      "kind": "pass",
+      "scope": "C6",
+      "source": "plan-B \u00a75.1 C6 drift vs stuck",
+      "description": "3-way classification >= 90% at 2% noise AND low-rank+sparse cell-F1 >= 2x sparse-only on mixed scenes (research-03 E3).",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "threeway_accuracy",
+            "aggregation": "median",
+            "comparator": ">=",
+            "threshold": 0.9,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'threeway_accuracy' missing"
+          },
+          {
+            "metric": "lowrank_sparse_over_sparse_only_f1",
+            "aggregation": "median",
+            "comparator": ">=",
+            "threshold": 2.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('scene')"
+          }
+        ]
+      }
+    },
+    {
+      "id": "C6-kill",
+      "kind": "kill",
+      "scope": "C6",
+      "source": "plan-B \u00a75.1 C6 (Kill / downgrade)",
+      "description": "Else drop C6 entirely.",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "any",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "threeway_accuracy",
+            "aggregation": "median",
+            "comparator": "<",
+            "threshold": 0.9,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'threeway_accuracy' missing"
+          },
+          {
+            "metric": "lowrank_sparse_over_sparse_only_f1",
+            "aggregation": "median",
+            "comparator": "<",
+            "threshold": 2.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('scene')"
+          }
+        ]
+      }
+    },
+    {
+      "id": "Theory",
+      "kind": "report",
+      "scope": null,
+      "source": "plan-B \u00a75.1 Theory",
+      "description": "T2 + T3 proven with measured agreement; T6 stated with the loss-weighted recall; others may be conjectures labelled as such. If T2/T3 cannot be made non-trivial (no gap between fwd-only and bidir bounds) -> empirical paper at ASP-DAC/ISQED/workshop level. Human judgement.\n",
+      "note": null,
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "reason": "requires human judgement"
+      }
+    },
+    {
+      "id": "NOGO-A2",
+      "kind": "kill",
+      "scope": "vertical_B",
+      "source": "plan-B \u00a75.2 NO-GO",
+      "description": "NO-GO if HPE test-vector binary search reproduced as A2 matches A4 within 20% reads at equal area on all of E1 and E6 (then the novelty reduces to an analysis of known practice).\n",
+      "note": "'On all' => max over E1/E6 rows of |reads(A2)-reads(A4)|/reads(A4) <= 0.2. Script emits a2_vs_a4_reads_rel_diff.",
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "a2_vs_a4_reads_rel_diff",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.2,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('equal_area')"
+          }
+        ]
+      }
+    },
+    {
+      "id": "NOGO-E1c",
+      "kind": "kill",
+      "scope": "vertical_B",
+      "source": "plan-B \u00a75.2 NO-GO",
+      "description": "NO-GO if the full-readout crossover (E1c) shows probing wins only below density 1e-4 where no spare budget matters.",
+      "note": "Script emits probing_win_max_density (largest fault density at which probing still beats full readout).",
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "probing_win_max_density",
+            "aggregation": "median",
+            "comparator": "<",
+            "threshold": 0.0001,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'probing_win_max_density' missing"
+          }
+        ]
+      }
+    }
+  ],
+  "metrics_csv": "results/spectral/b_e1b/20261009T033658_a46eb0b8_s0/verdict_metrics.csv"
+}

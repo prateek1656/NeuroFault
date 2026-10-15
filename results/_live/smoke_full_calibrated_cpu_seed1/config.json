@@ -1,0 +1,79 @@
+{
+  "name": "smoke_full_calibrated_cpu_seed1",
+  "seed": 1,
+  "simulator": "crosssim",
+  "dataset": "cifar10",
+  "train_samples": 200,
+  "test_samples": 100,
+  "batch_size": 128,
+  "learning_rate": 0.05,
+  "weight_decay": 0.0001,
+  "lr_cosine_schedule": false,
+  "optimizer": "sgd",
+  "momentum": 0.9,
+  "lr_one_cycle": true,
+  "label_smoothing": 0.1,
+  "grad_clip_norm": 1.0,
+  "float_pretrain_epochs": 1,
+  "finetune_learning_rate": 0.001,
+  "epochs": 2,
+  "num_batches": 5,
+  "eval_interval": 100,
+  "device": {
+    "name": "vteam",
+    "r_on": 100.0,
+    "r_off": 10000.0,
+    "time_series_resolution": 1e-10,
+    "extra_params": {}
+  },
+  "crossbar": {
+    "scheme": "DoubleColumn",
+    "tile_shape": null,
+    "patch_layer_types": [
+      "Linear",
+      "Conv2d"
+    ],
+    "max_input_voltage": 0.3,
+    "adc_resolution": 8,
+    "dac_resolution": 8,
+    "redundancy_factor": 0.15,
+    "redundancy_scheme": "idealized_per_cell",
+    "redundancy_condemn_threshold": 0.5,
+    "use_gpu": false,
+    "circuit_topology": null,
+    "devices_per_synapse": 1,
+    "calibrate_adc": true,
+    "adc_calibration_images": 320,
+    "calibrate_dac": true
+  },
+  "fault": {
+    "density": 0.0,
+    "distribution": "random",
+    "injection_interval": 8,
+    "failure_model": "density",
+    "weibull_shape": 2.0,
+    "weibull_scale": null,
+    "exponential_rate": null,
+    "arrhenius_activation_energy_ev": null,
+    "temperature_kelvin": 300.0,
+    "reference_temperature_kelvin": 300.0,
+    "drift_magnitude": 0.05,
+    "drift_direction": "toward_hrs"
+  },
+  "mitigation": {
+    "enable_soft_mitigation": false,
+    "enable_remapping": false,
+    "enable_layer_reset": false,
+    "enable_predictive": false,
+    "force_remapping": false,
+    "health_threshold": 75.0,
+    "health_check_interval": 10,
+    "detection_method": "full_diff",
+    "checksum_z_threshold": 3.0,
+    "layer_reset_cooldown_checks": 10
+  },
+  "retraining": {
+    "enable_fault_aware": false
+  },
+  "output_dir": "results"
+}

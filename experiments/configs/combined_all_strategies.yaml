@@ -1,0 +1,25 @@
+# All three mitigations enabled together, arbitrated by mitigation/dispatch.py
+# with each branch independently gated - no unconditional fallthrough to any
+# single strategy (bug #2's fix).
+name: combined_all_strategies
+simulator: crosssim
+epochs: 10
+num_batches: 128
+batch_size: 32
+train_samples: 2000
+test_samples: 1000
+eval_interval: 3
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_factor: 0.15
+  redundancy_scheme: idealized_per_cell
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 8
+mitigation:
+  enable_soft_mitigation: true
+  enable_remapping: true
+  enable_layer_reset: true
+  enable_predictive: true
+  health_threshold: 75.0

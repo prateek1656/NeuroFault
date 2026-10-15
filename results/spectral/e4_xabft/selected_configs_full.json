@@ -1,0 +1,74 @@
+{
+ "16|0.01": {
+  "cal_f1": 0.928613583333332,
+  "cal_reached_target": false,
+  "cal_reads": 4096.0,
+  "cfg": "r4M4R16"
+ },
+ "16|0.02": {
+  "cal_f1": 0.8550080833333328,
+  "cal_reached_target": false,
+  "cal_reads": 4096.0,
+  "cfg": "r4M4R16"
+ },
+ "16|0.04": {
+  "cal_f1": 0.6158616250000004,
+  "cal_reached_target": false,
+  "cal_reads": 4096.0,
+  "cfg": "r4M4R16"
+ },
+ "1|0.01": {
+  "cal_f1": 0.6208736666666671,
+  "cal_reached_target": false,
+  "cal_reads": 1024.0,
+  "cfg": "r8M2R16"
+ },
+ "1|0.02": {
+  "cal_f1": 0.5190479999999995,
+  "cal_reached_target": false,
+  "cal_reads": 4096.0,
+  "cfg": "r4M4R16"
+ },
+ "1|0.04": {
+  "cal_f1": 0.37333362500000017,
+  "cal_reached_target": false,
+  "cal_reads": 2048.0,
+  "cfg": "r4M2R16"
+ },
+ "4|0.01": {
+  "cal_f1": 0.8335439583333349,
+  "cal_reached_target": false,
+  "cal_reads": 2048.0,
+  "cfg": "r4M2R16"
+ },
+ "4|0.02": {
+  "cal_f1": 0.7676587916666674,
+  "cal_reached_target": false,
+  "cal_reads": 2048.0,
+  "cfg": "r4M2R16"
+ },
+ "4|0.04": {
+  "cal_f1": 0.5334302083333334,
+  "cal_reached_target": false,
+  "cal_reads": 2048.0,
+  "cfg": "r4M2R16"
+ },
+ "64|0.01": {
+  "cal_f1": 0.9364112500000011,
+  "cal_reached_target": true,
+  "cal_reads": 2048.0,
+  "cfg": "r4M2R16"
+ },
+ "64|0.02": {
+  "cal_f1": 0.8576702500000003,
+  "cal_reached_target": false,
+  "cal_reads": 4096.0,
+  "cfg": "r4M4R16"
+ },
+ "64|0.04": {
+  "cal_f1": 0.6027707916666667,
+  "cal_reached_target": false,
+  "cal_reads": 2048.0,
+  "cfg": "r4M2R16"
+ }
+}

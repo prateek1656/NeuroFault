@@ -1,0 +1,22 @@
+# Sensitivity run (fairness of the SNR comparison): loop output peak at 0.9 of the rail instead of
+# 0.5, i.e. the same rail-limited operating point the +-1 probe is given (G_f = 4 rms puts ~4 sigma
+# at the rail). Only the amplitude-regulated modes that stay latch-free; N = 64, 128 tiles.
+full:
+  ckpt_seeds: [42, 101, 102]
+  tiles:
+    "64": ["res1.conv_a.weight", "layer3.0.0.weight"]
+    "128": ["res1.conv_a.weight", "layer3.0.0.weight"]
+  betas: [1.0, 2.0, 3.0, 5.0, 10.0]
+  fs: [0.5]
+  amps_all_f: [agc_ideal]
+  amps_f05: [servo_0.5, servo_2]
+  base_overrides: {v_target_frac: 0.9}
+  n_faults: 16
+  n_cal_faults: 400
+  t_end_cap: 6000.0
+  n_samples: 160
+  noise_draws: 8
+  gv_betas: []
+  gv_sigmas: []
+  gv_draws: 0
+  variants: []

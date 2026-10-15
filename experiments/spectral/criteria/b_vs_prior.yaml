@@ -1,0 +1,71 @@
+schema_version: 1
+id: b_vs_prior
+title: "Hardening H8: registered confirmation of the joint CS localizer (A5) vs prior-art localizers (HPE A2, Wei & Roth A2b)"
+source_plan: "master plan §10 H8 (registered 2026-10-11 AFTER the exploratory b_e1 grid and the leaderboard Track 1, before any full H8 run)"
+frozen: "2026-10-11"
+overall_pass: all
+note: >
+  Why: the leaderboard's lead localization claim (CS decoder needs 4-7x fewer reads than the Wei & Roth disjunct code at
+  1-2% noise) comes from the exploratory b_e1 grid (results/spectral/b_e1/20261009T033411_3e0a818f_s0), which picked
+  every family's best configuration ON THE EVALUATION INSTANCES. The registered C1/C1b runs tested only bidirectional vs
+  best forward-only, not CS vs the prior-art codes. This file registers that comparison on fresh data.
+  Platform: real ResNet-9 CIFAR-10 conv tiles of size 256 (ckpt seeds 42/101/102, all 4 conv layers with a full 256
+  tile), offset_refcol encoding, stuck_random faults (mixed rail, pos device), truth = visible faults
+  |delta_w| >= 0.1 max|w|, per-cell white read noise sigma_c in {1%, 2%, 4%} of max|w|, no ADC/DAC quantization,
+  k in {1, 4, 16, 64}. Families (design catalogue = experiments/spectral/b_e1.py designs(), unmodified):
+  HPE = A2 forward (HPE-style syndrome + binary search), ROTH = A2b forward (our reimplementation of the Wei & Roth
+  sparse disjunct code; not the authors' code), CSF = A5 forward-only joint CS decoder, CSB = A5 forward + transposed.
+  Selection (same rule for every family, as C1b): per (k, sigma) and family, the fewest calibration-mean reads among
+  configs with calibration-mean cell F1 >= 0.93, fallback highest F1. Calibration = tile origin 1, fault seeds
+  3000-3019; evaluation = tile origin 0, FRESH fault seeds 60-79 (C1 used 0-19, C1b 20-39, b_e1 0-4). Selected
+  configs are written to disk before evaluation.
+  Row columns (per k, sigma_c): reads_<fam>, f1_<fam> (evaluation means), ratio_csb_roth / ratio_csf_roth = mean reads
+  ratio vs ROTH with 95% paired bootstrap upper bound (_ci_upper, 4000 resamples), speedup = 1 / ratio, roth_reaches =
+  f1_roth >= 0.9. row_ok_2x = f1_csb >= 0.9 AND (ROTH misses F1 0.9 OR (ratio_csb_roth <= 0.5 AND ci_upper <= 0.6));
+  row_ok_4x the same with 0.25 / 0.33; row_ok_fwd_2x = row_ok_2x for CSF.
+  Smoke disclosure (before this file was committed; smoke never counts): one 16-point smoke (2 calibration instances)
+  ran end to end in 15 s; its selection is too noisy to mean anything (CSB F1 0.5 at k=1, 2%).
+criteria:
+  - id: H8-CS-2x
+    source: "master plan §10 H8"
+    kind: pass
+    scope: H8
+    description: >
+      CS (both directions) localizes with >= 2x fewer reads than the Wei & Roth code (or ROTH misses F1 0.9 while CS
+      reaches it) on >= 3 of 4 k at EACH of sigma 1% and 2%.
+    clauses:
+      - {metric: row_ok_2x, filter: {sigma_c: [0.01, 0.02]}, per_group: {by: [sigma_c], aggregation: sum}, aggregation: min, comparator: ">=", threshold: 3}
+  - id: H8-CS-4x
+    source: "master plan §10 H8 (the leaderboard's 4-7x wording)"
+    kind: pass
+    scope: H8
+    description: >
+      Same as H8-CS-2x with >= 4x fewer reads (ratio <= 0.25, CI upper <= 0.33) on >= 3 of 4 k at each of 1% and 2%.
+    clauses:
+      - {metric: row_ok_4x, filter: {sigma_c: [0.01, 0.02]}, per_group: {by: [sigma_c], aggregation: sum}, aggregation: min, comparator: ">=", threshold: 3}
+  - id: H8-CSF-2x
+    source: "master plan §10 H8 (forward-only decoder, needs no transposable array)"
+    kind: pass
+    scope: H8
+    description: >
+      CS forward-only: >= 2x fewer reads than the Wei & Roth code (or ROTH misses) on >= 3 of 4 k at each of 1% and 2%.
+    clauses:
+      - {metric: row_ok_fwd_2x, filter: {sigma_c: [0.01, 0.02]}, per_group: {by: [sigma_c], aggregation: sum}, aggregation: min, comparator: ">=", threshold: 3}
+  - id: H8-kill
+    source: "master plan §10 H8 kill"
+    kind: kill
+    scope: H8
+    description: >
+      Kill the CS-vs-prior-art claim if CS (both directions) needs at least as many reads as the Wei & Roth code (median
+      ratio over the 8 rows at 1-2% >= 1.0) or its held-out F1 falls below 0.8 on any 1-2% row.
+    combine: any
+    clauses:
+      - {metric: ratio_csb_roth, filter: {sigma_c: [0.01, 0.02]}, aggregation: median, comparator: ">=", threshold: 1.0}
+      - {metric: f1_csb, filter: {sigma_c: [0.01, 0.02]}, aggregation: min, comparator: "<", threshold: 0.8}
+  - id: H8-report
+    source: "master plan §10 H8 (report only)"
+    kind: report
+    scope: H8_report
+    description: >
+      sigma 4% rows, HPE reads/F1, selected configs, per-instance reads/F1 (eval_instances.csv).
+    manual: true

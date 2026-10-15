@@ -1,0 +1,136 @@
+{
+  "results_dir": "results/spectral/x_loop/x_vit_sparse_d_xadaptive_s0.02_seed103",
+  "overall_verdict": "PASS",
+  "checks": [
+    {
+      "name": "structural.schema",
+      "level": "PASS",
+      "message": "all expected keys present, lengths match"
+    },
+    {
+      "name": "structural.epoch_batch",
+      "level": "PASS",
+      "message": "epoch/batch are sane"
+    },
+    {
+      "name": "structural.name_match",
+      "level": "PASS",
+      "message": "config name matches results directory"
+    },
+    {
+      "name": "numeric.loss_finite",
+      "level": "PASS",
+      "message": "loss is finite throughout"
+    },
+    {
+      "name": "numeric.accuracy_finite",
+      "level": "PASS",
+      "message": "accuracy is finite throughout"
+    },
+    {
+      "name": "numeric.health_finite",
+      "level": "PASS",
+      "message": "health is finite throughout"
+    },
+    {
+      "name": "numeric.detection_cost_finite",
+      "level": "PASS",
+      "message": "detection_cost is finite throughout"
+    },
+    {
+      "name": "numeric.grad_norm_finite",
+      "level": "PASS",
+      "message": "grad_norm is finite throughout"
+    },
+    {
+      "name": "numeric.accuracy_bounds",
+      "level": "PASS",
+      "message": "accuracy stays within [0, 100]"
+    },
+    {
+      "name": "numeric.health_bounds",
+      "level": "PASS",
+      "message": "health stays within [0, 100]"
+    },
+    {
+      "name": "numeric.loss_non_negative",
+      "level": "PASS",
+      "message": "loss stays non-negative"
+    },
+    {
+      "name": "numeric.faults_monotonic",
+      "level": "PASS",
+      "message": "faults is non-decreasing"
+    },
+    {
+      "name": "numeric.soft_mitigations_monotonic",
+      "level": "PASS",
+      "message": "soft_mitigations is non-decreasing"
+    },
+    {
+      "name": "numeric.remappings_monotonic",
+      "level": "PASS",
+      "message": "remappings is non-decreasing"
+    },
+    {
+      "name": "numeric.layer_resets_monotonic",
+      "level": "PASS",
+      "message": "layer_resets is non-decreasing"
+    },
+    {
+      "name": "numeric.detection_cost_monotonic",
+      "level": "PASS",
+      "message": "detection_cost is non-decreasing"
+    },
+    {
+      "name": "consistency.enable_soft_mitigation",
+      "level": "PASS",
+      "message": "soft_mitigations consistent with enable_soft_mitigation"
+    },
+    {
+      "name": "consistency.enable_remapping",
+      "level": "PASS",
+      "message": "remappings consistent with enable_remapping"
+    },
+    {
+      "name": "consistency.enable_layer_reset",
+      "level": "PASS",
+      "message": "layer_resets consistent with enable_layer_reset"
+    },
+    {
+      "name": "consistency.zero_density_baseline",
+      "level": "PASS",
+      "message": "no-fault baseline stays clean"
+    },
+    {
+      "name": "qualitative.final_accuracy",
+      "level": "PASS",
+      "message": "final accuracy clears random chance"
+    },
+    {
+      "name": "qualitative.accuracy_flat",
+      "level": "PASS",
+      "message": "accuracy varies across the run"
+    },
+    {
+      "name": "outlier.accuracy_jump",
+      "level": "PASS",
+      "message": "no implausible single-step accuracy jump"
+    },
+    {
+      "name": "deployment.events_complete",
+      "level": "PASS",
+      "message": "5 waves, complete"
+    },
+    {
+      "name": "deployment.burst_steps_match",
+      "level": "PASS",
+      "message": "burst_batches == optimizer_steps at every wave"
+    },
+    {
+      "name": "deployment.fault_map_hash",
+      "level": "PASS",
+      "message": "fault maps distinct per wave"
+    }
+  ]
+}

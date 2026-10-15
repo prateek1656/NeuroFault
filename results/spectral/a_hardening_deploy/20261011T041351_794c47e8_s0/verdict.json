@@ -1,0 +1,254 @@
+{
+  "criteria_id": "a_hardening_deploy",
+  "criteria_sha256": "880791cb4d68effdf67aaac9b8e2c5db21f4d12c3266701acc24c07627505bc6",
+  "overall": "INCONCLUSIVE",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "H2b": "INCONCLUSIVE",
+    "H2b_report": "INCONCLUSIVE",
+    "H2b_validity": "INCONCLUSIVE"
+  },
+  "n_rows": 960,
+  "criteria": [
+    {
+      "id": "H2b-NI-HB1_N8",
+      "kind": "pass",
+      "scope": "H2b",
+      "source": "master plan \u00a710 H2b",
+      "description": "Deployable M4 (full) non-inferior to HB1_N8: per dataset, scenario-mean (M4D_full - HB1_N8) >= -0.3 pt at >= 3 of 4 times.",
+      "note": null,
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "m4d_minus_HB1_N8_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.0,
+            "n": 4,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "m4d_minus_HB1_N8_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.25,
+            "n": 4,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H2b-NI-HB1_N32",
+      "kind": "pass",
+      "scope": "H2b",
+      "source": "master plan \u00a710 H2b",
+      "description": "Deployable M4 (full) non-inferior to HB1_N32 (same rule; mirrors H2).",
+      "note": null,
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "m4d_minus_HB1_N32_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.0,
+            "n": 4,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "m4d_minus_HB1_N32_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.0,
+            "n": 4,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H2b-NI-HB2",
+      "kind": "pass",
+      "scope": "H2b",
+      "source": "master plan \u00a710 H2b",
+      "description": "Deployable M4 (full) non-inferior to HB2 (same rule).",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "m4d_minus_HB2_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 1.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "m4d_minus_HB2_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 1.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H2b-NI-HB3",
+      "kind": "pass",
+      "scope": "H2b",
+      "source": "master plan \u00a710 H2b",
+      "description": "Deployable M4 (full) non-inferior to HB3 (same rule).",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "m4d_minus_HB3_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 1.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "m4d_minus_HB3_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 1.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H2b-kill-cheaper-wins",
+      "kind": "kill",
+      "scope": "H2b",
+      "source": "master plan \u00a710 H2b kill",
+      "description": "Kill deployable-M4 superiority if a baseline costing <= M4 in calibration MVM-equivalents (HB2, HB3) beats M4D_full by >= 1.0 pt (scenario mean) at >= 3 of 4 times on either dataset. (HB1 costs >> M4 and is reported.)\n",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "any",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "m4d_minus_HB2_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.0,
+            "n": 4,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "m4d_minus_HB2_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.0,
+            "n": 4,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "m4d_minus_HB3_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.0,
+            "n": 4,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "m4d_minus_HB3_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.0,
+            "n": 4,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H2b-pairing-gate",
+      "kind": "kill",
+      "scope": "H2b_validity",
+      "source": "master plan \u00a710 H2b validity",
+      "description": "Pairing broken: max |recomputed ideal M4 acc - a_hardening M4 acc| > 0.05 pt (run INVALID).",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "pairing_abs_diff_pt",
+            "aggregation": "max",
+            "comparator": ">",
+            "threshold": 0.05,
+            "value": 0.0,
+            "n": 960,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H2b-report",
+      "kind": "report",
+      "scope": "H2b_report",
+      "source": "master plan \u00a710 H2b (report only)",
+      "description": "M4D_full / M4D_r1 vs every baseline per dataset and time, with extra inference passes and HB1 cost.",
+      "note": null,
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "reason": "requires human judgement"
+      }
+    }
+  ],
+  "variant": "full"
+}

@@ -1,0 +1,34 @@
+# FeFET device technology, no_mitigation arm, moderate (non-saturating)
+# fault regime - see no_mitigation_moderate.yaml's comment for the full
+# rationale: injection_interval=8 (device_fefet_crosssim.yaml's original
+# value, mirroring Implementation.ipynb's parameters) drives the crossbar to
+# 100% permanently stuck within a few epochs once faults correctly persist,
+# leaving no room for a mitigation-strategy comparison. Recalibrated to
+# injection_interval=315 (945 total batches / 3) for the same ~27% final
+# stuck fraction target used across the whole moderate-regime track.
+# r_on/r_off (45x dynamic range) match device_fefet_crosssim.yaml's own
+# literature sourcing (Jerry, Chen, Zhang, et al., IEDM 2017).
+name: device_fefet_no_mitigation_moderate
+simulator: crosssim
+epochs: 15
+num_batches: 128
+batch_size: 32
+train_samples: 2000
+test_samples: 1000
+eval_interval: 3
+device:
+  name: fefet
+  r_on: 100.0
+  r_off: 4500.0
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 315
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

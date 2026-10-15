@@ -1,0 +1,80 @@
+schema_version: 1
+id: x_loop_ext
+title: "Closed loop extension: 5 seeds (ResNet-9), read noise 4%, second network (ViT-tiny)"
+source_plan: "user request 2026-10-12 after x_loop PASS (breadth + seeds); registered before any counted extension run"
+frozen: "2026-10-12"
+overall_pass: all
+note: >
+  Same question, method and code as criteria/x_loop.yaml (PASS, results/spectral/x_loop_box), with only these changes.
+  (1) SEEDS: ResNet-9 seeds 103 and 104 added (pre-deploy checkpoints trained on the extension boxes with
+  experiments/configs/resnet9_predeploy.yaml; NOT the mitigation session's 103/104 checkpoints, which were not available).
+  For 103/104 every oracle arm (R1, D, C'-matched) is run here with the same code; for 42/101/102 the dense oracle rows
+  stay the S1 runs in results/_live9 and all other rows come from results/spectral/x_loop_box. 5-seed rows reuse the
+  3-seed x_loop rows unchanged (no rerun).
+  (2) NOISE: sigma 4% of tile max|w|, ResNet-9 D-est dense + sparse, 5 seeds; CS probes 32 per tile (the H8
+  calibration-selected forward config at 4%, fixed in x_loop.py before this file), cap 64, same fallback rule.
+  Oracle rows are the sigma-2% oracle rows (the oracle does not read).
+  (3) NETWORK: ViT-tiny CIFAR-10 (mitigation session's final ViT setting: 3 waves x 10%, 15% spares, D rate 0.3,
+  priors eta 0.3; pre-deploy checkpoints results/_live8 seeds 42/101/102 and results/_live10 seeds 103/104). Dense: R1
+  floor, D-oracle, D-est. Sparse: schedule A of x_loop.yaml (not recalibrated for ViT), R0 floor, D-oracle, D-est. All
+  ViT arms run here with one config (the mitigation session's ViT seeds 42/101/102 used other rates, so they are not reused).
+  ViT read bar: its layers are 192 wide, so full readout costs <= 192 reads per tile while CS costs 32 (24 + 8
+  calibration); the sparse read bar is 0.35 for ViT and for sigma 4% (base ratio ~0.15-0.17 before fallback). C'
+  (D-vs-C' question) is run on ResNet-9 only.
+  Rows of verdict_metrics.csv (experiments/spectral/x_loop_ext_summary.py): one per (net, regime, sigma, seed) with
+  d_est, d_oracle, floor, gap_d, closure, recall_vis_min, reads_ratio, and for ResNet-9 dense c_est, c_oracle,
+  d_est_minus_c_est.
+  Disclosed before this file: x_loop results (3 seeds, sigma 2%, ResNet-9), synthetic sigma-4% estimator check (recall
+  96-98% of visible faults, 1 false alarm per 262k cells). Smoke runs never count.
+criteria:
+  - id: E-r9-5seed
+    source: "x_loop X-dense-pass / X-dense-edge / X-sparse-pass on 5 seeds"
+    kind: pass
+    scope: r9
+    description: >
+      ResNet-9, sigma 2%, 5 seeds: dense mean gap_d >= -1.0, sparse mean gap_d >= -0.5, D-est beats C'-est in
+      >= 2/3 of dense seeds (>= 4 of 5), sparse reads ratio <= 0.25 on every seed.
+    clauses:
+      - {metric: gap_d, filter: {net: [resnet9], sigma: [0.02], regime: [dense]}, aggregation: mean, comparator: ">=", threshold: -1.0}
+      - {metric: gap_d, filter: {net: [resnet9], sigma: [0.02], regime: [sparse]}, aggregation: mean, comparator: ">=", threshold: -0.5}
+      - {metric: d_est_minus_c_est, filter: {net: [resnet9], sigma: [0.02], regime: [dense]}, aggregation: frac, inner: {comparator: ">", threshold: 0.0}, comparator: ">=", threshold: 0.66}
+      - {metric: reads_ratio, filter: {net: [resnet9], sigma: [0.02], regime: [sparse]}, aggregation: max, comparator: "<=", threshold: 0.25}
+  - id: E-sigma4
+    source: "breadth: second read-noise level"
+    kind: pass
+    scope: sigma4
+    description: >
+      ResNet-9, sigma 4%, 5 seeds: dense mean gap_d >= -1.0, sparse mean gap_d >= -0.5, sparse reads ratio <= 0.35.
+    clauses:
+      - {metric: gap_d, filter: {net: [resnet9], sigma: [0.04], regime: [dense]}, aggregation: mean, comparator: ">=", threshold: -1.0}
+      - {metric: gap_d, filter: {net: [resnet9], sigma: [0.04], regime: [sparse]}, aggregation: mean, comparator: ">=", threshold: -0.5}
+      - {metric: reads_ratio, filter: {net: [resnet9], sigma: [0.04], regime: [sparse]}, aggregation: max, comparator: "<=", threshold: 0.35}
+  - id: E-vit
+    source: "breadth: second network"
+    kind: pass
+    scope: vit
+    description: >
+      ViT-tiny, sigma 2%, 5 seeds: dense mean gap_d >= -1.0, sparse mean gap_d >= -0.5, sparse reads ratio <= 0.35.
+    clauses:
+      - {metric: gap_d, filter: {net: [vit], regime: [dense]}, aggregation: mean, comparator: ">=", threshold: -1.0}
+      - {metric: gap_d, filter: {net: [vit], regime: [sparse]}, aggregation: mean, comparator: ">=", threshold: -0.5}
+      - {metric: reads_ratio, filter: {net: [vit], regime: [sparse]}, aggregation: max, comparator: "<=", threshold: 0.35}
+  - id: E-kill
+    source: "x_loop X-kill, every group"
+    kind: kill
+    scope: all
+    description: >
+      Kill if any (net, regime, sigma) group has mean gap_d < -2.0, or the estimated map misses more than 10% of new
+      visible faults in any wave of any run.
+    combine: any
+    clauses:
+      - {metric: gap_d, per_group: {by: [net, regime, sigma], aggregation: mean}, aggregation: min, comparator: "<", threshold: -2.0}
+      - {metric: recall_vis_min, aggregation: min, comparator: "<", threshold: 0.9}
+  - id: E-report
+    source: "report only"
+    kind: report
+    scope: report
+    description: >
+      Closure per group (ViT sparse floor may be close to the oracle, so closure can be ill-defined there), per-seed
+      tables, fallback fraction, false positives, ResNet-9 seeds 103/104 clean accuracy, D vs C' oracle on 103/104.
+    manual: true

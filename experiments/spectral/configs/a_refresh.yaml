@@ -1,0 +1,38 @@
+# Phase H arm H6 (criteria/a_refresh.yaml, frozen 2026-10-10, committed before any run). `smoke` never counts.
+# Platform = a_deploy with every random stream offset +4000; train-image statistics only. Nothing tuned on results.
+full:
+  datasets: [cifar10, cifar100]
+  ckpt_seeds: [42, 101, 102]
+  seed_offset: 4000
+  sigma: 0.02
+  n_eval: 10000
+  act_images: 5000
+  ages: {1h: 3600.0, 3h: 10800.0, 8h: 28800.0, 1d: 86400.0, 3d: 259200.0, 7d: 604800.0, 14d: 1209600.0,
+         30d: 2592000.0, 60d: 5184000.0, 120d: 10368000.0, 240d: 20736000.0, 365d: 31536000.0}
+  targets: {T1d: 1d, T30d: 30d}
+  commission_s: 86400.0   # per-tile statistic curve fitted on ages <= 1 day, extrapolated log-linearly
+  lam_log10: [-7.0, 1.0]
+  n_lam: 16
+  scenarios:
+    - {name: D2, model: D2, field: "", rho: 0.0}
+    - {name: D3_hotspot_r1, model: D3, field: hotspot, rho: 1.0}
+    - {name: D3_hotspot_r2, model: D3, field: hotspot, rho: 2.0}
+    - {name: D3_rank_r_r1, model: D3, field: rank_r, rho: 1.0}
+    - {name: D3_rank_r_r2, model: D3, field: rank_r, rho: 2.0}
+    - {name: D3_row_gradient_r1, model: D3, field: row_gradient, rho: 1.0}
+    - {name: D3_row_gradient_r2, model: D3, field: row_gradient, rho: 2.0}
+    - {name: D4, model: D4, field: "", rho: 1.0}
+smoke:
+  datasets: [cifar10]
+  ckpt_seeds: [101]
+  seed_offset: 4000
+  sigma: 0.02
+  n_eval: 1000
+  act_images: 500
+  ages: {1h: 3600.0, 1d: 86400.0, 30d: 2592000.0, 365d: 31536000.0}
+  targets: {T1d: 1d, T30d: 30d}
+  commission_s: 86400.0
+  lam_log10: [-7.0, 1.0]
+  n_lam: 6
+  scenarios:
+    - {name: D3_hotspot_r2, model: D3, field: hotspot, rho: 2.0}

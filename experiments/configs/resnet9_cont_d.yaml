@@ -1,0 +1,70 @@
+# Continuous-regime "bridge" arm: the deployment policy, but the network keeps training.
+# Regime: continuous, 50 epochs = 10 float pretrain + 40 analog, same base training/crossbar fields
+# as resnet9_fault_remapping.yaml. Faults: density-only stuck-at, density 0.1 every 5200 batches
+# (3 waves in 19,500 batches, ~27% final stuck fraction) - the same 3 x 10% schedule as the
+# deployment study (resnet9_deploy_*.yaml), so numbers are comparable. NOT the mixed-fault
+# (drift) configs: continuous retraining policies require density-only faults.
+# Policy hook: experiments/run.py::_ContinuousPolicyRunner. Differences from the legacy continuous
+# arms, all only when a policy is set: waves use a dedicated per-wave generator (identical fault
+# maps across arms); health-gated dispatch is disabled (mitigation is policy-driven only);
+# stuck-weight freeze is on (needed for living spares); the 1024-image canary is held out of ALL
+# training, so the main stream has 48,976 images (383 batches/epoch, not 390). Bursts use a fresh
+# SGD optimizer; the main optimizer and one-cycle scheduler are untouched.
+# No pre-deploy checkpoint is needed (continuous trains from scratch).
+# Arm D (co-mitigation controller): saliency-ordered paced remap, BN recalibration, canary gate,
+# adaptive burst. Mirrors resnet9_deploy_d.yaml. eta/delta/kappa/k/m/t_max come from
+# retrain_controller_priors.json (calibration output; the run raises FileNotFoundError if absent,
+# so D never runs uncalibrated); burst_lr below is only the documented fallback = shared eta 5.0e-3.
+# expected_waves: 3 tells the pacer the modeled wave count (continuous has no wave_densities list).
+# A Fisher tracker accumulates during the analog phase (system.fisher) for saliency ordering.
+name: resnet9_cont_d
+simulator: crosssim
+epochs: 50
+float_pretrain_epochs: 10
+finetune_learning_rate: 0.001
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+lr_one_cycle: true
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  redundancy_factor: 0.15
+  use_gpu: true
+  calibrate_adc: true
+  adc_calibration_images: 320
+  calibrate_dac: true
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: true
+  enable_layer_reset: false
+  enable_predictive: false
+retraining:
+  policy: co_mitigation
+  canary_size: 1024
+  reference_mode: living
+  remap_order: saliency
+  remap_pacing: paced
+  expected_waves: 3
+  burst_mode: adaptive
+  bn_recal_batches: 20
+  burst_lr: 5.0e-3
+  burst_t_max: 1000
+  patience_eval_every: 25
+  patience_window: 3
+  patience_min_gain: 0.5
+  canary_gate_delta: 1.0
+  burst_batches: 390  # only used by burst_mode: fixed
+  priors_path: experiments/configs/retrain_controller_priors.json

@@ -1,0 +1,157 @@
+{
+  "criteria_id": "e5_weiroth_fair",
+  "criteria_sha256": "f2712f20c4d3df1aa18ec367041e83c69a1215bd8dab42f6cde7373de3d02554",
+  "overall": "INCONCLUSIVE",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "E5": "INCONCLUSIVE",
+    "E5_report": "INCONCLUSIVE"
+  },
+  "n_rows": 24,
+  "criteria": [
+    {
+      "id": "E5-own-terms",
+      "kind": "pass",
+      "scope": "E5",
+      "source": "fairness audit: does the baseline work in its own regime on our faults",
+      "description": "Under bounded noise, a one-MVM line-level Wei & Roth arm (worst-case or random-noise threshold) reaches line F1 >= 0.9 on >= 3 of 4 k at each of sigma 1% and 2%. PASS means the baseline is not a strawman: any \"fails at 1-2% noise\" sentence about Wei & Roth must then be dropped. FAIL means the paper's guarantee (outliers > 2 rho delta ||x||) does not cover our moderate-magnitude stuck faults, and the paper states that regime mismatch instead of \"Wei & Roth fails\".\n",
+      "note": null,
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "wr_line_1read_reaches",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 3,
+            "value": 0.0,
+            "n": 2,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E5-CS-2x-bounded",
+      "kind": "pass",
+      "scope": "E5",
+      "source": "H8-CS-2x rule under the Wei & Roth noise model",
+      "description": "Under bounded noise, forward-only CS needs >= 2x fewer reads than the best W-R cell-level arm (or W-R misses F1 0.9 while CS reaches it) on >= 3 of 4 k at each of sigma 1% and 2%.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "row_ok_2x_wr_best",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 3,
+            "value": 4.0,
+            "n": 2,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E5-CS-2x-gauss",
+      "kind": "pass",
+      "scope": "E5",
+      "source": "H8-CSF-2x rule re-measured with the frozen E5 arms under H8's Gaussian noise",
+      "description": "Same as E5-CS-2x-bounded under Gaussian read noise (H8's setting, E5 arms).",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "row_ok_2x_wr_best",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 3,
+            "value": 3.0,
+            "n": 2,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E5-kill-reads",
+      "kind": "kill",
+      "scope": "E5",
+      "source": "H8-kill applied to the Wei & Roth noise model",
+      "description": "Kill the \"fewer reads than Wei & Roth\" wording if, under bounded noise, a W-R cell arm reaches F1 0.9 with no more reads than forward-only CS on >= 2 of 4 k at sigma 1% or at sigma 2%.\n",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "wr_beats_csf",
+            "aggregation": "max",
+            "comparator": ">=",
+            "threshold": 2,
+            "value": 0.0,
+            "n": 2,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E5-kill-cs-f1",
+      "kind": "kill",
+      "scope": "E5",
+      "source": "H8-kill, F1 floor",
+      "description": "Forward-only CS cell F1 below 0.8 on any 1-2% row under either noise model.",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "cell_f1_csf",
+            "aggregation": "min",
+            "comparator": "<",
+            "threshold": 0.8,
+            "value": 0.8963425925925926,
+            "n": 16,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E5-report",
+      "kind": "report",
+      "scope": "E5_report",
+      "source": "fairness report",
+      "description": "Cost on the paper's axis (r_cols, col_equiv), line-level F1 of all arms including the *_R variants, sigma 4% rows, the guarantee flag (paper_guarantee_form), H8 ROTH reads/F1 joined as h8_*, per-instance table (eval_instances.csv). The line-level arms and the cell-level extension are reported in separate columns and must stay separate in the paper.\n",
+      "note": null,
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "reason": "requires human judgement"
+      }
+    }
+  ],
+  "metrics_csv": "results/spectral/e5_weiroth_fair/20261014T124416_9b59bf83_s0/verdict_metrics.csv"
+}

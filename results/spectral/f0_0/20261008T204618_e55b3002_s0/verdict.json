@@ -1,0 +1,299 @@
+{
+  "criteria_id": "f0_validity",
+  "criteria_sha256": "6e25eb2a74729a04081f53b06e321fbd78a82b0db83944ac3b653c2cf6e96605",
+  "overall": "INCONCLUSIVE",
+  "overall_pass_rule": "all",
+  "by_scope": {},
+  "n_rows": 872,
+  "criteria": [
+    {
+      "id": "F0.0a",
+      "kind": "pass",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.0a",
+      "description": "Probe reproduction in the original setting (signed_ideal, 256, first-slice, 2% per_cell fresh noise, seed 42, 200 trials): sigma_1 SNR median and probe SNR/row-loc within +-15% (relative) of the tabulated numbers in 00-grounding.md (0.05-0.09 / ~3.1 / 55-62%); sigma_1/sigma_2 within 0.01. Fail => stack wrong or old probe seed-lucky (either is a finding).\n",
+      "note": "The reference is a RANGE for sigma_1 SNR (0.05-0.09) and row-loc (55-62%). Transcribed as \"relative error to the nearest edge of the tabulated range / the point value\" - the experiment script must emit rel_err = 0 inside the range and distance-to-range / range-edge outside it.\n",
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "f00a_sigma1_snr_rel_err",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.15,
+            "value": 0.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "f00a_probe_snr_rel_err",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.15,
+            "value": 0.053484316795103036,
+            "n": 4,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "f00a_rowloc_rel_err",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.15,
+            "value": 0.13636363636363646,
+            "n": 4,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "f00a_gap_abs_err",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.01,
+            "value": 4.3150237338807074e-07,
+            "n": 4,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "F0.0b",
+      "kind": "pass",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.0b",
+      "description": "D2 equivalence with AIHWKit: 1e5 devices at 6 target levels; distribution of G(t)/G0 and nu (two-sample KS, mean/std) vs PCMLikeNoiseModel (drift part and, separately, 1/f part). Pass: KS p > 0.01 at all levels/times and |mean ratio error| < 0.5%.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "f00b_ks_p",
+            "aggregation": "min",
+            "comparator": ">",
+            "threshold": 0.01,
+            "value": 0.023278764007607356,
+            "n": 54,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "f00b_mean_ratio_abs_err",
+            "aggregation": "max",
+            "comparator": "<",
+            "threshold": 0.005,
+            "value": 0.0029866316831385076,
+            "n": 54,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "F0.0c",
+      "kind": "pass",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.0c",
+      "description": "GDC parity: B1b vs AIHWKit GlobalDriftCompensation alpha on identical drifted tile: relative difference < read-noise-expected bound (and < 2% noise-free).\n",
+      "note": "\"read-noise-expected bound\" is not a number in the plan. The script must emit f00c_rel_diff_over_noise_bound = rel_diff / bound (bound computed from the noise model before looking at the result); pass means ratio < 1.\n",
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "f00c_rel_diff_over_noise_bound",
+            "aggregation": "max",
+            "comparator": "<",
+            "threshold": 1.0,
+            "value": 0.6003463122203531,
+            "n": 720,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "f00c_rel_diff_noise_free",
+            "aggregation": "max",
+            "comparator": "<",
+            "threshold": 0.02,
+            "value": 0.0,
+            "n": 36,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "F0.0d",
+      "kind": "pass",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.0d",
+      "description": "D0 parity: LegacyRailShift vs injection._drift through tests/unit/fakes.make_handle: bit-identical matrices for a shared generator seed and drift_direction in {toward_hrs, toward_lrs}.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "f00d_max_abs_diff",
+            "aggregation": "max",
+            "comparator": "==",
+            "threshold": 0.0,
+            "value": 0.0,
+            "n": 18,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "F0.0e",
+      "kind": "pass",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.0e",
+      "description": "Persistence/invariants: per-device nu constant across t; D1 + GDC residual < 1e-3 relative; G+/G- decode(encode(W)) == W to 1e-12; stuck devices never move.\n",
+      "note": "\"nu constant\" and \"stuck devices never move\" are transcribed as max absolute deviation == 0 (exact); the plan gives no tolerance for them.\n",
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "f00e_nu_max_abs_change",
+            "aggregation": "max",
+            "comparator": "==",
+            "threshold": 0.0,
+            "value": 0.0,
+            "n": 3,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "f00e_d1_gdc_residual_rel",
+            "aggregation": "max",
+            "comparator": "<",
+            "threshold": 0.001,
+            "value": 1.4593164357686213e-16,
+            "n": 2,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "f00e_roundtrip_max_abs_err",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 1e-12,
+            "value": 5.551115123125783e-17,
+            "n": 1,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "f00e_stuck_max_abs_move",
+            "aggregation": "max",
+            "comparator": "==",
+            "threshold": 0.0,
+            "value": 0.0,
+            "n": 8,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "F0.8a",
+      "kind": "pass",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.8(a)",
+      "description": "Tier-1 vs tier-2 agreement <= 0.5 pt (seed 42, three time points).",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "f08a_tier1_vs_tier2_abs_diff_pt",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.5,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'f08a_tier1_vs_tier2_abs_diff_pt' missing"
+          }
+        ]
+      }
+    },
+    {
+      "id": "F0.8b",
+      "kind": "pass",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.8(b)",
+      "description": "Our D2 + B1b vs AIHWKit-native D2 + GlobalDriftCompensation accuracy-vs-time: within 1.0 pt at each time point, 3 seeds. Remaining differences are reported, not hidden.\n",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "f08b_ours_vs_aihwkit_abs_diff_pt",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 1.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'f08b_ours_vs_aihwkit_abs_diff_pt' missing"
+          }
+        ]
+      }
+    },
+    {
+      "id": "F0.8c",
+      "kind": "pass",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.8(c)",
+      "description": "No-drift tier-1 accuracy equals the checkpoint's stored final_test_acc within the test-set binomial CI.\n",
+      "note": "Script emits f08c_abs_dev_over_binomial_halfwidth = |acc - stored| / CI half-width; pass <= 1.\n",
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "f08c_abs_dev_over_binomial_halfwidth",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 1.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'f08c_abs_dev_over_binomial_halfwidth' missing"
+          }
+        ]
+      }
+    }
+  ],
+  "variant": "full"
+}

@@ -1,0 +1,335 @@
+{
+  "regime": "deployment",
+  "policy": "periodic",
+  "seed": 102,
+  "nominal_inter_wave_batches": 5200,
+  "checkpoint_config_hash": "cfd9160735f8794972ad3954a174684cf84ca5f081cd44a0b8d0fd048f1189a2",
+  "checkpoint_final_test_acc": 88.96,
+  "baseline_test_acc": 88.5,
+  "baseline_canary_acc": 91.796875,
+  "complete": true,
+  "summary": {
+    "final_test_acc": 83.06,
+    "lifetime_mean_test_acc": 80.08666666666666,
+    "worst_dip_test_acc": 10.34,
+    "total_burst_batches": 1476,
+    "total_remapped": 0
+  },
+  "events": [
+    {
+      "wave": 0,
+      "density": 0.1,
+      "nominal_batch_equivalent": 0,
+      "fault_map_hash": {
+        "features.0.0_crossbar_0": "9f48de4f53137367",
+        "features.1.0_crossbar_0": "e4f75f65d6464cb6",
+        "features.3.0_crossbar_0": "275898dbc7e12628",
+        "features.4.0_crossbar_0": "b4f8d9c9c695f3a3",
+        "features.6.0_crossbar_0": "77330423114de692",
+        "features.7.0_crossbar_0": "8c113cb07babf302",
+        "fc_crossbar_0": "2b97d8f32097ebbb"
+      },
+      "newly_stuck": 114704,
+      "test_acc_before": 10.34,
+      "test_acc_after": 75.86,
+      "canary_acc_before": 8.7890625,
+      "canary_acc_after": 78.02734375,
+      "burst_batches": 492,
+      "optimizer_steps": 492,
+      "remapped": 0,
+      "stop_reason": "fixed",
+      "canary_trace": [
+        [
+          25,
+          25.5859375
+        ],
+        [
+          50,
+          31.93359375
+        ],
+        [
+          75,
+          29.39453125
+        ],
+        [
+          100,
+          47.55859375
+        ],
+        [
+          125,
+          52.44140625
+        ],
+        [
+          150,
+          51.26953125
+        ],
+        [
+          175,
+          59.1796875
+        ],
+        [
+          200,
+          51.7578125
+        ],
+        [
+          225,
+          63.28125
+        ],
+        [
+          250,
+          66.11328125
+        ],
+        [
+          275,
+          67.87109375
+        ],
+        [
+          300,
+          67.578125
+        ],
+        [
+          325,
+          72.4609375
+        ],
+        [
+          350,
+          71.38671875
+        ],
+        [
+          375,
+          73.14453125
+        ],
+        [
+          400,
+          77.1484375
+        ],
+        [
+          425,
+          77.1484375
+        ],
+        [
+          450,
+          77.63671875
+        ],
+        [
+          475,
+          77.734375
+        ]
+      ],
+      "remapped_this_wave": 0,
+      "remapped_by_layer": {},
+      "unremapped_effective_stuck": 114704,
+      "wall_seconds": 97.60433673858643
+    },
+    {
+      "wave": 1,
+      "density": 0.1,
+      "nominal_batch_equivalent": 5200,
+      "fault_map_hash": {
+        "features.0.0_crossbar_0": "ad52e65d87766ccb",
+        "features.1.0_crossbar_0": "d9143dad01cc2533",
+        "features.3.0_crossbar_0": "87e508eba694cc01",
+        "features.4.0_crossbar_0": "cf793dc2786f19ae",
+        "features.6.0_crossbar_0": "acbb80468f9d905f",
+        "features.7.0_crossbar_0": "d1bb83207b071c61",
+        "fc_crossbar_0": "65baf46b44dba941"
+      },
+      "newly_stuck": 103116,
+      "test_acc_before": 48.36,
+      "test_acc_after": 81.34,
+      "canary_acc_before": 46.484375,
+      "canary_acc_after": 81.34765625,
+      "burst_batches": 492,
+      "optimizer_steps": 492,
+      "remapped": 0,
+      "stop_reason": "fixed",
+      "canary_trace": [
+        [
+          25,
+          56.25
+        ],
+        [
+          50,
+          65.52734375
+        ],
+        [
+          75,
+          56.8359375
+        ],
+        [
+          100,
+          60.44921875
+        ],
+        [
+          125,
+          68.26171875
+        ],
+        [
+          150,
+          70.21484375
+        ],
+        [
+          175,
+          71.875
+        ],
+        [
+          200,
+          66.89453125
+        ],
+        [
+          225,
+          74.4140625
+        ],
+        [
+          250,
+          77.44140625
+        ],
+        [
+          275,
+          77.44140625
+        ],
+        [
+          300,
+          77.63671875
+        ],
+        [
+          325,
+          79.296875
+        ],
+        [
+          350,
+          79.58984375
+        ],
+        [
+          375,
+          80.46875
+        ],
+        [
+          400,
+          80.17578125
+        ],
+        [
+          425,
+          80.76171875
+        ],
+        [
+          450,
+          82.2265625
+        ],
+        [
+          475,
+          81.8359375
+        ]
+      ],
+      "remapped_this_wave": 0,
+      "remapped_by_layer": {},
+      "unremapped_effective_stuck": 217820,
+      "wall_seconds": 97.66986227035522
+    },
+    {
+      "wave": 2,
+      "density": 0.1,
+      "nominal_batch_equivalent": 10400,
+      "fault_map_hash": {
+        "features.0.0_crossbar_0": "10085d12e101fe09",
+        "features.1.0_crossbar_0": "14dd677bc3439317",
+        "features.3.0_crossbar_0": "c1b57163ea4f0875",
+        "features.4.0_crossbar_0": "9704f26d3b983799",
+        "features.6.0_crossbar_0": "35b1b4437638f637",
+        "features.7.0_crossbar_0": "b06714cac75f79ed",
+        "fc_crossbar_0": "c864dbcd00fd19a8"
+      },
+      "newly_stuck": 92824,
+      "test_acc_before": 31.5,
+      "test_acc_after": 83.06,
+      "canary_acc_before": 31.54296875,
+      "canary_acc_after": 83.984375,
+      "burst_batches": 492,
+      "optimizer_steps": 492,
+      "remapped": 0,
+      "stop_reason": "fixed",
+      "canary_trace": [
+        [
+          25,
+          62.79296875
+        ],
+        [
+          50,
+          73.4375
+        ],
+        [
+          75,
+          59.375
+        ],
+        [
+          100,
+          76.171875
+        ],
+        [
+          125,
+          73.92578125
+        ],
+        [
+          150,
+          76.5625
+        ],
+        [
+          175,
+          76.66015625
+        ],
+        [
+          200,
+          76.3671875
+        ],
+        [
+          225,
+          80.46875
+        ],
+        [
+          250,
+          79.58984375
+        ],
+        [
+          275,
+          79.296875
+        ],
+        [
+          300,
+          80.95703125
+        ],
+        [
+          325,
+          82.51953125
+        ],
+        [
+          350,
+          80.859375
+        ],
+        [
+          375,
+          81.73828125
+        ],
+        [
+          400,
+          83.203125
+        ],
+        [
+          425,
+          82.51953125
+        ],
+        [
+          450,
+          83.49609375
+        ],
+        [
+          475,
+          83.203125
+        ]
+      ],
+      "remapped_this_wave": 0,
+      "remapped_by_layer": {},
+      "unremapped_effective_stuck": 310644,
+      "wall_seconds": 97.098073720932
+    }
+  ]
+}

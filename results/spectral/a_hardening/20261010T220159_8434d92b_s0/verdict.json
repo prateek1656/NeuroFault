@@ -1,0 +1,247 @@
+{
+  "criteria_id": "a_hardening",
+  "criteria_sha256": "66278d5a415e3372808b13b929cdbed0ec542d253a436cf6007a803bdcd82b16",
+  "overall": "INCONCLUSIVE",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "H2": "INCONCLUSIVE",
+    "H2_report": "INCONCLUSIVE"
+  },
+  "n_rows": 1344,
+  "criteria": [
+    {
+      "id": "H2-NI-HB1_N8",
+      "kind": "pass",
+      "scope": "H2",
+      "source": "master plan \u00a710 H2 non-inferiority",
+      "description": "M4 is non-inferior to HB1_N8: per dataset, mean over scenarios of (M4 - HB1_N8) >= -0.3 pt at >= 3 of 4 time points.",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "m4_minus_HB1_N8_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 1.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "m4_minus_HB1_N8_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 1.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H2-NI-HB1_N32",
+      "kind": "pass",
+      "scope": "H2",
+      "source": "master plan \u00a710 H2 non-inferiority",
+      "description": "M4 is non-inferior to HB1_N32 (same rule).",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "m4_minus_HB1_N32_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 1.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "m4_minus_HB1_N32_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 1.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H2-NI-HB2",
+      "kind": "pass",
+      "scope": "H2",
+      "source": "master plan \u00a710 H2 non-inferiority",
+      "description": "M4 is non-inferior to HB2 (same rule).",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "m4_minus_HB2_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 1.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "m4_minus_HB2_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 1.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H2-NI-HB3",
+      "kind": "pass",
+      "scope": "H2",
+      "source": "master plan \u00a710 H2 non-inferiority",
+      "description": "M4 is non-inferior to HB3 (same rule).",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "m4_minus_HB3_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 1.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "m4_minus_HB3_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 1.0,
+            "n": 4,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H2-kill-cheaper-wins",
+      "kind": "kill",
+      "scope": "H2",
+      "source": "master plan \u00a710 H2 kill",
+      "description": "Kill M4's superiority claim if any baseline whose cost is <= M4's (in MVM-equivalents) beats M4 by >= 1.0 pt (scenario mean) at >= 3 of 4 time points on either dataset.\n",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "any",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "m4_minus_HB2_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.0,
+            "n": 4,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "m4_minus_HB2_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.0,
+            "n": 4,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "m4_minus_HB3_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.0,
+            "n": 4,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "m4_minus_HB3_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.0,
+            "n": 4,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "m4_minus_HB1_N8_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "only 0 rows/groups after filter (min_n=1)"
+          },
+          {
+            "metric": "m4_minus_HB1_N8_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "only 0 rows/groups after filter (min_n=1)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "H2-superiority-report",
+      "kind": "report",
+      "scope": "H2_report",
+      "source": "master plan \u00a710 H2 (report only)",
+      "description": "Report M4's margin over each baseline per dataset and time (no pass/fail).",
+      "note": null,
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "reason": "requires human judgement"
+      }
+    }
+  ],
+  "variant": "full"
+}

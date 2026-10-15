@@ -1,0 +1,39 @@
+# Golden config for the run.py refactor regression (see tests/golden/README.md).
+# Remapping is DISABLED on purpose so the remap/dispatch bug fixes cannot change it;
+# soft_mitigation + layer_reset + a drift secondary_fault exercise the rest of the loop.
+# 6 epochs x 4 batches = 24 batches; epoch 0 is float pretrain (batches 0-3), analog batches
+# 4-23; waves at global batches 6, 12, 18 (3 waves); health checks every 2 analog forwards.
+name: refactor_golden
+seed: 7
+simulator: crosssim
+dataset: cifar10
+epochs: 6
+num_batches: 4
+batch_size: 4
+train_samples: 16
+test_samples: 8
+eval_interval: 1
+float_pretrain_epochs: 1
+crossbar:
+  use_gpu: false
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_factor: 0.15
+  redundancy_scheme: idealized_per_cell
+  calibrate_adc: false
+  calibrate_dac: false
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 6
+secondary_fault:
+  failure_model: drift
+  density: 0.1
+  distribution: random
+  injection_interval: 6
+mitigation:
+  enable_soft_mitigation: true
+  enable_remapping: false
+  enable_layer_reset: true
+  enable_predictive: false
+  health_threshold: 75.0
+  health_check_interval: 2

@@ -1,0 +1,31 @@
+# FeFET device technology, layer_reset-only arm, moderate fault regime - see
+# device_fefet_no_mitigation_moderate.yaml for the recalibration rationale
+# (injection_interval=420, matching this arm's 20-epoch length).
+# layer_reset uses the targeted (positions=...) reset - see
+# src/neurofault/mitigation/reset.py's module docstring - plus the cooldown
+# throttle (MitigationConfig.layer_reset_cooldown_checks, default 10).
+name: device_fefet_layer_reset_moderate
+simulator: crosssim
+epochs: 20
+num_batches: 128
+batch_size: 32
+train_samples: 2000
+test_samples: 1000
+eval_interval: 3
+device:
+  name: fefet
+  r_on: 100.0
+  r_off: 4500.0
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 420
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: true
+  enable_predictive: false
+  health_threshold: 75.0

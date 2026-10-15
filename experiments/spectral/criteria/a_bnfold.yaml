@@ -1,0 +1,93 @@
+schema_version: 1
+id: a_bnfold
+title: "Direction A follow-up: field-fit calibration (M4) for BatchNorm-folded deployment"
+source_plan: "plan-A §1.6 (registered 2026-10-09, AFTER Exp 2 / L16; must be reported next to L16)"
+frozen: "2026-10-09"
+overall_pass: all
+note: >
+  Registered after seeing Exp 2 (results/spectral/a_exp2/20261009T052819_52891c48_s0), where the W2
+  BN-folded workload gave M4 +5.4 pt over B8. To avoid re-testing on the data that suggested it, ALL
+  randomness is fresh: drift, fault, programming-noise and probe streams use seeds offset by +1000
+  from Exp 2, and CIFAR-100 checkpoints (never used in this vertical) are added. Setup: ResNet-9 with
+  BatchNorm folded into conv weights + digital bias before deployment (AdaBS not applicable); PCM drift
+  D2 (iid) and D3 {hotspot, rank_r, row_gradient} rho in {1, 2} and D4; t in {1h, 1d, 30d, 1yr};
+  2% per-cell probe read noise; M4 = FieldFit 'cos' order 4 with <= 16 calibration MVMs per tile and
+  0 calibration images; incumbent B8 = best of {GDC, per-row, per-col, biscale} + bias correction with
+  the same held-out per-tile selection as Exp 2; oracle = programmed (undrifted) network.
+  Headline evaluation on 10k test images. Rows = (dataset, ckpt_seed, scenario, t).
+  Columns the script must emit: dataset, ckpt_seed, scenario, model, t_s, acc_prog, acc_m4, acc_b8,
+  gap_prog_minus_m4_pt, gain_m4_minus_b8_pt, gain_ci_lower_pt (paired cluster bootstrap over ckpt
+  seeds, computed per (dataset, t_s) pooled over scenarios, repeated on each row of that group),
+  m4_mvm_per_tile.
+criteria:
+  - id: BF1
+    source: "plan-A §1.6 BF1"
+    kind: pass
+    scope: BF
+    description: >
+      Accuracy recovery: M4 is within 0.5 pt of the programmed network - median over all rows of
+      (acc_prog - acc_m4) <= 0.5, separately for CIFAR-10 and CIFAR-100.
+    clauses:
+      - {metric: gap_prog_minus_m4_pt, aggregation: median, filter: {dataset: cifar10}, comparator: "<=", threshold: 0.5}
+      - {metric: gap_prog_minus_m4_pt, aggregation: median, filter: {dataset: cifar100}, comparator: "<=", threshold: 0.5}
+  - id: BF2
+    source: "plan-A §1.6 BF2"
+    kind: pass
+    scope: BF
+    description: >
+      Margin over every cheap method: pooled over scenarios, M4 - B8 >= 2.0 pt with paired-CI lower
+      bound > 0 at >= 3 of the 4 time points, for each dataset.
+    clauses:
+      - metric: gain_m4_minus_b8_pt
+        filter: {dataset: cifar10}
+        per_group: {by: [t_s], aggregation: mean}
+        aggregation: frac
+        inner: {comparator: ">=", threshold: 2.0}
+        comparator: ">="
+        threshold: 0.75
+      - metric: gain_ci_lower_pt
+        filter: {dataset: cifar10}
+        per_group: {by: [t_s], aggregation: min}
+        aggregation: frac
+        inner: {comparator: ">", threshold: 0.0}
+        comparator: ">="
+        threshold: 0.75
+      - metric: gain_m4_minus_b8_pt
+        filter: {dataset: cifar100}
+        per_group: {by: [t_s], aggregation: mean}
+        aggregation: frac
+        inner: {comparator: ">=", threshold: 2.0}
+        comparator: ">="
+        threshold: 0.75
+      - metric: gain_ci_lower_pt
+        filter: {dataset: cifar100}
+        per_group: {by: [t_s], aggregation: min}
+        aggregation: frac
+        inner: {comparator: ">", threshold: 0.0}
+        comparator: ">="
+        threshold: 0.75
+  - id: BF3
+    source: "plan-A §1.6 BF3"
+    kind: pass
+    scope: BF
+    description: "Budget: M4 uses <= 16 calibration MVMs per tile on every row."
+    clauses:
+      - {metric: m4_mvm_per_tile, aggregation: max, comparator: "<=", threshold: 16}
+  - id: BF-noharm
+    source: "plan-A §1.6 BF-noharm"
+    kind: kill
+    scope: BF
+    description: "Kill if M4 is worse than B8 on unstructured iid drift (D2): mean gain < -0.3 pt on either dataset."
+    combine: any
+    clauses:
+      - {metric: gain_m4_minus_b8_pt, aggregation: mean, filter: {dataset: cifar10, model: D2}, comparator: "<", threshold: -0.3}
+      - {metric: gain_m4_minus_b8_pt, aggregation: mean, filter: {dataset: cifar100, model: D2}, comparator: "<", threshold: -0.3}
+  - id: BF-kill
+    source: "plan-A §1.6 BF-kill"
+    kind: kill
+    scope: BF
+    description: "Kill if the pooled paired-CI lower bound of M4 - B8 is <= 0 at every time point for either dataset."
+    combine: any
+    clauses:
+      - {metric: gain_ci_lower_pt, aggregation: max, filter: {dataset: cifar10}, comparator: "<=", threshold: 0.0}
+      - {metric: gain_ci_lower_pt, aggregation: max, filter: {dataset: cifar100}, comparator: "<=", threshold: 0.0}

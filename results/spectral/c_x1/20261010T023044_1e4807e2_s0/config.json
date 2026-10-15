@@ -1,0 +1,215 @@
+{
+  "_variant": "full",
+  "betas": [
+    0.0,
+    0.5,
+    1.0,
+    2.0,
+    3.0,
+    5.0,
+    10.0
+  ],
+  "ckpt_seeds": [
+    42,
+    101,
+    102
+  ],
+  "fs": [
+    0.1,
+    0.25,
+    0.5,
+    0.75
+  ],
+  "gv_betas": [
+    0.0,
+    0.5,
+    1.0,
+    2.0,
+    3.0,
+    5.0,
+    10.0
+  ],
+  "gv_draws": 8,
+  "gv_sigmas": [
+    0.01,
+    0.03,
+    0.1
+  ],
+  "n_cal_faults": 400,
+  "n_faults": 16,
+  "n_samples": 160,
+  "noise_draws": 8,
+  "t_end_cap": 6000.0,
+  "tiles": {
+    "128": [
+      "res1.conv_a.weight",
+      "layer3.0.0.weight"
+    ],
+    "256": [
+      "layer3.0.0.weight",
+      "res2.conv_b.weight"
+    ],
+    "64": [
+      "res1.conv_a.weight",
+      "layer3.0.0.weight"
+    ]
+  },
+  "variants": [
+    {
+      "a0": 1000.0,
+      "name": "a0_60dB",
+      "settings": [
+        [
+          0.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          1.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          3.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          3.0,
+          0.5,
+          "agc_ideal"
+        ]
+      ]
+    },
+    {
+      "a0": 100000.0,
+      "name": "a0_100dB",
+      "settings": [
+        [
+          0.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          1.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          3.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          3.0,
+          0.5,
+          "agc_ideal"
+        ]
+      ]
+    },
+    {
+      "g_lambda_mismatch_sigma": 0.003,
+      "name": "mism_0.3pct",
+      "settings": [
+        [
+          0.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          1.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          3.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          3.0,
+          0.5,
+          "agc_ideal"
+        ]
+      ]
+    },
+    {
+      "g_lambda_mismatch_sigma": 0.01,
+      "name": "mism_1pct",
+      "settings": [
+        [
+          0.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          1.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          3.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          3.0,
+          0.5,
+          "agc_ideal"
+        ]
+      ]
+    },
+    {
+      "g_lambda_mismatch_sigma": 0.02,
+      "name": "mism_2pct",
+      "settings": [
+        [
+          0.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          1.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          3.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          3.0,
+          0.5,
+          "agc_ideal"
+        ]
+      ]
+    },
+    {
+      "name": "offset_1mV",
+      "settings": [
+        [
+          0.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          1.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          3.0,
+          0.5,
+          "limiter_0.1"
+        ],
+        [
+          3.0,
+          0.5,
+          "agc_ideal"
+        ]
+      ],
+      "v_os_rms": 0.001
+    }
+  ]
+}

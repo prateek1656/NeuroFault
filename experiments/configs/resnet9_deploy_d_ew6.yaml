@@ -1,0 +1,66 @@
+# Phase 1: D told expected_waves=6 (true schedule = 3 waves). Only the expectation differs from D.
+# Deployment regime, arm D (co-mitigation controller) (Stage 2 main arm).
+# Same lifetime, fault maps and evals as resnet9_deploy_r0.yaml (only the policy fields differ).
+# pre_deploy_checkpoint below is a PLACEHOLDER (use --pre-deploy-checkpoint per seed).
+# priors_path: experiments/configs/retrain_controller_priors.json is PRODUCED by
+# scripts/calibrate_retrain_controller.py after the GPU calibration sweep
+# (experiments/calibration_sweep.py, resnet9_calibration_sweep.yaml). D must NOT run before it
+# exists: run_deployment raises FileNotFoundError if it is missing. When present its
+# eta/delta/kappa/k/m/t_max override the burst_lr/canary_gate_delta/patience_*/
+# burst_t_max values below (which are then only documentation/fallback for a run without
+# priors_path). remap_pacing is structural and always comes from this file.
+# Saliency order, paced remap, adaptive burst, BN recalibration, canary gate.
+name: resnet9_deploy_d_ew6
+simulator: crosssim
+regime: deployment
+pre_deploy_checkpoint: results/resnet9_predeploy/pre_deploy.pt
+# Model/data settings must match the predeploy config so the loaded weights and the
+# canary/test splits mean the same thing.
+epochs: 14
+float_pretrain_epochs: 10
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  redundancy_factor: 0.15
+  use_gpu: true
+  calibrate_adc: true
+  adc_calibration_images: 320
+  calibrate_dac: true
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+  wave_densities: [0.1, 0.1, 0.1]
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: true
+  enable_layer_reset: false
+  enable_predictive: false
+retraining:
+  policy: co_mitigation
+  canary_size: 1024
+  reference_mode: living
+  remap_order: saliency
+  remap_pacing: paced
+  expected_waves: 6
+  burst_mode: adaptive
+  bn_recal_batches: 20
+  burst_lr: 1.0e-3
+  burst_t_max: 1000
+  patience_eval_every: 25
+  patience_window: 3
+  patience_min_gain: 0.5
+  canary_gate_delta: 1.0
+  burst_batches: 390  # only used by burst_mode: fixed
+  priors_path: experiments/configs/retrain_controller_priors.json

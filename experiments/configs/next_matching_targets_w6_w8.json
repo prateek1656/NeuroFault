@@ -1,0 +1,54 @@
+{
+ "w6": {
+  "42": {
+   "d_gfix_total_burst_batches": 2600,
+   "d_gfix_final": 89.26,
+   "cprime_ref_burst_events": 3,
+   "cprime_ref_final": 85.76,
+   "burst_batches_matched": 867,
+   "old_matched_cprime_final": 88.04
+  },
+  "101": {
+   "d_gfix_total_burst_batches": 2975,
+   "d_gfix_final": 90.2,
+   "cprime_ref_burst_events": 3,
+   "cprime_ref_final": 86.0,
+   "burst_batches_matched": 992,
+   "old_matched_cprime_final": 89.04
+  },
+  "102": {
+   "d_gfix_total_burst_batches": 2700,
+   "d_gfix_final": 83.48,
+   "cprime_ref_burst_events": 3,
+   "cprime_ref_final": 86.2,
+   "burst_batches_matched": 900,
+   "old_matched_cprime_final": 87.06
+  }
+ },
+ "w8": {
+  "42": {
+   "d_gfix_total_burst_batches": 3425,
+   "d_gfix_final": 88.64,
+   "cprime_ref_burst_events": 5,
+   "cprime_ref_final": 87.7,
+   "burst_batches_matched": 685,
+   "old_matched_cprime_final": 87.12
+  },
+  "101": {
+   "d_gfix_total_burst_batches": 2900,
+   "d_gfix_final": 86.4,
+   "cprime_ref_burst_events": 5,
+   "cprime_ref_final": 86.9,
+   "burst_batches_matched": 580,
+   "old_matched_cprime_final": 89.0
+  },
+  "102": {
+   "d_gfix_total_burst_batches": 3200,
+   "d_gfix_final": 90.66,
+   "cprime_ref_burst_events": 5,
+   "cprime_ref_final": 87.6,
+   "burst_batches_matched": 640,
+   "old_matched_cprime_final": 88.84
+  }
+ }
+}

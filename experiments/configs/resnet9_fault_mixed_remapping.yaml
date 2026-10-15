@@ -1,0 +1,47 @@
+# Mixed-fault-regime re-run - see resnet9_fault_mixed_no_mitigation.yaml for the full
+# rationale (ExperimentConfig.secondary_fault, config.py). remapping targets stuck-at faults
+# (dispatch.py filters candidates via monitor.stuck_mask) - the primary fault block here is
+# unchanged from resnet9_fault_remapping.yaml, so remapping sees the same stuck-at severity
+# it always has. The real change is that drift is now ALSO happening simultaneously
+# (secondary_fault) - this arm measures whether remapping's own behavior (its confirmed
+# single-burst-then-health-gated-out pattern, see resnet9_fault_remapping.yaml's header)
+# holds when a second, untreated fault type is degrading health at the same time.
+name: resnet9_fault_mixed_remapping
+simulator: crosssim
+epochs: 50
+float_pretrain_epochs: 10
+finetune_learning_rate: 0.001
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+lr_one_cycle: true
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+save_checkpoint: true  # real, reported-number run
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  use_gpu: true
+  calibrate_adc: true
+  adc_calibration_images: 320
+  calibrate_dac: true
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+secondary_fault:
+  failure_model: drift
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: true
+  enable_layer_reset: false
+  enable_predictive: false

@@ -1,0 +1,214 @@
+{
+  "criteria_id": "x_loop_ext",
+  "criteria_sha256": "2562344894bf78c024ce9e3fd1ccd1440f66f9c11d134aab742832cdc0d4465e",
+  "overall": "KILL",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "all": "KILL",
+    "r9": "INCONCLUSIVE",
+    "report": "INCONCLUSIVE",
+    "sigma4": "PASS",
+    "vit": "PASS"
+  },
+  "n_rows": 30,
+  "criteria": [
+    {
+      "id": "E-r9-5seed",
+      "kind": "pass",
+      "scope": "r9",
+      "source": "x_loop X-dense-pass / X-dense-edge / X-sparse-pass on 5 seeds",
+      "description": "ResNet-9, sigma 2%, 5 seeds: dense mean gap_d >= -1.0, sparse mean gap_d >= -0.5, D-est beats C'-est in >= 2/3 of dense seeds (>= 4 of 5), sparse reads ratio <= 0.25 on every seed.\n",
+      "note": null,
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "gap_d",
+            "aggregation": "mean",
+            "comparator": ">=",
+            "threshold": -1.0,
+            "value": -0.039999999999997746,
+            "n": 5,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "gap_d",
+            "aggregation": "mean",
+            "comparator": ">=",
+            "threshold": -0.5,
+            "value": -0.0680000000000035,
+            "n": 5,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "d_est_minus_c_est",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.66,
+            "value": 1.0,
+            "n": 5,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "reads_ratio",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.25,
+            "value": 0.2524720165619846,
+            "n": 5,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E-sigma4",
+      "kind": "pass",
+      "scope": "sigma4",
+      "source": "breadth: second read-noise level",
+      "description": "ResNet-9, sigma 4%, 5 seeds: dense mean gap_d >= -1.0, sparse mean gap_d >= -0.5, sparse reads ratio <= 0.35.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "gap_d",
+            "aggregation": "mean",
+            "comparator": ">=",
+            "threshold": -1.0,
+            "value": 0.3000000000000028,
+            "n": 5,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "gap_d",
+            "aggregation": "mean",
+            "comparator": ">=",
+            "threshold": -0.5,
+            "value": 0.056000000000000216,
+            "n": 5,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "reads_ratio",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.35,
+            "value": 0.244724376293905,
+            "n": 5,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E-vit",
+      "kind": "pass",
+      "scope": "vit",
+      "source": "breadth: second network",
+      "description": "ViT-tiny, sigma 2%, 5 seeds: dense mean gap_d >= -1.0, sparse mean gap_d >= -0.5, sparse reads ratio <= 0.35.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "gap_d",
+            "aggregation": "mean",
+            "comparator": ">=",
+            "threshold": -1.0,
+            "value": 0.031999999999993624,
+            "n": 5,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "gap_d",
+            "aggregation": "mean",
+            "comparator": ">=",
+            "threshold": -0.5,
+            "value": 0.04000000000000054,
+            "n": 5,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "reads_ratio",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.35,
+            "value": 0.1694711538461538,
+            "n": 5,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E-kill",
+      "kind": "kill",
+      "scope": "all",
+      "source": "x_loop X-kill, every group",
+      "description": "Kill if any (net, regime, sigma) group has mean gap_d < -2.0, or the estimated map misses more than 10% of new visible faults in any wave of any run.\n",
+      "note": null,
+      "status": "KILL",
+      "condition": true,
+      "detail": {
+        "combine": "any",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "gap_d",
+            "aggregation": "min",
+            "comparator": "<",
+            "threshold": -2.0,
+            "value": -0.0680000000000035,
+            "n": 6,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "recall_vis_min",
+            "aggregation": "min",
+            "comparator": "<",
+            "threshold": 0.9,
+            "value": 0.8531384350816853,
+            "n": 30,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E-report",
+      "kind": "report",
+      "scope": "report",
+      "source": "report only",
+      "description": "Closure per group (ViT sparse floor may be close to the oracle, so closure can be ill-defined there), per-seed tables, fallback fraction, false positives, ResNet-9 seeds 103/104 clean accuracy, D vs C' oracle on 103/104.\n",
+      "note": null,
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "reason": "requires human judgement"
+      }
+    }
+  ],
+  "metrics_csv": "results/spectral/x_loop_ext/results/verdict_metrics.csv"
+}

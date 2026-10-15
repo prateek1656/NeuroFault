@@ -1,0 +1,73 @@
+schema_version: 1
+id: e4_xabft
+title: "E4: X-ABFT (Liu et al., TODAES 2020) as a forward-only cell-level baseline in the H8 comparison"
+source_plan: "docs/research/prior-art-reads/detection-localization.md section 12a and its fairness caveats; docs/research/spectral/e4-e5-plan.md (registered 2026-10-14, before any counted run)"
+frozen: "2026-10-14"
+overall_pass: all
+note: >
+  Why: X-ABFT (two checksum lines per sub-array, weighted/plain ratio decode, designed forward test vectors, <= 2 faults per
+  test block) is prior art for forward-only cell-level localization, and was not in H8. The paper claim "A5 needs fewer reads
+  than prior-art localizers" and the novelty wording "forward+transposed joint decode" must be stated against it.
+  Platform: IDENTICAL instances to H8 (criteria/b_vs_prior.yaml): ResNet-9 CIFAR-10 conv tiles of 256, ckpts 42/101/102,
+  offset_refcol, stuck_random mixed/pos, truth = visible faults, sigma_c {1,2,4}% of max|w|, k {1,4,16,64}; calibration =
+  tile origin 1, fault seeds 3000-3019; evaluation = tile origin 0, fault seeds 60-79. HPE/ROTH/CSF/CSB per-instance reads and F1
+  are joined (read only) from the registered H8 eval_instances.csv, so every ratio is paired on identical instances.
+  X-ABFT arms: xabft = design chosen per (k, sigma) by the H8 rule (fewest calibration-mean reads with calibration cell F1 >=
+  0.93, fallback highest F1) from r_t {4,8,16} x M {2,4} x repeat-and-average {1,4,16} (c_t = 16, linear f); xpaper = the paper's
+  example design r_t=4, c_t=16, M=4, no repeat. Cost unit = counted forward MVMs (H8); native cost columns tr_* (time
+  redundancy (10000 + n_test_vectors)/10000) and hr_* (1 + 5/c_t) are reported. The checksum lines are digital and noise-free
+  (favours X-ABFT). Metrics per (k, sigma_c) row: ratio_csb_xabft = mean reads CSB / mean reads X-ABFT with 95% paired bootstrap
+  upper bound (_ci_upper); row_ok_2x_x = f1_csb >= 0.9 AND (f1_xabft < 0.9 OR (ratio <= 0.5 AND ci_upper <= 0.6)) (the H8
+  row rule, which credits X-ABFT failures); row_ok_2x_x_strict additionally requires X-ABFT to reach F1 0.9 itself;
+  xabft_cheaper_than_csb = X-ABFT reaches F1 0.9 with fewer mean reads than CSB.
+  Thresholds are copied from the H8 rule or chosen by what would change a paper claim; none was tuned on smoke output.
+  Smoke disclosure (smoke never counts): a 16-point smoke ran in ~12 s; it was used only to confirm the script runs end to end
+  and to size the CPU time. With 4 instances per row it is far too noisy to inform any threshold.
+criteria:
+  - id: E4-CS-2x
+    source: "H8-CS-2x rule applied against X-ABFT"
+    kind: pass
+    scope: E4
+    description: >
+      CS (both directions) needs >= 2x fewer reads than the selected X-ABFT design (or X-ABFT misses F1 0.9 while CS reaches it)
+      on >= 3 of 4 k at EACH of sigma 1% and 2%. This is the only version of the "fewer reads" claim the paper may print
+      against X-ABFT.
+    clauses:
+      - {metric: row_ok_2x_x, filter: {sigma_c: [0.01, 0.02]}, per_group: {by: [sigma_c], aggregation: sum}, aggregation: min, comparator: ">=", threshold: 3}
+  - id: E4-ratio-decode-degrades
+    source: "section 12a expectation (untested) that the ratio decode fails under 2-4% read noise"
+    kind: pass
+    scope: E4
+    description: >
+      X-ABFT, even with its design and repeat-and-average factor tuned per row, stays below F1 0.9 at sigma 4% for every k. If
+      this fails the paper must not say the ratio decoder is noise-fragile; if it holds, the sentence is supported by a
+      measurement instead of an expectation.
+    clauses:
+      - {metric: f1_xabft, filter: {sigma_c: [0.04]}, aggregation: max, comparator: "<", threshold: 0.9}
+  - id: E4-kill-cheaper
+    source: "novelty wording: CS is the cheapest forward-readable cell-level localizer on this tile class"
+    kind: kill
+    scope: E4
+    description: >
+      Kill the "fewer reads than prior-art cell-level localizers" wording if X-ABFT reaches F1 0.9 with fewer mean reads than CSB
+      on >= 2 of 4 k at sigma 1% or at sigma 2%.
+    combine: any
+    clauses:
+      - {metric: xabft_cheaper_than_csb, filter: {sigma_c: [0.01, 0.02]}, per_group: {by: [sigma_c], aggregation: sum}, aggregation: max, comparator: ">=", threshold: 2}
+  - id: E4-kill-cs-f1
+    source: "H8-kill, F1 floor"
+    kind: kill
+    scope: E4
+    description: "CSB held-out F1 below 0.8 on any 1-2% row (same floor as H8-kill; guards against a drifted join)."
+    clauses:
+      - {metric: f1_csb, filter: {sigma_c: [0.01, 0.02]}, aggregation: min, comparator: "<", threshold: 0.8}
+  - id: E4-report
+    source: "fairness report"
+    kind: report
+    scope: E4_report
+    description: >
+      Strict-rule rows (row_ok_2x_x_strict), the paper-design arm (xpaper), forward-only ratios, undecodable fractions,
+      native cost (tr_*, hr_*, n_test_vectors), selected designs, per-instance table (eval_instances.csv). X-ABFT's design target
+      is 1-10% faults in a small block; ours is k <= 64 in 256 x 256, so no "X-ABFT fails" sentence is allowed without the
+      regime caveat.
+    manual: true

@@ -1,0 +1,107 @@
+schema_version: 1
+id: b_concurrent
+title: "Hardening H7 (plan-B E5 / C5): concurrent fault detection and localization from live inference inputs vs checksum prior art"
+source_plan: "plan-B §3 C5, §4 A8, E5 and §5 C5 row (thresholds written 2026-10-08); master plan §10 H7 (registered 2026-10-11 before any H7 run)"
+frozen: "2026-10-11"
+overall_pass: all
+note: >
+  Why: the detection leaderboard (docs/research/spectral/detection-leaderboard.md) showed the one published approach we had
+  never run head to head is CONCURRENT checking on live inference inputs (Neural Checksums, arXiv 2404.09818; HPE
+  self-healing DPE US 10984860 / 11532356). Thresholds below are plan-B's C5 numbers, unchanged.
+  Platform: real ResNet-9 CIFAR-10 conv tiles (ckpt seeds 42/101/102, tile 256, up to 4 random tiles per conv layer),
+  diff_pair encoding, aihwkit_pcm_poly programming noise, 2% per-cell white read noise (TileReader model), stuck-at
+  faults (stuck_random, mixed rails, either device) injected AFTER programming, k in {1, 4, 16}; k = 0 fault-free
+  controls. Live inputs = the cached im2col activation vectors of each layer (results/spectral/activations, 4096
+  per layer): first 2048 = commissioning (fault-free, right after programming), last 2048 = monitoring stream (order
+  reshuffled each pass, cycled up to 16384 samples with fresh read noise). One concurrent sample = one inference MVM of
+  the tile (one im2col vector); images_equiv = samples / (im2col positions per image of that layer).
+  Hardware for the concurrent family: two extra analog CHECKSUM LINES programmed in the same tile (interleaved rows,
+  same programming + read noise): c1 = sum_i W0_i and cw = sum_i ((i+1)/m) W0_i, each programmed at full conductance
+  range (c / g, g = max|c| / max|W0|) and read back x g. Syndromes s1_t = sum_i y_it - g1 y_c1,t and
+  sw_t = sum_i ((i+1)/m) y_it - gw y_cw,t. Commissioning (once, right after programming, fault-free): 128 read passes
+  over the 2048 commissioning inputs (262k MVMs), syndromes averaged per input, LS fit s ~ d.x (ridge 1e-7) removes
+  the checksum lines' programming mismatch; one further pass, not used in the fit, gives the noise scales
+  v_t = sigma_hat^2 ||x_t||^2 for s1 and sw and their covariance. Whitened residuals r_t are what every concurrent
+  method sees. No stored digital outputs.
+  Methods:
+    CK (prior art detection, Neural Checksums / HPE): S_T = sum_{t<=T} r1_t^2; alarm when S_T > thr_T, thr_T = 99th
+      percentile of S_T over the k = 0 controls (pooled; FA 1%).
+    HPE (prior art localization, HPE weighted checksum, single-error decode with temporal averaging): samples with
+      |r1_t| > z1 = 2.576 (two-sided 1% on whitened residuals; empirical per-sample FA on controls reported) are
+      flagged; ratio = sum(sw_t s1_t - c1w ||x_t||^2) / sum(s1_t^2 - v1 ||x_t||^2) over flagged samples (unwhitened
+      residuals; moment-corrected for the s1 noise variance and the s1/sw noise covariance); predicted output line =
+      row round(m * ratio) - 1. HPE-VOTE (report only): each flagged sample votes for its own row, rows with
+      >= max(3, 10% of flagged) votes predicted.
+    A8 (ours, concurrent regression on the checksum syndromes): OMP of r1 (T samples) on the whitened inputs, stop when
+      the best column z-score < Phi^-1(1 - 0.005/n) (Bonferroni, FA 1% per tile), max 64 atoms -> faulty INPUT lines
+      J with coefficients a_j; same-support LS on rw -> b_j; row i_j = round(m b_j / a_j) - 1 (report only: the row
+      needs ratio precision 1/(2m)). A8 alarm = support non-empty.
+    Dedicated comparators (report only; they stop inference): GT = P stored natural test inputs (from the
+      commissioning stream) with stored MEASURED fault-free outputs; RP = P random +-1 probes, same reference; detection
+      power at FA 1% for P in {1, 4, 8}.
+  Truth = VISIBLE faulty cells, |delta_w| >= 0.1 max|W0| (as plan-B). Line F1 = F1 of the repairable line each
+  method names, against the visible faulty lines of that type: OUTPUT lines (rows) for HPE, INPUT lines (columns)
+  for A8 (either line can be remapped). Cell F1 and A8 row F1 are report only. Instances with no visible fault are excluded from F1 and detection. "Big" faults =
+  instances whose largest visible |delta_w| >= 0.5 max|W0| (plan-B C5 "deltas >= 0.5 range"). T grid {8, 16, 32, 64,
+  128, 256, 512, 1024, 2048, 4096, 8192, 16384}.
+  Smoke disclosure (before this file was committed; smoke never counts): the first smoke used checksum lines at
+  weight scale 1/m (read noise x m, nothing detectable) and a 1-pass commissioning (whitened S/T ~ 1.3, controls
+  false-alarming); both were design errors fixed here. Single-tile probes at 0.05-2% noise showed the per-sample
+  HPE vote never reaches its vote bar (hence the averaged decoder as the registered HPE) and that A8 finds the
+  faulty input line from ~2k samples at 2% noise. Detection and localization numbers of the full run are unseen.
+  Identifiability (plan-B T7): dead_frac = fraction of a tile's input lines j with P(x_j != 0) < 1% in the cached
+  stream (a fault in a dead input line is never observed concurrently).
+  Rows of metrics.csv: kind in {detect, locate, locate_diff, ident, dedicated}; see a_* conventions.
+criteria:
+  - id: H7-C5-detect
+    source: "plan-B §5 C5 (detection part)"
+    kind: pass
+    scope: H7
+    description: >
+      Concurrent regression detection (A8 alarm, as plan-B C5 words it): for k = 1 'big' faults, detection
+      probability >= 0.99 within 64 inference MVMs, in every checkpoint seed.
+    clauses:
+      - {metric: det_prob_big_k1, filter: {kind: detect, T: 64}, aggregation: min, comparator: ">=", threshold: 0.99}
+  - id: H7-C5-locate
+    source: "plan-B §5 C5 (localization part)"
+    kind: pass
+    scope: H7
+    description: >
+      A8 localizes the faulty line(s) (input-line F1 >= 0.9, mean over instances) within 256 inference MVMs for k = 1
+      and k = 4, in every checkpoint seed.
+    clauses:
+      - {metric: line_f1, filter: {kind: locate, method: a8, T: 256, k: [1, 4]}, aggregation: min, comparator: ">=", threshold: 0.9}
+  - id: H7-beats-HPE
+    source: "master plan §10 H7 (new comparison vs the closest prior art)"
+    kind: pass
+    scope: H7
+    description: >
+      At k = 4 and T = 256, A8 line F1 exceeds HPE line F1 by >= 0.10 in every checkpoint seed.
+    clauses:
+      - {metric: a8_minus_hpe_line_f1, filter: {kind: locate_diff, k: 4, T: 256}, aggregation: min, comparator: ">=", threshold: 0.10}
+  - id: H7-detect-is-prior-art
+    source: "plan-B §5 C5 kill (research-03 E5 kill)"
+    kind: kill
+    scope: H7_detect
+    description: >
+      If the plain checksum (CK) already reaches 99% detection of k = 1 big faults within 8 MVMs in every seed, detection
+      is prior art and the concurrent contribution is localization only (no detection claim is made).
+    clauses:
+      - {metric: det_prob_big_k1_ck, filter: {kind: detect, T: 8}, aggregation: min, comparator: ">=", threshold: 0.99}
+  - id: H7-T7-kill
+    source: "plan-B §5 C5 kill (identifiability)"
+    kind: kill
+    scope: H7
+    description: >
+      Concurrent-only localization is dead (hybrid A9 becomes the claim) if the median dead-input fraction over tiles
+      exceeds 0.20.
+    clauses:
+      - {metric: dead_frac, filter: {kind: ident}, aggregation: median, comparator: ">", threshold: 0.20}
+  - id: H7-report
+    source: "master plan §10 H7 (report only)"
+    kind: report
+    scope: H7_report
+    description: >
+      Full curves: detection probability vs T (all k, A8 and CK), line / row / cell F1 vs T for A8, HPE, HPE-VOTE,
+      images_equiv, per-layer split, GT vs RP dedicated detection power, empirical FA of controls (A8, CK, per-sample).
+    manual: true

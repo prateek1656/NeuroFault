@@ -1,0 +1,54 @@
+schema_version: 1
+id: a_deploy
+title: "Hardening H5: deployable cost of M4 (inference overhead, reprogram baseline) + mechanism ablation"
+source_plan: "master plan §10 H5 (registered 2026-10-10 after the H3 draft review, before any H5 run)"
+frozen: "2026-10-10"
+overall_pass: all
+note: >
+  Why: M4's cosine field (order 4, 4x4 coefficients) has rank <= 4, so applying the correction on-chip
+  needs up to 4 extra analog MVM passes per inference (W1 o (1 - F_hat) x = W1 x - sum_k diag(u_k) W1
+  diag(v_k) x), or a reprogram. Earlier runs counted calibration reads only. Rank-1 corrections
+  (diag(a) W1 diag(b)) are free: input/output scaling in the digital periphery.
+  Platform as a_bnfold (W2 BN-folded ResNet-9, CIFAR-10/100, ckpt seeds 42/101/102, 8 scenarios, t
+  {1h,1d,30d,1yr}, 2% probe noise, 10k-image eval) with streams offset +3000. Activation statistics used
+  by ANY method or by B8's per-tile selection come from AUGMENTED TRAIN images only (fixes the test-image
+  overlap found in review). Methods: B8 (best cheap incumbent, train-image selection); M4-r1 (M4 field,
+  coefficient matrix truncated to rank 1 by SVD -> 0 extra passes); M4-r2 (rank 2 -> 1 extra pass);
+  M4-full (rank <= 4 -> up to 4 extra passes, counted); REPROG (reprogram every tile to its target at each
+  time point: fresh programming noise, cost = writes per cell, reported). Ablation (report only): M4 order
+  {1,2,3,4}; forward-only vs forward+backward probes.
+  Columns per row (dataset, ckpt_seed, scenario, model, t_s): acc_<method> for each method,
+  gain_m4r1_minus_b8_pt, gain_m4r1_ci_lower_pt (paired cluster bootstrap over ckpt seeds per (dataset, t_s),
+  pooled over scenarios, 4000 resamples, repeated on each row of the group), extra_passes_<method>,
+  writes_per_cell_reprog, acc_prog.
+criteria:
+  - id: H5-deploy
+    source: "master plan §10 H5"
+    kind: pass
+    scope: H5
+    description: >
+      The zero-inference-overhead variant M4-r1 beats B8 by >= 1.0 pt (scenario mean) with paired-CI
+      lower bound > 0 at >= 3 of 4 time points, on both datasets.
+    clauses:
+      - {metric: gain_m4r1_minus_b8_pt, filter: {dataset: cifar10}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: 1.0}, comparator: ">=", threshold: 0.75}
+      - {metric: gain_m4r1_ci_lower_pt, filter: {dataset: cifar10}, per_group: {by: [t_s], aggregation: min}, aggregation: frac, inner: {comparator: ">", threshold: 0.0}, comparator: ">=", threshold: 0.75}
+      - {metric: gain_m4r1_minus_b8_pt, filter: {dataset: cifar100}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: 1.0}, comparator: ">=", threshold: 0.75}
+      - {metric: gain_m4r1_ci_lower_pt, filter: {dataset: cifar100}, per_group: {by: [t_s], aggregation: min}, aggregation: frac, inner: {comparator: ">", threshold: 0.0}, comparator: ">=", threshold: 0.75}
+  - id: H5-kill-free-variant
+    source: "master plan §10 H5"
+    kind: kill
+    scope: H5
+    description: >
+      If M4-r1's pooled paired-CI lower bound vs B8 is <= 0 at every time point on either dataset, the
+      zero-overhead claim is dead: the paper must state that M4's gain requires extra inference passes
+      or reprogramming.
+    combine: any
+    clauses:
+      - {metric: gain_m4r1_ci_lower_pt, aggregation: max, filter: {dataset: cifar10}, comparator: "<=", threshold: 0.0}
+      - {metric: gain_m4r1_ci_lower_pt, aggregation: max, filter: {dataset: cifar100}, comparator: "<=", threshold: 0.0}
+  - id: H5-report
+    source: "master plan §10 H5 (report only)"
+    kind: report
+    scope: H5_report
+    description: "Accuracy vs (calibration MVMs, extra inference passes, writes per cell) for B8, M4-r1, M4-r2, M4-full, REPROG; ablation table."
+    manual: true

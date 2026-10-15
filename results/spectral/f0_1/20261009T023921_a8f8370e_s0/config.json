@@ -1,0 +1,83 @@
+{
+  "_variant": "full",
+  "ckpt_seeds": [
+    42,
+    101,
+    102
+  ],
+  "clustered_k": [
+    8,
+    64
+  ],
+  "enc_full": [
+    "signed_ideal",
+    "diff_pair_g0"
+  ],
+  "enc_light": [
+    "diff_pair_g0.01",
+    "diff_pair_g0.05"
+  ],
+  "enc_ofat": [
+    "signed_ideal",
+    "diff_pair_g0.01"
+  ],
+  "k_sweep": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64
+  ],
+  "layers": [
+    "layer1.0.0.weight",
+    "res1.conv_a.weight",
+    "res1.conv_b.weight",
+    "layer2.0.0.weight",
+    "layer3.0.0.weight",
+    "res2.conv_a.weight",
+    "res2.conv_b.weight"
+  ],
+  "master_seed": 0,
+  "max_tiles": 2,
+  "max_tiles_light": 1,
+  "n_neg": 300,
+  "n_pos": 150,
+  "n_shift": 80,
+  "ofat_k": [
+    1,
+    8,
+    64
+  ],
+  "ofat_noise": [
+    [
+      "per_cell",
+      0.005
+    ],
+    [
+      "per_cell",
+      0.01
+    ],
+    [
+      "per_cell",
+      0.04
+    ],
+    [
+      "output_referred",
+      0.02
+    ],
+    [
+      "both",
+      0.02
+    ]
+  ],
+  "ofat_prog": true,
+  "old_probe_trials": 200,
+  "tile_sizes": [
+    64,
+    128,
+    256,
+    512
+  ]
+}

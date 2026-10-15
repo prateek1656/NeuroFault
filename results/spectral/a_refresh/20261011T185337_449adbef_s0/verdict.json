@@ -1,0 +1,155 @@
+{
+  "criteria_id": "a_refresh",
+  "criteria_sha256": "a35298ad1f332965a8f40c5c1cc8813b6f04132bb6d6b45e676265f4899f0d54",
+  "overall": "INCONCLUSIVE",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "H6": "INCONCLUSIVE",
+    "H6_report": "INCONCLUSIVE"
+  },
+  "n_rows": 96,
+  "criteria": [
+    {
+      "id": "H6-saves-writes",
+      "kind": "pass",
+      "scope": "H6",
+      "source": "master plan \u00a710 H6",
+      "description": "M4-allocated refresh reaches the timer's worst-case accuracy with <= 70% of its writes: per dataset and per target, median over (seed, scenario) of ratio_m4_timer <= 0.7, at both targets, on both datasets.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "ratio_m4_timer",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": 1.0,
+            "n": 2,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "ratio_m4_timer",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": 1.0,
+            "n": 2,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H6-sensing-adds-value",
+      "kind": "pass",
+      "scope": "H6",
+      "source": "master plan \u00a710 H6",
+      "description": "M4's 16-read estimate is worth its reads: per dataset and per target, median ratio_m4_static <= 0.85 AND median ratio_m4_gdc <= 0.85, at both targets on both datasets (M4 needs <= 85% of the writes of the sensorless static allocation and of the GDC-magnitude allocation).\n",
+      "note": null,
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "ratio_m4_static",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": 0.0,
+            "n": 2,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "ratio_m4_static",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": 0.0,
+            "n": 2,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "ratio_m4_gdc",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": 0.5,
+            "n": 2,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "ratio_m4_gdc",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": 0.0,
+            "n": 2,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H6-kill",
+      "kind": "kill",
+      "scope": "H6",
+      "source": "master plan \u00a710 H6 kill",
+      "description": "Kill the sensing claim if M4-allocated refresh saves no writes vs the sensorless static allocation: median ratio_m4_static (pooled over targets, seeds, scenarios) >= 1.0 on either dataset. (Then any saving vs the timer is due to cost-aware scheduling, not to M4.)\n",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "any",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "ratio_m4_static",
+            "aggregation": "median",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": 0.9912168810039452,
+            "n": 48,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "ratio_m4_static",
+            "aggregation": "median",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": 0.9932124362634209,
+            "n": 48,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H6-report",
+      "kind": "report",
+      "scope": "H6_report",
+      "source": "master plan \u00a710 H6 (report only)",
+      "description": "Oracle-allocation headroom (ratio_oracle_timer), monitoring read cost per tile per year, per-scenario split (D2 iid vs D3/D4 structured), full frontiers per family.\n",
+      "note": null,
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "reason": "requires human judgement"
+      }
+    }
+  ],
+  "variant": "full"
+}

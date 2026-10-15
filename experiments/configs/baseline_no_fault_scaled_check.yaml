@@ -1,0 +1,45 @@
+# Empirical check for Phase 1a: does
+# scaling train_samples 8x (2000 -> 16000) meaningfully raise the fault-free
+# accuracy ceiling? num_batches raised to 600 to actually cover
+# 16000/32=500 batches/epoch (previously num_batches=128 was the binding
+# constraint, not train_samples, so simply raising train_samples alone would
+# have silently done nothing). test_samples also raised for a more reliable
+# eval. density=0.0: isolates "how good can the model get," not fault
+# tolerance.
+#
+# Iteration log (during development):
+# - 2000 samples, no aug, 15 epochs: final=43.30% max=47.30% (original).
+# - 16000 samples, no aug, 10 epochs: final=49.50% max=52.55%, but
+#   plateaued by epoch 2-3 - more epochs of unchanging data wasn't helping.
+# - 16000 samples, WITH augmentation (random crop + flip, see data.py),
+#   same 10 epochs: final=49.75% max=51.90% - essentially no gain, because
+#   augmentation trades early convergence speed for more useful training
+#   time, and 10 epochs wasn't enough time to collect on that trade.
+# - This run: epochs raised to 30 (to actually use augmentation's benefit),
+#   weight_decay and a cosine LR schedule added (both real, standard,
+#   architecture-independent levers found missing during development - see
+#   config.py's ExperimentConfig docstrings) - same 16000-sample scale as
+#   the last two checks, to isolate epochs+regularization's effect before
+#   also committing to the full 50000-sample dataset's much larger compute
+#   cost.
+name: baseline_no_fault_scaled_check
+simulator: crosssim
+epochs: 30
+num_batches: 600
+batch_size: 32
+train_samples: 16000
+test_samples: 2000
+learning_rate: 0.001
+weight_decay: 0.0001
+lr_cosine_schedule: true
+eval_interval: 20
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+fault:
+  density: 0.0
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

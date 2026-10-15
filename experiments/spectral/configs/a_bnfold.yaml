@@ -1,0 +1,29 @@
+# Direction A follow-up a_bnfold (criteria/a_bnfold.yaml, registered 2026-10-09). `smoke` never counts.
+# RE-RUN v2 (coordinator): all 8 registered scenarios + strict M4 variant m4s (8f+7b+bias=16). Scenarios
+# D2/hotspot_r2/rank_r_r1/row_gradient_r2/D4 were already run (b8, m4 cached, set `evals` to only the
+# strict variant; D2 also re-evals m4 as a determinism check).  OLD NOTE: BUDGET CUT (shared CPU, load ~60): full uses 5 of the 8 planned scenarios (dropped hotspot_r1, rank_r_r2,
+# row_gradient_r1); seeds, 10k images and all 4 time points kept; GDC/none not evaluated.
+# Nothing here is tuned on results; M4 = FieldFit cos order 4, 8 fwd + 8 bwd probes per tile.
+full:
+  datasets: [cifar10, cifar100]
+  ckpt_seeds: [42, 101, 102]
+  sigma: 0.02
+  n_eval: 10000
+  times: {1h: 3600.0, 1d: 86400.0, 30d: 2592000.0, 1yr: 31557600.0}
+  scenarios:
+    - {name: D2, model: D2, field: "", rho: 0.0, evals: [m4, m4s]}
+    - {name: D3_hotspot_r1, model: D3, field: hotspot, rho: 1.0}
+    - {name: D3_rank_r_r2, model: D3, field: rank_r, rho: 2.0}
+    - {name: D3_row_gradient_r1, model: D3, field: row_gradient, rho: 1.0}
+    - {name: D3_hotspot_r2, evals: [m4s], model: D3, field: hotspot, rho: 2.0}
+    - {name: D3_rank_r_r1, evals: [m4s], model: D3, field: rank_r, rho: 1.0}
+    - {name: D3_row_gradient_r2, evals: [m4s], model: D3, field: row_gradient, rho: 2.0}
+    - {name: D4, model: D4, field: "", rho: 1.0, evals: [m4s]}
+smoke:
+  datasets: [cifar10, cifar100]
+  ckpt_seeds: [101]
+  sigma: 0.02
+  n_eval: 1000
+  times: {1d: 86400.0}
+  scenarios:
+    - {name: D3_hotspot_r1, model: D3, field: hotspot, rho: 1.0}

@@ -1,0 +1,29 @@
+{
+  "epoch": [
+    0
+  ],
+  "batch": [
+    0
+  ],
+  "loss": [
+    2.2769546508789062
+  ],
+  "accuracy": [
+    12.5
+  ],
+  "health": [
+    90.00970458984375
+  ],
+  "faults": [
+    114670
+  ],
+  "soft_mitigations": [
+    0
+  ],
+  "remappings": [
+    0
+  ],
+  "layer_resets": [
+    0
+  ]
+}

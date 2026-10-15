@@ -1,0 +1,79 @@
+schema_version: 1
+id: e5_weiroth_fair
+title: "E5: Wei & Roth (arXiv 2402.13503) compared on their own terms (bounded noise, line level, redundant-column cost)"
+source_plan: "docs/research/prior-art-reads/detection-localization.md section 4 (fairness notes) and the H8 fairness audit; docs/research/spectral/e4-e5-plan.md (registered 2026-10-14, before any counted run)"
+frozen: "2026-10-14"
+overall_pass: all
+note: >
+  Why: H8's "4.3-6.5x fewer reads than Wei & Roth" compares against OUR reimplementation with an OUR-OWN cell-level stage, under
+  Gaussian noise, on a reads axis. The paper has bounded noise, stops at output lines and pays r redundant columns in one MVM.
+  This file registers the rerun that decides how the claim may be worded.
+  Platform: the H8 instances (see criteria/b_vs_prior.yaml): same tiles, fault seeds 60-79, k {1,4,16,64}, sigma_c {1,2,4}%.
+  Two noise models: bounded (+-delta iid sign noise, delta = sigma_c max|w| per unit input norm, rms-matched to Gaussian, bound
+  known to the decoder) and gauss (H8's model). Arms (code and thresholds FROZEN here, nothing tuned; d_lines = {1:1, 4:2, 16:4,
+  64:4} so the code has r = 25/49/121/121 of 256 columns): wr_line_worst / wr_line_rss (line level, the paper's decoder at the
+  paper's worst-case threshold rho*delta / at the random-noise threshold; 1 MVM + r columns), *_R variants with 16x
+  repeat-and-average, wr_cell_* (the same line stage plus OUR Kautz-Singleton cell stage, kept separate: the paper does not do
+  cells), csf = our forward-only CS decoder at the config H8 froze for that (k, sigma). Metrics per (noise, k, sigma_c) row:
+  line_f1_<arm> (output lines vs lines holding a visible fault), cell_f1_<arm>, reads_<arm> (counted forward MVMs), r_cols_<arm>
+  (redundant columns of the protected MVM), col_equiv_<arm> = r_cols + (reads - 1); wr_line_1read_reaches = a 1-read line arm
+  has line F1 >= 0.9; ratio_csf_wr_best = reads CSF / reads of the best W-R cell arm (a reaching arm with the fewest reads, else
+  the highest-F1 arm) with a paired bootstrap upper bound; row_ok_2x_wr_best = csf cell F1 >= 0.9 AND (best W-R cell arm misses
+  0.9 OR (ratio <= 0.5 AND ci_upper <= 0.6)); wr_beats_csf = a W-R cell arm reaches 0.9 and ratio_csf_wr_best >= 1.0 (it is no dearer than CSF).
+  Thresholds follow the H8 rule or what would change a paper claim; none was tuned on smoke output.
+  Smoke disclosure (smoke never counts): an 8-point smoke ran in ~10 s. It showed that the 1-read line decoder flags nothing at
+  our visible-fault magnitude (parity checks sum ~52 lines of noise), which is a feasibility fact about the script, not
+  evidence used for any threshold below.
+criteria:
+  - id: E5-own-terms
+    source: "fairness audit: does the baseline work in its own regime on our faults"
+    kind: pass
+    scope: E5
+    description: >
+      Under bounded noise, a one-MVM line-level Wei & Roth arm (worst-case or random-noise threshold) reaches line F1 >= 0.9 on >= 3
+      of 4 k at each of sigma 1% and 2%. PASS means the baseline is not a strawman: any "fails at 1-2% noise" sentence about
+      Wei & Roth must then be dropped. FAIL means the paper's guarantee (outliers > 2 rho delta ||x||) does not cover our
+      moderate-magnitude stuck faults, and the paper states that regime mismatch instead of "Wei & Roth fails".
+    clauses:
+      - {metric: wr_line_1read_reaches, filter: {noise: [bounded], sigma_c: [0.01, 0.02]}, per_group: {by: [sigma_c], aggregation: sum}, aggregation: min, comparator: ">=", threshold: 3}
+  - id: E5-CS-2x-bounded
+    source: "H8-CS-2x rule under the Wei & Roth noise model"
+    kind: pass
+    scope: E5
+    description: >
+      Under bounded noise, forward-only CS needs >= 2x fewer reads than the best W-R cell-level arm (or W-R misses F1 0.9 while CS
+      reaches it) on >= 3 of 4 k at each of sigma 1% and 2%.
+    clauses:
+      - {metric: row_ok_2x_wr_best, filter: {noise: [bounded], sigma_c: [0.01, 0.02]}, per_group: {by: [sigma_c], aggregation: sum}, aggregation: min, comparator: ">=", threshold: 3}
+  - id: E5-CS-2x-gauss
+    source: "H8-CSF-2x rule re-measured with the frozen E5 arms under H8's Gaussian noise"
+    kind: pass
+    scope: E5
+    description: "Same as E5-CS-2x-bounded under Gaussian read noise (H8's setting, E5 arms)."
+    clauses:
+      - {metric: row_ok_2x_wr_best, filter: {noise: [gauss], sigma_c: [0.01, 0.02]}, per_group: {by: [sigma_c], aggregation: sum}, aggregation: min, comparator: ">=", threshold: 3}
+  - id: E5-kill-reads
+    source: "H8-kill applied to the Wei & Roth noise model"
+    kind: kill
+    scope: E5
+    description: >
+      Kill the "fewer reads than Wei & Roth" wording if, under bounded noise, a W-R cell arm reaches F1 0.9 with no more reads than
+      forward-only CS on >= 2 of 4 k at sigma 1% or at sigma 2%.
+    clauses:
+      - {metric: wr_beats_csf, filter: {noise: [bounded], sigma_c: [0.01, 0.02]}, per_group: {by: [sigma_c], aggregation: sum}, aggregation: max, comparator: ">=", threshold: 2}
+  - id: E5-kill-cs-f1
+    source: "H8-kill, F1 floor"
+    kind: kill
+    scope: E5
+    description: "Forward-only CS cell F1 below 0.8 on any 1-2% row under either noise model."
+    clauses:
+      - {metric: cell_f1_csf, filter: {sigma_c: [0.01, 0.02]}, aggregation: min, comparator: "<", threshold: 0.8}
+  - id: E5-report
+    source: "fairness report"
+    kind: report
+    scope: E5_report
+    description: >
+      Cost on the paper's axis (r_cols, col_equiv), line-level F1 of all arms including the *_R variants, sigma 4% rows, the
+      guarantee flag (paper_guarantee_form), H8 ROTH reads/F1 joined as h8_*, per-instance table (eval_instances.csv). The
+      line-level arms and the cell-level extension are reported in separate columns and must stay separate in the paper.
+    manual: true

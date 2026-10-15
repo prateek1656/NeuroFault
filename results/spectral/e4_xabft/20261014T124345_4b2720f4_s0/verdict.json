@@ -1,0 +1,131 @@
+{
+  "criteria_id": "e4_xabft",
+  "criteria_sha256": "9683890c8cab9acccc083c86bd97375554e7892b69ecc3252e216dbec72328a4",
+  "overall": "PASS",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "E4": "PASS",
+    "E4_report": "INCONCLUSIVE"
+  },
+  "n_rows": 12,
+  "criteria": [
+    {
+      "id": "E4-CS-2x",
+      "kind": "pass",
+      "scope": "E4",
+      "source": "H8-CS-2x rule applied against X-ABFT",
+      "description": "CS (both directions) needs >= 2x fewer reads than the selected X-ABFT design (or X-ABFT misses F1 0.9 while CS reaches it) on >= 3 of 4 k at EACH of sigma 1% and 2%. This is the only version of the \"fewer reads\" claim the paper may print against X-ABFT.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "row_ok_2x_x",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 3,
+            "value": 4.0,
+            "n": 2,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E4-ratio-decode-degrades",
+      "kind": "pass",
+      "scope": "E4",
+      "source": "section 12a expectation (untested) that the ratio decode fails under 2-4% read noise",
+      "description": "X-ABFT, even with its design and repeat-and-average factor tuned per row, stays below F1 0.9 at sigma 4% for every k. If this fails the paper must not say the ratio decoder is noise-fragile; if it holds, the sentence is supported by a measurement instead of an expectation.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "f1_xabft",
+            "aggregation": "max",
+            "comparator": "<",
+            "threshold": 0.9,
+            "value": 0.5940475572092819,
+            "n": 4,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E4-kill-cheaper",
+      "kind": "kill",
+      "scope": "E4",
+      "source": "novelty wording: CS is the cheapest forward-readable cell-level localizer on this tile class",
+      "description": "Kill the \"fewer reads than prior-art cell-level localizers\" wording if X-ABFT reaches F1 0.9 with fewer mean reads than CSB on >= 2 of 4 k at sigma 1% or at sigma 2%.\n",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "any",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "xabft_cheaper_than_csb",
+            "aggregation": "max",
+            "comparator": ">=",
+            "threshold": 2,
+            "value": 0.0,
+            "n": 2,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E4-kill-cs-f1",
+      "kind": "kill",
+      "scope": "E4",
+      "source": "H8-kill, F1 floor",
+      "description": "CSB held-out F1 below 0.8 on any 1-2% row (same floor as H8-kill; guards against a drifted join).",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "f1_csb",
+            "aggregation": "min",
+            "comparator": "<",
+            "threshold": 0.8,
+            "value": 0.9255853174603176,
+            "n": 8,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "E4-report",
+      "kind": "report",
+      "scope": "E4_report",
+      "source": "fairness report",
+      "description": "Strict-rule rows (row_ok_2x_x_strict), the paper-design arm (xpaper), forward-only ratios, undecodable fractions, native cost (tr_*, hr_*, n_test_vectors), selected designs, per-instance table (eval_instances.csv). X-ABFT's design target is 1-10% faults in a small block; ours is k <= 64 in 256 x 256, so no \"X-ABFT fails\" sentence is allowed without the regime caveat.\n",
+      "note": null,
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "reason": "requires human judgement"
+      }
+    }
+  ],
+  "metrics_csv": "results/spectral/e4_xabft/20261014T124345_4b2720f4_s0/verdict_metrics.csv"
+}

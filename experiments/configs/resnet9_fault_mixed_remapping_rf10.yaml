@@ -1,0 +1,44 @@
+# Milestone-2 plan item 3 - redundancy_factor sweep point 2/4. See
+# resnet9_fault_mixed_remapping_rf05.yaml for the full sweep rationale
+# ({0.05, 0.10, 0.15 baseline, 0.20, 0.30}). redundancy_factor=0.10, everything else
+# identical to resnet9_fault_mixed_remapping.yaml.
+name: resnet9_fault_mixed_remapping_rf10
+simulator: crosssim
+epochs: 50
+float_pretrain_epochs: 10
+finetune_learning_rate: 0.001
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+lr_one_cycle: true
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+save_checkpoint: true  # real, reported-number run
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  redundancy_factor: 0.10
+  use_gpu: true
+  calibrate_adc: true
+  adc_calibration_images: 320
+  calibrate_dac: true
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+secondary_fault:
+  failure_model: drift
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: true
+  enable_layer_reset: false
+  enable_predictive: false

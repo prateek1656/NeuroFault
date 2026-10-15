@@ -1,0 +1,23 @@
+# E0: reproduce baselines A1/A2/A2b/A3(/A4) and calibrate noise models, k=1.
+# sigma_c = per-cell read noise as a fraction of the tile's max|w| (ReadNoise.sigma_cell_frac).
+# NOTE the registered spec quotes sigma_c in conductance units (G in [0,1], offset-binary): 0.005 / 0.02 / 0.04
+# there = 0.01 / 0.04 / 0.08 of wmax here. sigma_c_frac 0.01 / 0.02 / 0.04 below bracket them.
+experiment: e0
+ckpt_seeds: [42, 101, 102]
+layers: [layer2.0.0.weight, layer3.0.0.weight]
+tile_size: 256
+tiles_per_layer: 2          # first full 256x256 tiles of each layer
+fault_seeds: 20
+sigmas: [0.005, 0.01, 0.02, 0.04]
+encoding: {kind: offset_refcol, g_min_frac: 0.01}   # offset-binary analogue: no masked faults
+fault: {kind: stuck_random, k: 1, rail: mixed, device: pos}
+visible_frac: 0.1           # a fault is scored only if |delta_w| >= 0.1 max|w|
+fa: 0.1
+reps: [1, 2, 4, 8, 16, 32]  # budget sweep (dense repeats / probes per side)
+smoke:
+  ckpt_seeds: [42]
+  layers: [layer2.0.0.weight]
+  tiles_per_layer: 1
+  fault_seeds: 3
+  sigmas: [0.01, 0.04]
+  reps: [1, 4, 16]

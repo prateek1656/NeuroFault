@@ -1,0 +1,33 @@
+{
+  "allow_dirty": false,
+  "argv": [
+    "experiments/spectral/e5_weiroth_fair.py",
+    "--jobs",
+    "3"
+  ],
+  "config_hash": "9b59bf83e101405bc38a8d03e8e69c35c7779ee289838f4cf24a4e9e2aef8584",
+  "environment": {
+    "aihwkit_version": "1.1.0",
+    "crosssim_version": "unknown",
+    "cupy_version": null,
+    "gpu_available": false,
+    "gpu_driver_version": null,
+    "gpu_name": null,
+    "hostname": "local-workstation",
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "python_version": "3.12.14",
+    "torch_cuda_version": null,
+    "torch_version": "2.14.0"
+  },
+  "extra": {
+    "mode": "full"
+  },
+  "git": {
+    "branch": "spectral-diagnosis",
+    "commit": "e9830d3d509a1007608e72d78ece0569c55a6214",
+    "dirty": false
+  },
+  "run_id": "20261014T124416_9b59bf83_s0",
+  "seed": 0,
+  "written_at_unix": 1791962056.338298
+}

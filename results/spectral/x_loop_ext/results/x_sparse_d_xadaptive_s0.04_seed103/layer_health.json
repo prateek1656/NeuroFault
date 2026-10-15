@@ -1,0 +1,392 @@
+[
+  {
+    "epoch": 0,
+    "batch": 0,
+    "layers": {
+      "prep.0_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.20000001788139343,
+        "critical_count": 0,
+        "detection_cost": 0
+      },
+      "layer1.0.0_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.19999992847442627,
+        "critical_count": 0,
+        "detection_cost": 0
+      },
+      "res1.conv_a_crossbar_0": {
+        "avg_health": 99.99932098388672,
+        "min_health": 0.0,
+        "avg_stability": 0.9999938607215881,
+        "avg_failure_prob": 0.20000427961349487,
+        "critical_count": 1,
+        "detection_cost": 0
+      },
+      "res1.conv_b_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.20000000298023224,
+        "critical_count": 0,
+        "detection_cost": 0
+      },
+      "layer2.0.0_crossbar_0": {
+        "avg_health": 99.99932098388672,
+        "min_health": 0.0,
+        "avg_stability": 0.9999938607215881,
+        "avg_failure_prob": 0.20000427961349487,
+        "critical_count": 2,
+        "detection_cost": 0
+      },
+      "layer3.0.0_crossbar_0": {
+        "avg_health": 99.99991607666016,
+        "min_health": 0.0,
+        "avg_stability": 0.9999992847442627,
+        "avg_failure_prob": 0.20000052452087402,
+        "critical_count": 1,
+        "detection_cost": 0
+      },
+      "res2.conv_a_crossbar_0": {
+        "avg_health": 99.9969482421875,
+        "min_health": 0.0,
+        "avg_stability": 0.9999724626541138,
+        "avg_failure_prob": 0.2000192552804947,
+        "critical_count": 72,
+        "detection_cost": 0
+      },
+      "res2.conv_b_crossbar_0": {
+        "avg_health": 99.9994125366211,
+        "min_health": 0.0,
+        "avg_stability": 0.999994695186615,
+        "avg_failure_prob": 0.2000037580728531,
+        "critical_count": 14,
+        "detection_cost": 0
+      },
+      "fc_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.20000000298023224,
+        "critical_count": 0,
+        "detection_cost": 0
+      }
+    }
+  },
+  {
+    "epoch": 1,
+    "batch": 5200,
+    "layers": {
+      "prep.0_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.20000001788139343,
+        "critical_count": 0,
+        "detection_cost": 0
+      },
+      "layer1.0.0_crossbar_0": {
+        "avg_health": 99.99864196777344,
+        "min_health": 0.0,
+        "avg_stability": 0.9999878406524658,
+        "avg_failure_prob": 0.20000846683979034,
+        "critical_count": 1,
+        "detection_cost": 0
+      },
+      "res1.conv_a_crossbar_0": {
+        "avg_health": 99.99932098388672,
+        "min_health": 0.0,
+        "avg_stability": 0.9999938607215881,
+        "avg_failure_prob": 0.20000427961349487,
+        "critical_count": 1,
+        "detection_cost": 0
+      },
+      "res1.conv_b_crossbar_0": {
+        "avg_health": 99.99864196777344,
+        "min_health": 0.0,
+        "avg_stability": 0.9999878406524658,
+        "avg_failure_prob": 0.2000085562467575,
+        "critical_count": 2,
+        "detection_cost": 0
+      },
+      "layer2.0.0_crossbar_0": {
+        "avg_health": 99.99864196777344,
+        "min_health": 0.0,
+        "avg_stability": 0.9999878406524658,
+        "avg_failure_prob": 0.2000085562467575,
+        "critical_count": 4,
+        "detection_cost": 0
+      },
+      "layer3.0.0_crossbar_0": {
+        "avg_health": 99.99983215332031,
+        "min_health": 0.0,
+        "avg_stability": 0.9999985098838806,
+        "avg_failure_prob": 0.2000010758638382,
+        "critical_count": 2,
+        "detection_cost": 0
+      },
+      "res2.conv_a_crossbar_0": {
+        "avg_health": 99.9913101196289,
+        "min_health": 0.0,
+        "avg_stability": 0.9999217987060547,
+        "avg_failure_prob": 0.20005474984645844,
+        "critical_count": 205,
+        "detection_cost": 0
+      },
+      "res2.conv_b_crossbar_0": {
+        "avg_health": 99.99877166748047,
+        "min_health": 0.0,
+        "avg_stability": 0.9999889731407166,
+        "avg_failure_prob": 0.20000775158405304,
+        "critical_count": 29,
+        "detection_cost": 0
+      },
+      "fc_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.20000000298023224,
+        "critical_count": 0,
+        "detection_cost": 0
+      }
+    }
+  },
+  {
+    "epoch": 2,
+    "batch": 10400,
+    "layers": {
+      "prep.0_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.20000001788139343,
+        "critical_count": 0,
+        "detection_cost": 0
+      },
+      "layer1.0.0_crossbar_0": {
+        "avg_health": 99.99864196777344,
+        "min_health": 0.0,
+        "avg_stability": 0.9999878406524658,
+        "avg_failure_prob": 0.20000846683979034,
+        "critical_count": 1,
+        "detection_cost": 0
+      },
+      "res1.conv_a_crossbar_0": {
+        "avg_health": 99.99525451660156,
+        "min_health": 0.0,
+        "avg_stability": 0.9999573230743408,
+        "avg_failure_prob": 0.2000299096107483,
+        "critical_count": 7,
+        "detection_cost": 0
+      },
+      "res1.conv_b_crossbar_0": {
+        "avg_health": 99.99796295166016,
+        "min_health": 0.0,
+        "avg_stability": 0.9999817609786987,
+        "avg_failure_prob": 0.20001281797885895,
+        "critical_count": 3,
+        "detection_cost": 0
+      },
+      "layer2.0.0_crossbar_0": {
+        "avg_health": 99.99830627441406,
+        "min_health": 0.0,
+        "avg_stability": 0.9999847412109375,
+        "avg_failure_prob": 0.20001070201396942,
+        "critical_count": 5,
+        "detection_cost": 0
+      },
+      "layer3.0.0_crossbar_0": {
+        "avg_health": 99.99974060058594,
+        "min_health": 0.0,
+        "avg_stability": 0.9999976754188538,
+        "avg_failure_prob": 0.20000159740447998,
+        "critical_count": 3,
+        "detection_cost": 0
+      },
+      "res2.conv_a_crossbar_0": {
+        "avg_health": 99.9853286743164,
+        "min_health": 0.0,
+        "avg_stability": 0.9998679757118225,
+        "avg_failure_prob": 0.2000924050807953,
+        "critical_count": 346,
+        "detection_cost": 0
+      },
+      "res2.conv_b_crossbar_0": {
+        "avg_health": 99.99830627441406,
+        "min_health": 0.0,
+        "avg_stability": 0.9999847412109375,
+        "avg_failure_prob": 0.20001070201396942,
+        "critical_count": 40,
+        "detection_cost": 0
+      },
+      "fc_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.20000000298023224,
+        "critical_count": 0,
+        "detection_cost": 0
+      }
+    }
+  },
+  {
+    "epoch": 3,
+    "batch": 15600,
+    "layers": {
+      "prep.0_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.20000001788139343,
+        "critical_count": 0,
+        "detection_cost": 0
+      },
+      "layer1.0.0_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.19999992847442627,
+        "critical_count": 0,
+        "detection_cost": 0
+      },
+      "res1.conv_a_crossbar_0": {
+        "avg_health": 99.99593353271484,
+        "min_health": 0.0,
+        "avg_stability": 0.9999633431434631,
+        "avg_failure_prob": 0.20002563297748566,
+        "critical_count": 6,
+        "detection_cost": 0
+      },
+      "res1.conv_b_crossbar_0": {
+        "avg_health": 99.99932098388672,
+        "min_health": 0.0,
+        "avg_stability": 0.9999938607215881,
+        "avg_failure_prob": 0.20000427961349487,
+        "critical_count": 1,
+        "detection_cost": 0
+      },
+      "layer2.0.0_crossbar_0": {
+        "avg_health": 99.9972915649414,
+        "min_health": 0.0,
+        "avg_stability": 0.9999756217002869,
+        "avg_failure_prob": 0.20001710951328278,
+        "critical_count": 8,
+        "detection_cost": 0
+      },
+      "layer3.0.0_crossbar_0": {
+        "avg_health": 99.99983215332031,
+        "min_health": 0.0,
+        "avg_stability": 0.9999985098838806,
+        "avg_failure_prob": 0.2000010758638382,
+        "critical_count": 2,
+        "detection_cost": 0
+      },
+      "res2.conv_a_crossbar_0": {
+        "avg_health": 99.97630310058594,
+        "min_health": 0.0,
+        "avg_stability": 0.9997866749763489,
+        "avg_failure_prob": 0.2001492828130722,
+        "critical_count": 559,
+        "detection_cost": 0
+      },
+      "res2.conv_b_crossbar_0": {
+        "avg_health": 99.99720764160156,
+        "min_health": 0.0,
+        "avg_stability": 0.99997478723526,
+        "avg_failure_prob": 0.20001764595508575,
+        "critical_count": 66,
+        "detection_cost": 0
+      },
+      "fc_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.20000000298023224,
+        "critical_count": 0,
+        "detection_cost": 0
+      }
+    }
+  },
+  {
+    "epoch": 4,
+    "batch": 20800,
+    "layers": {
+      "prep.0_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.20000001788139343,
+        "critical_count": 0,
+        "detection_cost": 0
+      },
+      "layer1.0.0_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.19999992847442627,
+        "critical_count": 0,
+        "detection_cost": 0
+      },
+      "res1.conv_a_crossbar_0": {
+        "avg_health": 99.99593353271484,
+        "min_health": 0.0,
+        "avg_stability": 0.9999633431434631,
+        "avg_failure_prob": 0.20002563297748566,
+        "critical_count": 6,
+        "detection_cost": 0
+      },
+      "res1.conv_b_crossbar_0": {
+        "avg_health": 99.99661254882812,
+        "min_health": 0.0,
+        "avg_stability": 0.999969482421875,
+        "avg_failure_prob": 0.20002137124538422,
+        "critical_count": 5,
+        "detection_cost": 0
+      },
+      "layer2.0.0_crossbar_0": {
+        "avg_health": 99.99932098388672,
+        "min_health": 0.0,
+        "avg_stability": 0.9999938607215881,
+        "avg_failure_prob": 0.20000427961349487,
+        "critical_count": 2,
+        "detection_cost": 0
+      },
+      "layer3.0.0_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.20000000298023224,
+        "critical_count": 0,
+        "detection_cost": 0
+      },
+      "res2.conv_a_crossbar_0": {
+        "avg_health": 99.97706604003906,
+        "min_health": 0.0,
+        "avg_stability": 0.9997935891151428,
+        "avg_failure_prob": 0.20014448463916779,
+        "critical_count": 541,
+        "detection_cost": 0
+      },
+      "res2.conv_b_crossbar_0": {
+        "avg_health": 99.998046875,
+        "min_health": 0.0,
+        "avg_stability": 0.9999824166297913,
+        "avg_failure_prob": 0.20001229643821716,
+        "critical_count": 46,
+        "detection_cost": 0
+      },
+      "fc_crossbar_0": {
+        "avg_health": 100.0,
+        "min_health": 100.0,
+        "avg_stability": 1.0,
+        "avg_failure_prob": 0.20000000298023224,
+        "critical_count": 0,
+        "detection_cost": 0
+      }
+    }
+  }
+]

@@ -1,0 +1,28 @@
+# Same fair setup as baseline_no_fault_scaled_check.yaml / _deep.yaml (16000
+# train samples, 600 num_batches, 30 epochs, weight_decay + cosine schedule,
+# density=0.0) but against SimpleCNN's current ResNet-style residual-block
+# architecture (src/neurofault/models/cnn.py, adopted after the plain 6-conv-layer variant regressed to final=47.90%/max=49.45% vs the widened-only 51.70%/55.55%).
+# Tests whether depth works once the plain-net optimization-degradation
+# problem is fixed via skip connections, before deciding on GPU rental for
+# the full 50,000-sample run.
+name: baseline_no_fault_scaled_check_resnet
+simulator: crosssim
+epochs: 30
+num_batches: 600
+batch_size: 32
+train_samples: 16000
+test_samples: 2000
+learning_rate: 0.001
+weight_decay: 0.0001
+lr_cosine_schedule: true
+eval_interval: 20
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+fault:
+  density: 0.0
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

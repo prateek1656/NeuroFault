@@ -1,0 +1,24 @@
+{
+  "git": {
+    "commit": null,
+    "branch": null,
+    "dirty": null,
+    "error": "Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128."
+  },
+  "environment": {
+    "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.35",
+    "python_version": "3.12.8",
+    "hostname": "cb61481bd84d",
+    "torch_version": "2.14.0+cu130",
+    "torch_cuda_version": "13.0",
+    "gpu_available": true,
+    "gpu_name": "NVIDIA RTX A4000",
+    "gpu_driver_version": "595.84",
+    "cupy_version": "13.6.0",
+    "crosssim_version": "unknown",
+    "aihwkit_version": "1.1.0"
+  },
+  "timing": {
+    "total_seconds": 360.5907928943634
+  }
+}

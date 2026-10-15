@@ -1,0 +1,62 @@
+{
+  "arms": {
+    "wr_cell_rss": [
+      "ks",
+      "rss",
+      1
+    ],
+    "wr_cell_rss_R": [
+      "ks",
+      "rss",
+      16
+    ],
+    "wr_cell_worst": [
+      "ks",
+      "worst",
+      1
+    ],
+    "wr_line_rss": [
+      "none",
+      "rss",
+      1
+    ],
+    "wr_line_rss_R": [
+      "none",
+      "rss",
+      16
+    ],
+    "wr_line_worst": [
+      "none",
+      "worst",
+      1
+    ]
+  },
+  "ckpts": [
+    42,
+    101,
+    102
+  ],
+  "d_lines": {
+    "1": 1,
+    "16": 4,
+    "4": 2,
+    "64": 4
+  },
+  "eval_seeds": [
+    60,
+    80
+  ],
+  "h8_eval_csv": "<archive-root>/results/spectral/b_vs_prior/20261011T210412_0ec5ea78_s0/eval_instances.csv",
+  "ks": [
+    1,
+    4,
+    16,
+    64
+  ],
+  "sigmas": [
+    0.01,
+    0.02,
+    0.04
+  ],
+  "tile": 256
+}

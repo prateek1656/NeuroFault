@@ -1,0 +1,47 @@
+# Mixed-fault-regime re-run - see resnet9_fault_mixed_no_mitigation.yaml for the full
+# rationale (ExperimentConfig.secondary_fault, config.py). All three strategies enabled
+# together, same as resnet9_fault_combined.yaml, but now with real simultaneous density
+# (stuck-at) + drift faults (secondary_fault) instead of stuck-at alone. This is the one
+# arm where the fixed experimental design actually matters most: previously "combined"
+# only ever differed from "remapping alone" because soft_mitigation/layer_reset had nothing
+# real to do against pure stuck-at - with drift now real and simultaneous, soft_mitigation
+# can finally contribute (if it does) alongside remapping/layer_reset's stuck-at responses.
+name: resnet9_fault_mixed_combined
+simulator: crosssim
+epochs: 50
+float_pretrain_epochs: 10
+finetune_learning_rate: 0.001
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+lr_one_cycle: true
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+save_checkpoint: true  # real, reported-number run
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  use_gpu: true
+  calibrate_adc: true
+  adc_calibration_images: 320
+  calibrate_dac: true
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+secondary_fault:
+  failure_model: drift
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+mitigation:
+  enable_soft_mitigation: true
+  enable_remapping: true
+  enable_layer_reset: true
+  enable_predictive: false

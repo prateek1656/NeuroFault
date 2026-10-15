@@ -1,0 +1,189 @@
+{
+  "criteria_id": "x_loop",
+  "criteria_sha256": "36a2f30402bd456e092714cbc1782639d0f1c0474e8fd0e4a8220b21d67c3c65",
+  "overall": "PASS",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "all": "PASS",
+    "dense": "PASS",
+    "report": "INCONCLUSIVE",
+    "sparse": "PASS"
+  },
+  "n_rows": 6,
+  "criteria": [
+    {
+      "id": "X-dense-pass",
+      "kind": "pass",
+      "scope": "dense",
+      "source": "plan X.1 (estimated vs oracle map driving the item-4 controller)",
+      "description": "Dense: D on the estimated map loses at most 1.0 pt (mean) vs D on the oracle map, and still beats the oracle C'-matched in >= 2 of 3 seeds.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "gap_d",
+            "aggregation": "mean",
+            "comparator": ">=",
+            "threshold": -1.0,
+            "value": 0.05333333333333693,
+            "n": 3,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "d_est_minus_c_oracle",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.66,
+            "value": 1.0,
+            "n": 3,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "X-dense-edge",
+      "kind": "pass",
+      "scope": "dense",
+      "source": "plan X.1 (D's lead must survive estimation)",
+      "description": "Dense: D-est beats C'-matched-est (both on estimated maps, compute matched) in >= 2 of 3 seeds.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "d_est_minus_c_est",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.66,
+            "value": 1.0,
+            "n": 3,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "X-sparse-pass",
+      "kind": "pass",
+      "scope": "sparse",
+      "source": "plan X.2 (LOCATE cost in the regime where CS applies)",
+      "description": "Sparse: D-est within 0.5 pt of D-oracle (mean) AND the adaptive locator uses <= 0.25 x the reads of full readout over the lifetime on every seed.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "gap_d",
+            "aggregation": "mean",
+            "comparator": ">=",
+            "threshold": -0.5,
+            "value": -0.09333333333333843,
+            "n": 3,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "reads_ratio",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.25,
+            "value": 0.2450612302186041,
+            "n": 3,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "X-gap",
+      "kind": "pass",
+      "scope": "all",
+      "source": "master plan X.2 target (close >= 50% of the no-repair-to-oracle gap)",
+      "description": "In each regime the estimated loop closes >= 50% of the floor-to-oracle gap (mean closure per regime >= 0.5).\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "closure",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 0.5,
+            "value": 0.9825704426360516,
+            "n": 2,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "X-kill",
+      "kind": "kill",
+      "scope": "all",
+      "source": "plan X.1 kill",
+      "description": "Kill the \"no oracle needed\" claim if D-est is more than 2 pt below D-oracle (mean) in either regime, or the estimated map misses more than 10% of the new visible faults in any wave of any run.\n",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "any",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "gap_d",
+            "aggregation": "min",
+            "comparator": "<",
+            "threshold": -2.0,
+            "value": -0.09333333333333843,
+            "n": 2,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "recall_vis_min",
+            "aggregation": "min",
+            "comparator": "<",
+            "threshold": 0.9,
+            "value": 0.9798189362504716,
+            "n": 6,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "X-report",
+      "kind": "report",
+      "scope": "report",
+      "source": "report only",
+      "description": "Per-wave precision/recall, false-positive spares, fallback fraction, reads per wave, burst steps, wall time, shadow full-readout recall, D-oracle seed-42 reproducibility vs _live9.\n",
+      "note": null,
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "reason": "requires human judgement"
+      }
+    }
+  ],
+  "metrics_csv": "results/spectral/x_loop_box/results/verdict_metrics.csv"
+}

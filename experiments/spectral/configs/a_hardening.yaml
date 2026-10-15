@@ -1,0 +1,36 @@
+# Phase H arm H2 (criteria/a_hardening.yaml, frozen 2026-10-10, committed before any run). `smoke` never counts.
+# Platform = a_bnfold (W2 BN-folded ResNet-9, CIFAR-10 + CIFAR-100, ckpt seeds 42/101/102, 2% per-cell probe
+# read noise, 10k-image evaluation, 4 time points, 8 scenarios) with every random stream offset +2000.
+# M4 = strict variant (FieldFit cos order 4, 8 fwd + 7 bwd + 1 bias read = 16 MVMs/tile).
+# Nothing here is tuned on results; baseline hyper-parameters were fixed before the first full run.
+full:
+  datasets: [cifar10, cifar100]
+  ckpt_seeds: [42, 101, 102]
+  seed_offset: 2000
+  sigma: 0.02
+  n_eval: 10000
+  times: {1h: 3600.0, 1d: 86400.0, 30d: 2592000.0, 1yr: 31557600.0}
+  hb1_ns: [8, 32]                 # calibration images (augmented TRAIN), nested subsets of one pool
+  hb2: {k_ref: 4, p_probes: 15}   # 4 reference lines/tile; 15 probe MVMs + 1 mean-bias read = 16 = M4's budget
+  hb3: {rank: 4, mc_samples: 4, train_images: 512, positions_per_image: 32}
+  scenarios:
+    - {name: D2, model: D2, field: "", rho: 0.0}
+    - {name: D3_hotspot_r1, model: D3, field: hotspot, rho: 1.0}
+    - {name: D3_hotspot_r2, model: D3, field: hotspot, rho: 2.0}
+    - {name: D3_rank_r_r1, model: D3, field: rank_r, rho: 1.0}
+    - {name: D3_rank_r_r2, model: D3, field: rank_r, rho: 2.0}
+    - {name: D3_row_gradient_r1, model: D3, field: row_gradient, rho: 1.0}
+    - {name: D3_row_gradient_r2, model: D3, field: row_gradient, rho: 2.0}
+    - {name: D4, model: D4, field: "", rho: 1.0}
+smoke:
+  datasets: [cifar10, cifar100]
+  ckpt_seeds: [101]
+  seed_offset: 2000
+  sigma: 0.02
+  n_eval: 1000
+  times: {1d: 86400.0, 1yr: 31557600.0}
+  hb1_ns: [8, 32]
+  hb2: {k_ref: 4, p_probes: 15}
+  hb3: {rank: 4, mc_samples: 2, train_images: 128, positions_per_image: 16}
+  scenarios:
+    - {name: D3_row_gradient_r1, model: D3, field: row_gradient, rho: 1.0}

@@ -1,0 +1,91 @@
+schema_version: 1
+id: a_refresh
+title: "Hardening H6: M4 as a refresh scheduler (sensor-allocated per-tile reprogramming vs timer refresh)"
+source_plan: "master plan §10 H6 (registered 2026-10-10 AFTER seeing provisional H5 numbers, before any H6 run)"
+frozen: "2026-10-10"
+overall_pass: all
+note: >
+  Why: provisional H5 (a_deploy, not yet final) showed that M4's a_bnfold headline used the digital-reference
+  form W(t) - W0 o F_hat, which needs the stored digital weights at inference (not deployable); the in-array
+  forms recover far less (rank-1 ~0-1.5 pt, full ~+3 pt at 1 yr with 3 extra passes) and reprogramming
+  recovers everything. H6 tests the remaining deployable use of M4's estimate: deciding WHICH tile to
+  reprogram and WHEN. Must be reported next to H5.
+  Platform as a_deploy (W2 BN-folded ResNet-9, CIFAR-10/100, ckpt seeds 42/101/102, 8 scenarios, 2% per-cell
+  probe read noise, 10k-image eval, train-image statistics only) with ALL streams offset +4000.
+  Steady-state per-tile refresh model (declared approximation): each tile is reprogrammed at a period T_i
+  from the age grid A = {1h,3h,8h,1d,3d,7d,14d,30d,60d,120d,240d,365d}; its worst-case state is its state at
+  age T_i (one drift realization per tile; refresh restarts the same statistics). Network worst-case accuracy
+  = accuracy with EVERY tile at its own T_i simultaneously (exact for timers, conservative for per-tile
+  policies). Served correction between refreshes = B8 (same optimistic per-tile best-of as a_deploy) for every
+  policy family. Writes = cell-weighted refreshes per cell per year = sum_i cells_i (1 yr / T_i) / sum_i cells_i.
+  Policy families (each a sweep):
+    TIMER(T): T_i = T for all tiles, T in A (12 points).
+    M4-ALLOC(lam): per-tile period T_i = argmin_{k in A} wgt_i h_i(k)^2 + lam (cells_i / sum cells) (1 yr / k),
+      lam in logspace(-7, 1, 16). h_i(k) = the M4 health estimate of tile i (predicted relative output error,
+      train-image activations, of the served gain-type correction, from observables only: structured part
+      W0 o ((1+F_hat) o G1 - 1) with G1 the rank-1 cosine projection of 1/(1+F_hat), plus an iid part
+      sigma_eps^2 estimated from the field-fit probe residual minus the known read-noise energy; 16 MVMs/tile per
+      check), measured at the grid ages <= 1 day after programming (commissioning window) and extrapolated
+      log-linearly in age. wgt_i = tile output energy ||W0 X||^2 as a fraction of its layer's (layers count
+      equally; label-free).
+    GDC-ALLOC(lam): same rule with h_i = |1 - 1/alpha_GDC| (drift magnitude from the GDC gain, 8 MVMs/check).
+    STATIC-ALLOC(lam): sensorless - same rule with ONE nominal age curve for every tile, h(k) = 1 - (k / 20 s)^-0.06
+      (PCM, mean nu); isolates cost/weight-aware scheduling from sensing (0 monitoring reads).
+    ORACLE-ALLOC(lam) (report only): same rule on the TRUE served-B8 tile error curve at every grid age.
+  Pilot disclosure: a smoke pilot (1 seed, 1 scenario, 1k images, 4 ages; never counts) of an earlier rule -
+  refresh when the statistic exceeds a common threshold tau - showed that rule loses to the timer even with the
+  oracle statistic (tiles with a high error floor refresh hourly). The rule was replaced by the allocation above
+  BEFORE this file was committed; the pilot also showed h_m4 correlates 0.98 with the true tile error. A second
+  pilot of the allocation rule showed ANY per-tile cost-aware allocation (even GDC's near-uniform statistic) saves
+  ~10-30x writes vs a uniform timer, because small tiles are cheap to refresh; so STATIC-ALLOC was added and the
+  sensing claim is judged against STATIC and GDC (H6-sensing-adds-value), with "vs timer" kept as H6-saves-writes.
+  Targets (per row): accuracy of TIMER(1d) and of TIMER(30d). For each family, writes needed to reach the
+  target = linear interpolation in log(writes) on the family's Pareto frontier (writes, worst-case acc); if the
+  family never reaches it, 1e6 (capped). TIMER's own writes = 1 yr / T.
+  Rows (dataset, ckpt_seed, scenario, target in {T1d, T30d}): writes_timer, writes_m4, writes_gdc,
+  writes_oracle, ratio_m4_timer = writes_m4 / writes_timer, ratio_m4_gdc = writes_m4 / writes_gdc,
+  ratio_m4_static, ratio_static_timer, ratio_oracle_timer, monitor_mvm_per_tile_yr_m4, monitor_mvm_per_tile_yr_gdc.
+criteria:
+  - id: H6-saves-writes
+    source: "master plan §10 H6"
+    kind: pass
+    scope: H6
+    description: >
+      M4-allocated refresh reaches the timer's worst-case accuracy with <= 70% of its writes: per dataset and
+      per target, median over (seed, scenario) of ratio_m4_timer <= 0.7, at both targets, on both datasets.
+    clauses:
+      - {metric: ratio_m4_timer, filter: {dataset: cifar10}, per_group: {by: [target], aggregation: median}, aggregation: frac, inner: {comparator: "<=", threshold: 0.7}, comparator: ">=", threshold: 1.0}
+      - {metric: ratio_m4_timer, filter: {dataset: cifar100}, per_group: {by: [target], aggregation: median}, aggregation: frac, inner: {comparator: "<=", threshold: 0.7}, comparator: ">=", threshold: 1.0}
+  - id: H6-sensing-adds-value
+    source: "master plan §10 H6"
+    kind: pass
+    scope: H6
+    description: >
+      M4's 16-read estimate is worth its reads: per dataset and per target, median ratio_m4_static <= 0.85 AND
+      median ratio_m4_gdc <= 0.85, at both targets on both datasets (M4 needs <= 85% of the writes of the
+      sensorless static allocation and of the GDC-magnitude allocation).
+    clauses:
+      - {metric: ratio_m4_static, filter: {dataset: cifar10}, per_group: {by: [target], aggregation: median}, aggregation: frac, inner: {comparator: "<=", threshold: 0.85}, comparator: ">=", threshold: 1.0}
+      - {metric: ratio_m4_static, filter: {dataset: cifar100}, per_group: {by: [target], aggregation: median}, aggregation: frac, inner: {comparator: "<=", threshold: 0.85}, comparator: ">=", threshold: 1.0}
+      - {metric: ratio_m4_gdc, filter: {dataset: cifar10}, per_group: {by: [target], aggregation: median}, aggregation: frac, inner: {comparator: "<=", threshold: 0.85}, comparator: ">=", threshold: 1.0}
+      - {metric: ratio_m4_gdc, filter: {dataset: cifar100}, per_group: {by: [target], aggregation: median}, aggregation: frac, inner: {comparator: "<=", threshold: 0.85}, comparator: ">=", threshold: 1.0}
+  - id: H6-kill
+    source: "master plan §10 H6 kill"
+    kind: kill
+    scope: H6
+    description: >
+      Kill the sensing claim if M4-allocated refresh saves no writes vs the sensorless static allocation: median
+      ratio_m4_static (pooled over targets, seeds, scenarios) >= 1.0 on either dataset. (Then any saving vs the
+      timer is due to cost-aware scheduling, not to M4.)
+    combine: any
+    clauses:
+      - {metric: ratio_m4_static, aggregation: median, filter: {dataset: cifar10}, comparator: ">=", threshold: 1.0}
+      - {metric: ratio_m4_static, aggregation: median, filter: {dataset: cifar100}, comparator: ">=", threshold: 1.0}
+  - id: H6-report
+    source: "master plan §10 H6 (report only)"
+    kind: report
+    scope: H6_report
+    description: >
+      Oracle-allocation headroom (ratio_oracle_timer), monitoring read cost per tile per year, per-scenario split
+      (D2 iid vs D3/D4 structured), full frontiers per family.
+    manual: true

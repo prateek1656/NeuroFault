@@ -1,0 +1,47 @@
+# F0.3 baseline ladder / headroom (+F0.4 K4.1). `smoke` never counts.
+full:
+  ckpt_seeds: [42, 101, 102]
+  layers: ["prep.0.weight", "layer1.0.0.weight", "res1.conv_a.weight", "res1.conv_b.weight",
+           "layer2.0.0.weight", "layer3.0.0.weight", "res2.conv_a.weight", "res2.conv_b.weight"]
+  tiles_per_layer: 2
+  fields: [row_gradient, col_gradient, row_plus_col, rank_r, hotspot]
+  rhos: [1.0, 2.0]
+  d4: true
+  d2_scales: [2.0]
+  sigmas: [0.0]
+  times: [1h, 1d, 30d, 1yr]
+  methods: [gdc, row, col, bi, m4cos, m4r1, b5s]
+  p: 8
+  captures: false
+  jacobian: false
+  net_scenarios:
+    - {model: D2, rho: 0.0, scale: 1.0}
+    - {model: D2, rho: 0.0, scale: 1.25}
+    - {model: D2, rho: 0.0, scale: 1.5}
+    - {model: D2, rho: 0.0, scale: 2.0}
+    - {model: D3, field: row_gradient, rho: 1.0, scale: 1.0}
+    - {model: D3, field: row_gradient, rho: 2.0, scale: 1.0}
+    - {model: D3, field: rank_r, rho: 2.0, scale: 1.0}
+    - {model: D4, rho: 0.0, scale: 1.0}
+  net_times: {1h: 3600.0, 1d: 86400.0, 30d: 2592000.0, 1yr: 31557600.0}
+  net_methods: [none, gdc, row, col, bi, b8, gdc_adabs, timer, b1a]
+  n_eval: 1000
+smoke:
+  ckpt_seeds: [42]
+  layers: ["layer1.0.0.weight", "layer3.0.0.weight"]
+  tiles_per_layer: 1
+  fields: [row_gradient]
+  rhos: [1.0]
+  d4: true
+  d2_scales: [2.0]
+  sigmas: [0.0]
+  times: [1d, 1yr]
+  methods: [gdc, row, col, bi, m4cos, m4r1, b5s]
+  p: 8
+  captures: false
+  jacobian: false
+  net_scenarios:
+    - {model: D2, rho: 0.0, scale: 1.25}
+  net_times: {1d: 86400.0}
+  net_methods: [none, gdc, row, col, bi, b8, gdc_adabs, timer, b1a]
+  n_eval: 300

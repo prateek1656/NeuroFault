@@ -1,0 +1,52 @@
+# Mixed-fault-regime re-run of the 6-arm comparison - fixes a real experimental-design gap
+# found after that sweep completed: every arm
+# there injected exactly ONE fault type (failure_model="density" for 5 arms, "drift" for 1),
+# so soft_mitigation (only ever routed through monitor.drift_mask, dispatch.py) and
+# layer_reset (stuck-at only, via remapping's health band) never actually faced the fault
+# type each is meant to defend against in the SAME run as a genuine three-way comparison.
+#
+# Fix: ExperimentConfig.secondary_fault (new, config.py) lets a second, independently-typed
+# FaultConfig fire on the same wave schedule as the primary one - both at full severity
+# (density=0.1 each), not splitting one shared budget. This arm (no_mitigation) is identical
+# to resnet9_fault_no_mitigation.yaml except for the added secondary_fault block - same
+# recipe, same crossbar config, same primary fault schedule - so it's the fair "nothing
+# defends against either fault type" baseline for the mixed-regime comparison.
+name: resnet9_fault_mixed_no_mitigation
+simulator: crosssim
+epochs: 50
+float_pretrain_epochs: 10
+finetune_learning_rate: 0.001
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+lr_one_cycle: true
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+save_checkpoint: true  # real, reported-number run
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  use_gpu: true
+  calibrate_adc: true
+  adc_calibration_images: 320
+  calibrate_dac: true
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+secondary_fault:
+  failure_model: drift
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

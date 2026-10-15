@@ -1,0 +1,54 @@
+{
+  "allow_dirty": true,
+  "argv": [
+    "experiments/spectral/f0_1_stuck_scaling.py",
+    "--jobs",
+    "8",
+    "--allow-dirty"
+  ],
+  "config_hash": "a8f8370e837b045e6c4ddc2a79a9d2378d67ae472a60a0fb02b99845e30d8e96",
+  "environment": {
+    "aihwkit_version": "1.1.0",
+    "crosssim_version": "unknown",
+    "cupy_version": null,
+    "gpu_available": false,
+    "gpu_driver_version": null,
+    "gpu_name": null,
+    "hostname": "local-workstation",
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "python_version": "3.12.14",
+    "torch_cuda_version": null,
+    "torch_version": "2.14.0"
+  },
+  "extra": {
+    "checkpoint_sha256": {
+      "101": "59f6901f0a1c9b275a3e9198026f6e400fd81f66b940003af3f3f5826ccecb5f",
+      "102": "2e16d5e18b9d310a3131875fefdd8d40ff5f7fb84e0b68e8b84d07a9ad534f10",
+      "42": "995f917e871e0eb06ec1028b0a3e588dccdb644ba2672597274398fdba231429"
+    },
+    "criteria_file": "f0_stuck_scaling.yaml",
+    "criteria_sha256": "335588296cf77b1cd9bd59aa2187c1ed2ac97c00d7041a2c46b79e68ec1285ed",
+    "h11_frac_auc_below_0.6_by_encoding": {
+      "diff_pair_g0": 1.0,
+      "diff_pair_g0.01": 1.0,
+      "diff_pair_g0.05": 0.9880952380952381,
+      "signed_ideal": 0.9880952380952381
+    },
+    "h11_outcome_by_encoding": {
+      "diff_pair_g0": true,
+      "diff_pair_g0.01": true,
+      "diff_pair_g0.05": true,
+      "signed_ideal": true
+    },
+    "jobs": 8,
+    "variant": "full"
+  },
+  "git": {
+    "branch": "spectral-diagnosis",
+    "commit": "f6236c3568e53cf654b7f080b4ebb7aa733a31f8",
+    "dirty": true
+  },
+  "run_id": "20261009T023921_a8f8370e_s0",
+  "seed": 0,
+  "written_at_unix": 1791493762.352662
+}

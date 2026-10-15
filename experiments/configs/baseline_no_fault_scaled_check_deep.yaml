@@ -1,0 +1,33 @@
+# Same fair setup as baseline_no_fault_scaled_check.yaml (16000 train
+# samples, 600 num_batches, 30 epochs, weight_decay + cosine schedule,
+# density=0.0) but run against the current codebase's model, which now
+# defaults to the deeper 6-conv-layer SimpleCNN (src/neurofault/models/cnn.py, adopted 2026-09-14). The original
+# baseline_no_fault_scaled_check_seed{42,5000} results predate that change
+# and were produced with the earlier widened-only (3-conv-layer) SimpleCNN
+# (final=51.70%/max=55.55% at seed42, confirmed by matching metrics.json's values against the earlier results table) - kept as-is, not overwritten, so this new
+# config exists under a distinct name purely to isolate "does depth alone,
+# on a fair full schedule, beat the widened-only ceiling" (step 1)
+# without destroying that comparison point. 1-epoch timing probe on this
+# exact config measured 494s/epoch (787% CPU) on the M4 Mac, 2026-09-19 -
+# extrapolates to ~4.1hr for the full 30 epochs.
+name: baseline_no_fault_scaled_check_deep
+simulator: crosssim
+epochs: 30
+num_batches: 600
+batch_size: 32
+train_samples: 16000
+test_samples: 2000
+learning_rate: 0.001
+weight_decay: 0.0001
+lr_cosine_schedule: true
+eval_interval: 20
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+fault:
+  density: 0.0
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

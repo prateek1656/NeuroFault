@@ -1,0 +1,27 @@
+# Fault-aware retraining baseline: the dominant literature approach - bake the SAME defect map
+# no_mitigation.yaml uses into the crossbar once, before any training, so
+# gradient descent learns weights that compensate for these specific,
+# unchanging faults. No periodic injection, no runtime mitigation - the
+# retraining itself is the compensation mechanism, compared honestly against
+# baseline_no_fault.yaml (ideal) and no_mitigation.yaml (unmitigated-faulted).
+name: fault_aware_retraining
+simulator: crosssim
+epochs: 15
+num_batches: 128
+batch_size: 32
+train_samples: 2000
+test_samples: 1000
+eval_interval: 3
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+fault:
+  density: 0.1
+  distribution: random
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false
+retraining:
+  enable_fault_aware: true

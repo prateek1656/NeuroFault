@@ -1,0 +1,551 @@
+{
+  "regime": "deployment",
+  "policy": "co_mitigation",
+  "seed": 103,
+  "nominal_inter_wave_batches": 5200,
+  "checkpoint_config_hash": "96b9e83a598125e227bedcb0d03900836e21eb81720bd67b63e370c18413d466",
+  "checkpoint_final_test_acc": 70.34,
+  "baseline_test_acc": 70.44,
+  "baseline_canary_acc": 74.4140625,
+  "complete": true,
+  "summary": {
+    "final_test_acc": 65.68,
+    "lifetime_mean_test_acc": 64.48,
+    "worst_dip_test_acc": 10.58,
+    "total_burst_batches": 1000,
+    "total_remapped": 178610
+  },
+  "events": [
+    {
+      "wave": 0,
+      "density": 0.1,
+      "nominal_batch_equivalent": 0,
+      "fault_map_hash": {
+        "embed_crossbar_0": "f8725ea291b6cef5",
+        "blocks.0.attn.qkv_crossbar_0": "d4e8619f016224e2",
+        "blocks.0.attn.proj_crossbar_0": "869085b1184afb20",
+        "blocks.0.fc1_crossbar_0": "99aa2f714b65bc74",
+        "blocks.0.fc2_crossbar_0": "9c0f5bb131193b3d",
+        "blocks.1.attn.qkv_crossbar_0": "c7de6a97b2c6f10b",
+        "blocks.1.attn.proj_crossbar_0": "5118680cc468ab8d",
+        "blocks.1.fc1_crossbar_0": "a2a79106596efb27",
+        "blocks.1.fc2_crossbar_0": "7b38a5ff72fb8a01",
+        "blocks.2.attn.qkv_crossbar_0": "ab8a301bebf21132",
+        "blocks.2.attn.proj_crossbar_0": "7319423496abcd51",
+        "blocks.2.fc1_crossbar_0": "1b360ffcde6256d6",
+        "blocks.2.fc2_crossbar_0": "2ca06f366a797659",
+        "blocks.3.attn.qkv_crossbar_0": "637339962769e220",
+        "blocks.3.attn.proj_crossbar_0": "91480c75f919eae1",
+        "blocks.3.fc1_crossbar_0": "7262ae0818aec674",
+        "blocks.3.fc2_crossbar_0": "705f6d6ec2772791",
+        "fc_crossbar_0": "7ef1f1f215d5dc9a"
+      },
+      "newly_stuck": 119069,
+      "test_acc_before": 10.58,
+      "test_acc_after": 65.16,
+      "canary_acc_before": 10.25390625,
+      "canary_acc_after": 66.2109375,
+      "burst_batches": 500,
+      "optimizer_steps": 500,
+      "remapped": 59532,
+      "stop_reason": "t_max",
+      "canary_trace": [
+        [
+          25,
+          38.671875
+        ],
+        [
+          50,
+          42.96875
+        ],
+        [
+          75,
+          48.33984375
+        ],
+        [
+          100,
+          48.2421875
+        ],
+        [
+          125,
+          52.44140625
+        ],
+        [
+          150,
+          53.61328125
+        ],
+        [
+          175,
+          54.6875
+        ],
+        [
+          200,
+          54.78515625
+        ],
+        [
+          225,
+          54.8828125
+        ],
+        [
+          250,
+          57.32421875
+        ],
+        [
+          275,
+          59.27734375
+        ],
+        [
+          300,
+          60.7421875
+        ],
+        [
+          325,
+          62.5
+        ],
+        [
+          350,
+          62.5
+        ],
+        [
+          375,
+          65.13671875
+        ],
+        [
+          400,
+          65.91796875
+        ],
+        [
+          425,
+          66.9921875
+        ],
+        [
+          450,
+          66.50390625
+        ],
+        [
+          475,
+          65.91796875
+        ],
+        [
+          500,
+          66.2109375
+        ]
+      ],
+      "remapped_this_wave": 59532,
+      "remapped_by_layer": {
+        "embed_crossbar_0": 460,
+        "blocks.0.attn.qkv_crossbar_0": 5529,
+        "blocks.0.attn.proj_crossbar_0": 1843,
+        "blocks.0.fc1_crossbar_0": 3686,
+        "blocks.0.fc2_crossbar_0": 3686,
+        "blocks.1.attn.qkv_crossbar_0": 5529,
+        "blocks.1.attn.proj_crossbar_0": 1843,
+        "blocks.1.fc1_crossbar_0": 3686,
+        "blocks.1.fc2_crossbar_0": 3686,
+        "blocks.2.attn.qkv_crossbar_0": 5529,
+        "blocks.2.attn.proj_crossbar_0": 1843,
+        "blocks.2.fc1_crossbar_0": 3686,
+        "blocks.2.fc2_crossbar_0": 3686,
+        "blocks.3.attn.qkv_crossbar_0": 5529,
+        "blocks.3.attn.proj_crossbar_0": 1843,
+        "blocks.3.fc1_crossbar_0": 3686,
+        "blocks.3.fc2_crossbar_0": 3686,
+        "fc_crossbar_0": 96
+      },
+      "unremapped_effective_stuck": 59537,
+      "rho": 0.3333333333333333,
+      "available_capacity_by_layer": {
+        "embed_crossbar_0": 1382,
+        "blocks.0.attn.qkv_crossbar_0": 16588,
+        "blocks.0.attn.proj_crossbar_0": 5529,
+        "blocks.0.fc1_crossbar_0": 11059,
+        "blocks.0.fc2_crossbar_0": 11059,
+        "blocks.1.attn.qkv_crossbar_0": 16588,
+        "blocks.1.attn.proj_crossbar_0": 5529,
+        "blocks.1.fc1_crossbar_0": 11059,
+        "blocks.1.fc2_crossbar_0": 11059,
+        "blocks.2.attn.qkv_crossbar_0": 16588,
+        "blocks.2.attn.proj_crossbar_0": 5529,
+        "blocks.2.fc1_crossbar_0": 11059,
+        "blocks.2.fc2_crossbar_0": 11059,
+        "blocks.3.attn.qkv_crossbar_0": 16588,
+        "blocks.3.attn.proj_crossbar_0": 5529,
+        "blocks.3.fc1_crossbar_0": 11059,
+        "blocks.3.fc2_crossbar_0": 11059,
+        "fc_crossbar_0": 288
+      },
+      "budget_by_layer": {
+        "embed_crossbar_0": 460,
+        "blocks.0.attn.qkv_crossbar_0": 5529,
+        "blocks.0.attn.proj_crossbar_0": 1843,
+        "blocks.0.fc1_crossbar_0": 3686,
+        "blocks.0.fc2_crossbar_0": 3686,
+        "blocks.1.attn.qkv_crossbar_0": 5529,
+        "blocks.1.attn.proj_crossbar_0": 1843,
+        "blocks.1.fc1_crossbar_0": 3686,
+        "blocks.1.fc2_crossbar_0": 3686,
+        "blocks.2.attn.qkv_crossbar_0": 5529,
+        "blocks.2.attn.proj_crossbar_0": 1843,
+        "blocks.2.fc1_crossbar_0": 3686,
+        "blocks.2.fc2_crossbar_0": 3686,
+        "blocks.3.attn.qkv_crossbar_0": 5529,
+        "blocks.3.attn.proj_crossbar_0": 1843,
+        "blocks.3.fc1_crossbar_0": 3686,
+        "blocks.3.fc2_crossbar_0": 3686,
+        "fc_crossbar_0": 96
+      },
+      "bn_recal_batches_used": 0,
+      "canary_after_recal": 56.640625,
+      "gate_reference": 74.4140625,
+      "gate_drop": 17.7734375,
+      "burst_skipped": false,
+      "effective_params": {
+        "burst_lr": 0.3,
+        "canary_gate_delta": 2.0,
+        "patience_min_gain": 0.25,
+        "patience_window": 4,
+        "patience_eval_every": 25,
+        "burst_t_max": 500,
+        "remap_pacing": "paced",
+        "burst_mode": "adaptive",
+        "burst_batches": 390
+      },
+      "params_from_priors": [
+        "burst_lr",
+        "canary_gate_delta",
+        "patience_min_gain",
+        "patience_window",
+        "patience_eval_every",
+        "burst_t_max"
+      ],
+      "wall_seconds": 95.60953116416931
+    },
+    {
+      "wave": 1,
+      "density": 0.1,
+      "nominal_batch_equivalent": 5200,
+      "fault_map_hash": {
+        "embed_crossbar_0": "622281bdfb0031db",
+        "blocks.0.attn.qkv_crossbar_0": "657eb5c441d54868",
+        "blocks.0.attn.proj_crossbar_0": "7a60be2fe8b4b143",
+        "blocks.0.fc1_crossbar_0": "1d33dfca188b5a3b",
+        "blocks.0.fc2_crossbar_0": "6ab2414f3bfae25c",
+        "blocks.1.attn.qkv_crossbar_0": "cdc2022e56fcc998",
+        "blocks.1.attn.proj_crossbar_0": "79dffaf46d7afd0b",
+        "blocks.1.fc1_crossbar_0": "1afe662e9d6f42ac",
+        "blocks.1.fc2_crossbar_0": "dea763b178fc2074",
+        "blocks.2.attn.qkv_crossbar_0": "ba6303a0106fdecf",
+        "blocks.2.attn.proj_crossbar_0": "fbe9e301c38aaf77",
+        "blocks.2.fc1_crossbar_0": "34166d7f4695f5bd",
+        "blocks.2.fc2_crossbar_0": "b99b702093e52751",
+        "blocks.3.attn.qkv_crossbar_0": "bb2640b1207a015d",
+        "blocks.3.attn.proj_crossbar_0": "26d4bb50c56a6b71",
+        "blocks.3.fc1_crossbar_0": "a5ed6b2038291c67",
+        "blocks.3.fc2_crossbar_0": "eab96304041474ac",
+        "fc_crossbar_0": "3323067516d2612f"
+      },
+      "newly_stuck": 113189,
+      "test_acc_before": 24.72,
+      "test_acc_after": 62.6,
+      "canary_acc_before": 21.77734375,
+      "canary_acc_after": 64.35546875,
+      "burst_batches": 0,
+      "optimizer_steps": 0,
+      "remapped": 59533,
+      "stop_reason": "no_burst",
+      "canary_trace": [],
+      "remapped_this_wave": 59533,
+      "remapped_by_layer": {
+        "embed_crossbar_0": 461,
+        "blocks.0.attn.qkv_crossbar_0": 5529,
+        "blocks.0.attn.proj_crossbar_0": 1843,
+        "blocks.0.fc1_crossbar_0": 3686,
+        "blocks.0.fc2_crossbar_0": 3686,
+        "blocks.1.attn.qkv_crossbar_0": 5529,
+        "blocks.1.attn.proj_crossbar_0": 1843,
+        "blocks.1.fc1_crossbar_0": 3686,
+        "blocks.1.fc2_crossbar_0": 3686,
+        "blocks.2.attn.qkv_crossbar_0": 5529,
+        "blocks.2.attn.proj_crossbar_0": 1843,
+        "blocks.2.fc1_crossbar_0": 3686,
+        "blocks.2.fc2_crossbar_0": 3686,
+        "blocks.3.attn.qkv_crossbar_0": 5529,
+        "blocks.3.attn.proj_crossbar_0": 1843,
+        "blocks.3.fc1_crossbar_0": 3686,
+        "blocks.3.fc2_crossbar_0": 3686,
+        "fc_crossbar_0": 96
+      },
+      "unremapped_effective_stuck": 113193,
+      "rho": 0.5,
+      "available_capacity_by_layer": {
+        "embed_crossbar_0": 922,
+        "blocks.0.attn.qkv_crossbar_0": 11059,
+        "blocks.0.attn.proj_crossbar_0": 3686,
+        "blocks.0.fc1_crossbar_0": 7373,
+        "blocks.0.fc2_crossbar_0": 7373,
+        "blocks.1.attn.qkv_crossbar_0": 11059,
+        "blocks.1.attn.proj_crossbar_0": 3686,
+        "blocks.1.fc1_crossbar_0": 7373,
+        "blocks.1.fc2_crossbar_0": 7373,
+        "blocks.2.attn.qkv_crossbar_0": 11059,
+        "blocks.2.attn.proj_crossbar_0": 3686,
+        "blocks.2.fc1_crossbar_0": 7373,
+        "blocks.2.fc2_crossbar_0": 7373,
+        "blocks.3.attn.qkv_crossbar_0": 11059,
+        "blocks.3.attn.proj_crossbar_0": 3686,
+        "blocks.3.fc1_crossbar_0": 7373,
+        "blocks.3.fc2_crossbar_0": 7373,
+        "fc_crossbar_0": 192
+      },
+      "budget_by_layer": {
+        "embed_crossbar_0": 461,
+        "blocks.0.attn.qkv_crossbar_0": 5529,
+        "blocks.0.attn.proj_crossbar_0": 1843,
+        "blocks.0.fc1_crossbar_0": 3686,
+        "blocks.0.fc2_crossbar_0": 3686,
+        "blocks.1.attn.qkv_crossbar_0": 5529,
+        "blocks.1.attn.proj_crossbar_0": 1843,
+        "blocks.1.fc1_crossbar_0": 3686,
+        "blocks.1.fc2_crossbar_0": 3686,
+        "blocks.2.attn.qkv_crossbar_0": 5529,
+        "blocks.2.attn.proj_crossbar_0": 1843,
+        "blocks.2.fc1_crossbar_0": 3686,
+        "blocks.2.fc2_crossbar_0": 3686,
+        "blocks.3.attn.qkv_crossbar_0": 5529,
+        "blocks.3.attn.proj_crossbar_0": 1843,
+        "blocks.3.fc1_crossbar_0": 3686,
+        "blocks.3.fc2_crossbar_0": 3686,
+        "fc_crossbar_0": 96
+      },
+      "bn_recal_batches_used": 0,
+      "canary_after_recal": 64.35546875,
+      "gate_reference": 66.2109375,
+      "gate_drop": 1.85546875,
+      "burst_skipped": true,
+      "effective_params": {
+        "burst_lr": 0.3,
+        "canary_gate_delta": 2.0,
+        "patience_min_gain": 0.25,
+        "patience_window": 4,
+        "patience_eval_every": 25,
+        "burst_t_max": 500,
+        "remap_pacing": "paced",
+        "burst_mode": "adaptive",
+        "burst_batches": 390
+      },
+      "params_from_priors": [
+        "burst_lr",
+        "canary_gate_delta",
+        "patience_min_gain",
+        "patience_window",
+        "patience_eval_every",
+        "burst_t_max"
+      ],
+      "wall_seconds": 5.5222327709198
+    },
+    {
+      "wave": 2,
+      "density": 0.1,
+      "nominal_batch_equivalent": 10400,
+      "fault_map_hash": {
+        "embed_crossbar_0": "6083437b03cad529",
+        "blocks.0.attn.qkv_crossbar_0": "17ef8c0a30ab9318",
+        "blocks.0.attn.proj_crossbar_0": "37e409fee4967b4e",
+        "blocks.0.fc1_crossbar_0": "0e303a4042b3ba3b",
+        "blocks.0.fc2_crossbar_0": "9e405396041999cf",
+        "blocks.1.attn.qkv_crossbar_0": "8cd14a5089894c3c",
+        "blocks.1.attn.proj_crossbar_0": "bcda42367622573a",
+        "blocks.1.fc1_crossbar_0": "f291482178db8b81",
+        "blocks.1.fc2_crossbar_0": "171b361a1641ae8b",
+        "blocks.2.attn.qkv_crossbar_0": "b68835d3cd84188e",
+        "blocks.2.attn.proj_crossbar_0": "bce1e30d0fc5f258",
+        "blocks.2.fc1_crossbar_0": "f6ab9825dd9d310d",
+        "blocks.2.fc2_crossbar_0": "79859c37e8590d5d",
+        "blocks.3.attn.qkv_crossbar_0": "1b27c6aa199f7a35",
+        "blocks.3.attn.proj_crossbar_0": "1b7cd7994fe25360",
+        "blocks.3.fc1_crossbar_0": "ed269f457fd3ae38",
+        "blocks.3.fc2_crossbar_0": "886da49bb4f36faf",
+        "fc_crossbar_0": "ae586dfc6747a1ed"
+      },
+      "newly_stuck": 107851,
+      "test_acc_before": 27.06,
+      "test_acc_after": 65.68,
+      "canary_acc_before": 25.0,
+      "canary_acc_after": 68.65234375,
+      "burst_batches": 500,
+      "optimizer_steps": 500,
+      "remapped": 59545,
+      "stop_reason": "t_max",
+      "canary_trace": [
+        [
+          25,
+          49.70703125
+        ],
+        [
+          50,
+          51.85546875
+        ],
+        [
+          75,
+          50.0
+        ],
+        [
+          100,
+          52.05078125
+        ],
+        [
+          125,
+          49.8046875
+        ],
+        [
+          150,
+          55.2734375
+        ],
+        [
+          175,
+          57.91015625
+        ],
+        [
+          200,
+          59.47265625
+        ],
+        [
+          225,
+          58.88671875
+        ],
+        [
+          250,
+          63.28125
+        ],
+        [
+          275,
+          63.76953125
+        ],
+        [
+          300,
+          65.33203125
+        ],
+        [
+          325,
+          64.35546875
+        ],
+        [
+          350,
+          64.74609375
+        ],
+        [
+          375,
+          66.50390625
+        ],
+        [
+          400,
+          66.015625
+        ],
+        [
+          425,
+          67.28515625
+        ],
+        [
+          450,
+          67.67578125
+        ],
+        [
+          475,
+          68.65234375
+        ],
+        [
+          500,
+          68.65234375
+        ]
+      ],
+      "remapped_this_wave": 59545,
+      "remapped_by_layer": {
+        "embed_crossbar_0": 461,
+        "blocks.0.attn.qkv_crossbar_0": 5530,
+        "blocks.0.attn.proj_crossbar_0": 1843,
+        "blocks.0.fc1_crossbar_0": 3687,
+        "blocks.0.fc2_crossbar_0": 3687,
+        "blocks.1.attn.qkv_crossbar_0": 5530,
+        "blocks.1.attn.proj_crossbar_0": 1843,
+        "blocks.1.fc1_crossbar_0": 3687,
+        "blocks.1.fc2_crossbar_0": 3687,
+        "blocks.2.attn.qkv_crossbar_0": 5530,
+        "blocks.2.attn.proj_crossbar_0": 1843,
+        "blocks.2.fc1_crossbar_0": 3687,
+        "blocks.2.fc2_crossbar_0": 3687,
+        "blocks.3.attn.qkv_crossbar_0": 5530,
+        "blocks.3.attn.proj_crossbar_0": 1843,
+        "blocks.3.fc1_crossbar_0": 3687,
+        "blocks.3.fc2_crossbar_0": 3687,
+        "fc_crossbar_0": 96
+      },
+      "unremapped_effective_stuck": 161499,
+      "rho": 1.0,
+      "available_capacity_by_layer": {
+        "embed_crossbar_0": 461,
+        "blocks.0.attn.qkv_crossbar_0": 5530,
+        "blocks.0.attn.proj_crossbar_0": 1843,
+        "blocks.0.fc1_crossbar_0": 3687,
+        "blocks.0.fc2_crossbar_0": 3687,
+        "blocks.1.attn.qkv_crossbar_0": 5530,
+        "blocks.1.attn.proj_crossbar_0": 1843,
+        "blocks.1.fc1_crossbar_0": 3687,
+        "blocks.1.fc2_crossbar_0": 3687,
+        "blocks.2.attn.qkv_crossbar_0": 5530,
+        "blocks.2.attn.proj_crossbar_0": 1843,
+        "blocks.2.fc1_crossbar_0": 3687,
+        "blocks.2.fc2_crossbar_0": 3687,
+        "blocks.3.attn.qkv_crossbar_0": 5530,
+        "blocks.3.attn.proj_crossbar_0": 1843,
+        "blocks.3.fc1_crossbar_0": 3687,
+        "blocks.3.fc2_crossbar_0": 3687,
+        "fc_crossbar_0": 96
+      },
+      "budget_by_layer": {
+        "embed_crossbar_0": 461,
+        "blocks.0.attn.qkv_crossbar_0": 5530,
+        "blocks.0.attn.proj_crossbar_0": 1843,
+        "blocks.0.fc1_crossbar_0": 3687,
+        "blocks.0.fc2_crossbar_0": 3687,
+        "blocks.1.attn.qkv_crossbar_0": 5530,
+        "blocks.1.attn.proj_crossbar_0": 1843,
+        "blocks.1.fc1_crossbar_0": 3687,
+        "blocks.1.fc2_crossbar_0": 3687,
+        "blocks.2.attn.qkv_crossbar_0": 5530,
+        "blocks.2.attn.proj_crossbar_0": 1843,
+        "blocks.2.fc1_crossbar_0": 3687,
+        "blocks.2.fc2_crossbar_0": 3687,
+        "blocks.3.attn.qkv_crossbar_0": 5530,
+        "blocks.3.attn.proj_crossbar_0": 1843,
+        "blocks.3.fc1_crossbar_0": 3687,
+        "blocks.3.fc2_crossbar_0": 3687,
+        "fc_crossbar_0": 96
+      },
+      "bn_recal_batches_used": 0,
+      "canary_after_recal": 55.2734375,
+      "gate_reference": 64.35546875,
+      "gate_drop": 9.08203125,
+      "burst_skipped": false,
+      "effective_params": {
+        "burst_lr": 0.3,
+        "canary_gate_delta": 2.0,
+        "patience_min_gain": 0.25,
+        "patience_window": 4,
+        "patience_eval_every": 25,
+        "burst_t_max": 500,
+        "remap_pacing": "paced",
+        "burst_mode": "adaptive",
+        "burst_batches": 390
+      },
+      "params_from_priors": [
+        "burst_lr",
+        "canary_gate_delta",
+        "patience_min_gain",
+        "patience_window",
+        "patience_eval_every",
+        "burst_t_max"
+      ],
+      "wall_seconds": 94.35319137573242
+    }
+  ]
+}

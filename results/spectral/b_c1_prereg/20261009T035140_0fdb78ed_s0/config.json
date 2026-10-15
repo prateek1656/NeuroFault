@@ -1,0 +1,567 @@
+{
+  "ckpts": [
+    42,
+    101,
+    102
+  ],
+  "ks": [
+    1,
+    2,
+    4,
+    8,
+    16
+  ],
+  "n_cal_seeds": 5,
+  "n_eval_seeds": 20,
+  "selected": {
+    "128|16|0.01": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9910714285714286,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 8.0,
+        "cfg": "P8dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9359573333333334,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      }
+    },
+    "128|16|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9709904761904764,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 8.0,
+        "cfg": "P8dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9210515238095239,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      }
+    },
+    "128|1|0.01": {
+      "bidir": {
+        "algo": "A3",
+        "cal_f1": 0.9238095238095239,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 2.057142857142857,
+        "cfg": "r1"
+      },
+      "fwd": {
+        "algo": "A2",
+        "cal_f1": 0.9714285714285714,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 7.866666666666666,
+        "cfg": "r1"
+      }
+    },
+    "128|1|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9047619047619048,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 4.0,
+        "cfg": "P4dense"
+      },
+      "fwd": {
+        "algo": "A2",
+        "cal_f1": 0.9333333333333333,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 8.6,
+        "cfg": "r2"
+      }
+    },
+    "128|2|0.01": {
+      "bidir": {
+        "algo": "A3",
+        "cal_f1": 0.971428761904762,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 3.895238095238095,
+        "cfg": "r1"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.92,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      }
+    },
+    "128|2|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9346034285714285,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 4.0,
+        "cfg": "P4dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9136508571428573,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      }
+    },
+    "128|4|0.01": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9115645714285715,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 4.0,
+        "cfg": "P4dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 1.0,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      }
+    },
+    "128|4|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9468253333333334,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 6.0,
+        "cfg": "P6dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9959182857142858,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      }
+    },
+    "128|8|0.01": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9730157142857143,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 6.0,
+        "cfg": "P6dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9877453333333335,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      }
+    },
+    "128|8|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9184121904761905,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 6.0,
+        "cfg": "P6dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9815593333333336,
+        "cal_instances": 105,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      }
+    },
+    "256|16|0.01": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9428426666666666,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 6.0,
+        "cfg": "P6dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9475665000000001,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      }
+    },
+    "256|16|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9199914999999999,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 8.0,
+        "cfg": "P8dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9176673333333334,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      }
+    },
+    "256|1|0.01": {
+      "bidir": {
+        "algo": "A3",
+        "cal_f1": 0.95,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 4.183333333333334,
+        "cfg": "r2"
+      },
+      "fwd": {
+        "algo": "A2",
+        "cal_f1": 0.9166666666666666,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 9.733333333333333,
+        "cfg": "r2"
+      }
+    },
+    "256|1|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9444446666666668,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 16.0,
+        "cfg": "P16dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9444446666666667,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 24.0,
+        "cfg": "P24dense"
+      }
+    },
+    "256|2|0.01": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9283335000000001,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 4.0,
+        "cfg": "P4dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9549999999999997,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      }
+    },
+    "256|2|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.904445,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 8.0,
+        "cfg": "P8dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9300001666666666,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 16.0,
+        "cfg": "P16dense"
+      }
+    },
+    "256|4|0.01": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9958333333333333,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 6.0,
+        "cfg": "P6dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9111113333333336,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      }
+    },
+    "256|4|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9011903333333336,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 6.0,
+        "cfg": "P6dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9830686666666667,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 16.0,
+        "cfg": "P16dense"
+      }
+    },
+    "256|8|0.01": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9518053333333332,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 6.0,
+        "cfg": "P6dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9416666666666667,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      }
+    },
+    "256|8|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9167481666666667,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 8.0,
+        "cfg": "P8dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9603036666666666,
+        "cal_instances": 60,
+        "cal_reached_target": true,
+        "cal_reads": 16.0,
+        "cfg": "P16dense"
+      }
+    },
+    "512|16|0.01": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9237973333333334,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 8.0,
+        "cfg": "P8dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9760786666666665,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 16.0,
+        "cfg": "P16dense"
+      }
+    },
+    "512|16|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9343793333333333,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 16.0,
+        "cfg": "P16dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9025628888888889,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 16.0,
+        "cfg": "P16dense"
+      }
+    },
+    "512|1|0.01": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9555555555555556,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 6.0,
+        "cfg": "P6dense"
+      },
+      "fwd": {
+        "algo": "A2",
+        "cal_f1": 0.9555555555555556,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 10.8,
+        "cfg": "r2"
+      }
+    },
+    "512|1|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9111113333333334,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9777777777777777,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 24.0,
+        "cfg": "P24dense"
+      }
+    },
+    "512|2|0.01": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9407408888888888,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 6.0,
+        "cfg": "P6dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9051853333333333,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      }
+    },
+    "512|2|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9185191111111113,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 16.0,
+        "cfg": "P16dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9503704444444445,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 24.0,
+        "cfg": "P24dense"
+      }
+    },
+    "512|4|0.01": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9505286666666668,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 6.0,
+        "cfg": "P6dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9912697777777778,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 16.0,
+        "cfg": "P16dense"
+      }
+    },
+    "512|4|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9126102222222223,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 16.0,
+        "cfg": "P16dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9724866666666667,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 24.0,
+        "cfg": "P24dense"
+      }
+    },
+    "512|8|0.01": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9554846666666669,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 6.0,
+        "cfg": "P6dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9871897777777778,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 16.0,
+        "cfg": "P16dense"
+      }
+    },
+    "512|8|0.02": {
+      "bidir": {
+        "algo": "A5",
+        "cal_f1": 0.9056808888888889,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 12.0,
+        "cfg": "P12dense"
+      },
+      "fwd": {
+        "algo": "A5",
+        "cal_f1": 0.9046504444444445,
+        "cal_instances": 45,
+        "cal_reached_target": true,
+        "cal_reads": 16.0,
+        "cfg": "P16dense"
+      }
+    }
+  },
+  "sigmas": [
+    0.01,
+    0.02
+  ],
+  "tiles": [
+    256,
+    128,
+    512
+  ]
+}

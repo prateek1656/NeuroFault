@@ -1,0 +1,41 @@
+{
+  "ckpt_seeds": [
+    42,
+    101,
+    102
+  ],
+  "encoding": {
+    "g_min_frac": 0.01,
+    "kind": "offset_refcol"
+  },
+  "experiment": "e0",
+  "fa": 0.1,
+  "fault": {
+    "device": "pos",
+    "k": 1,
+    "kind": "stuck_random",
+    "rail": "mixed"
+  },
+  "fault_seeds": 20,
+  "layers": [
+    "layer2.0.0.weight",
+    "layer3.0.0.weight"
+  ],
+  "reps": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "sigmas": [
+    0.005,
+    0.01,
+    0.02,
+    0.04
+  ],
+  "tile_size": 256,
+  "tiles_per_layer": 2,
+  "visible_frac": 0.1
+}

@@ -1,0 +1,43 @@
+{
+  "allow_dirty": true,
+  "argv": [
+    "experiments/spectral/a_deploy.py",
+    "--jobs",
+    "3",
+    "--allow-dirty"
+  ],
+  "config_hash": "71522b22492c6a8e7ea6dfb0ee8609d3b5112671d926778afddb161eb1b2b38c",
+  "environment": {
+    "aihwkit_version": "1.1.0",
+    "crosssim_version": "unknown",
+    "cupy_version": null,
+    "gpu_available": false,
+    "gpu_driver_version": null,
+    "gpu_name": null,
+    "hostname": "local-workstation",
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "python_version": "3.12.14",
+    "torch_cuda_version": null,
+    "torch_version": "2.14.0"
+  },
+  "extra": {
+    "checkpoint_sha256": {
+      "101": "59f6901f0a1c9b275a3e9198026f6e400fd81f66b940003af3f3f5826ccecb5f",
+      "102": "2e16d5e18b9d310a3131875fefdd8d40ff5f7fb84e0b68e8b84d07a9ad534f10",
+      "42": "995f917e871e0eb06ec1028b0a3e588dccdb644ba2672597274398fdba231429"
+    },
+    "criteria_file": "a_deploy.yaml",
+    "criteria_sha256": "8dd4161ca3d2e6cf32ce6cd6a1559ecce3d96bd8e44679b9fecf4b4d9fbcd303",
+    "jobs": 3,
+    "note": "H5 deployable cost of M4; streams +3000; train-image statistics",
+    "variant": "full"
+  },
+  "git": {
+    "branch": "spectral-diagnosis",
+    "commit": "37af45346d9c3953e9894bb2aef7e325051fe757",
+    "dirty": true
+  },
+  "run_id": "20261010T223102_71522b22_s0",
+  "seed": 0,
+  "written_at_unix": 1791651663.01307
+}

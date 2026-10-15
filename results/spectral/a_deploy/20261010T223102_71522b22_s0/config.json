@@ -1,0 +1,88 @@
+{
+  "_variant": "full",
+  "ablation": {
+    "dataset": "cifar10",
+    "orders": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "p_total": 15,
+    "times": [
+      "1d",
+      "1yr"
+    ]
+  },
+  "act_images": 5000,
+  "cache_dir": "<archive-root>/results/spectral/a_deploy/_cache",
+  "ckpt_seeds": [
+    42,
+    101,
+    102
+  ],
+  "datasets": [
+    "cifar10",
+    "cifar100"
+  ],
+  "master_seed": 0,
+  "n_eval": 10000,
+  "scenarios": [
+    {
+      "field": "",
+      "model": "D2",
+      "name": "D2",
+      "rho": 0.0
+    },
+    {
+      "field": "hotspot",
+      "model": "D3",
+      "name": "D3_hotspot_r1",
+      "rho": 1.0
+    },
+    {
+      "field": "hotspot",
+      "model": "D3",
+      "name": "D3_hotspot_r2",
+      "rho": 2.0
+    },
+    {
+      "field": "rank_r",
+      "model": "D3",
+      "name": "D3_rank_r_r1",
+      "rho": 1.0
+    },
+    {
+      "field": "rank_r",
+      "model": "D3",
+      "name": "D3_rank_r_r2",
+      "rho": 2.0
+    },
+    {
+      "field": "row_gradient",
+      "model": "D3",
+      "name": "D3_row_gradient_r1",
+      "rho": 1.0
+    },
+    {
+      "field": "row_gradient",
+      "model": "D3",
+      "name": "D3_row_gradient_r2",
+      "rho": 2.0
+    },
+    {
+      "field": "",
+      "model": "D4",
+      "name": "D4",
+      "rho": 1.0
+    }
+  ],
+  "seed_offset": 3000,
+  "sigma": 0.02,
+  "times": {
+    "1d": 86400.0,
+    "1h": 3600.0,
+    "1yr": 31557600.0,
+    "30d": 2592000.0
+  }
+}

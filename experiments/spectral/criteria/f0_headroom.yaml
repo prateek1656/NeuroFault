@@ -1,0 +1,94 @@
+schema_version: 1
+id: f0_headroom
+title: "F0.3 baseline ladder / headroom, and F0.4 stale-reference stress"
+source_plan: "plan-F0 §9 F0.3, F0.4"
+frozen: "2026-10-08"
+overall_pass: all
+note: >
+  F0.4 (K4.1) has no file of its own in the build brief; it is the only F0.4 decision rule and is
+  transcribed here as a report-kind rule. Headroom values are top-1 percentage points averaged
+  over 3 seeds unless stated.
+criteria:
+  - id: H3.1
+    source: "plan-F0 §9 F0.3 H3.1"
+    kind: pass
+    description: >
+      Replication sanity (not a kill): D2 reproduces Joshi's ordering none << GDC < AdaBS at 1 d and
+      1 yr (sign agreement; magnitude within a factor 2 of +0.9 pt at 1 d). Gross mismatch means the
+      drift model or bridge is wrong, which blocks everything downstream.
+    note: >
+      "magnitude within a factor 2 of +0.9 pt at 1 d" is read as gain in [0.45, 1.8] pt. The plan does
+      not name which gain (AdaBS minus GDC is the natural reading). Script emits h31_ordering_ok (0/1)
+      and h31_gain_1d_pt.
+    clauses:
+      - {metric: h31_ordering_ok, aggregation: min, comparator: "==", threshold: 1}
+      - {metric: h31_gain_1d_pt, aggregation: mean, comparator: between, threshold: [0.45, 1.8]}
+  - id: H3.2
+    source: "plan-F0 §9 F0.3 H3.2"
+    kind: pass
+    scope: A_network_accuracy
+    description: >
+      Headroom gate for A: headroom := top-1(oracle-or-FullReadout) - top-1(best incumbent among
+      B1-B3) averaged over 3 seeds. A is ALLOWED to proceed only if headroom >= 1.0 pt at >= 2 time
+      points for at least one of {D2 with drift_scale in {1,2}, D3 rho <= 2, D4} and sign-consistent
+      across seeds.
+    note: >
+      Script sets bool column h32_model_eligible for rows in the allowed model set and emits per-model
+      h32_n_timepoints_ge_1pt and h32_sign_consistent_across_seeds. Pass if ANY eligible model
+      qualifies (max over eligible models of the pass flag).
+    clauses:
+      - {metric: h32_n_timepoints_ge_1pt, aggregation: max, filter: {h32_model_eligible: true, h32_sign_consistent_across_seeds: true}, comparator: ">=", threshold: 2}
+  - id: H3.2-kill
+    source: "plan-F0 §9 F0.3 H3.2 (else clause)"
+    kind: kill
+    scope: A_network_accuracy
+    description: >
+      Else KILL A as a network-accuracy story (it may survive purely as "cheaper than AdaBS/per-column"
+      with a cost model - say so).
+    note: "Exact complement of H3.2 on the same metrics (no eligible model reaches 2 time points with consistent sign)."
+    clauses:
+      - {metric: h32_n_timepoints_ge_1pt, aggregation: max, filter: {h32_model_eligible: true, h32_sign_consistent_across_seeds: true}, comparator: "<", threshold: 2}
+  - id: H3.3
+    source: "plan-F0 §9 F0.3 H3.3"
+    kind: pass
+    scope: sensing_vs_timer
+    description: >
+      Under mismatch factor >= 1.25 (drift_scale or Ea deviating from nominal) the timer baseline B6
+      loses >= 1.0 pt to B1a at >= 1 time point (confirms the research-05 row-2 gap exists in the
+      simulator). If not, "sensing beats timer" has no motivation.
+    clauses:
+      - {metric: timer_loss_vs_b1a_pt, aggregation: max, filter: {mismatch_factor: {">=": 1.25}}, comparator: ">=", threshold: 1.0}
+  - id: H3.4
+    source: "plan-F0 §9 F0.3 H3.4"
+    kind: kill
+    scope: M1_watchdog
+    description: >
+      Watchdog value: AUC of (|alpha_GDC - 1|, sigma_1 ratio, sum-current) for detecting "GDC residual
+      > 1 pt equivalent eps" along drift trajectories. KILL M1-as-watchdog if its AUC < 0.7 or is not
+      >= 0.05 above the free GDC-factor statistic's AUC.
+    clauses:
+      - {metric: auc_sigma1_ratio, aggregation: median, comparator: "<", threshold: 0.7}
+      - {metric: auc_sigma1_minus_auc_gdc_factor, aggregation: median, comparator: "<", threshold: 0.05}
+    combine: any
+  - id: H3.5
+    source: "plan-F0 §9 F0.3 H3.5"
+    kind: kill
+    scope: vertical_A
+    description: >
+      Research-03's E4 kill: stop the vertical if GDC / per-column / a rank-r probe correction
+      (k <= 4, P <= 4) recovers >= 90% of what the spectral tracker recovers on every non-uniform field.
+    note: "Script emits b5_recovery_fraction_of_spectral per non-uniform drift field; 'every field' => min."
+    clauses:
+      - {metric: b5_recovery_fraction_of_spectral, aggregation: min, comparator: ">=", threshold: 0.90}
+  - id: K4.1
+    source: "plan-F0 §9 F0.4 K4.1"
+    kind: report
+    scope: B_drift_aware_reference
+    description: >
+      If t* < 1 day at nominal D2 for T=256, B's plan MUST include a drift-aware reference
+      (low-rank + sparse); otherwise the plain residual is adequate for deployment-scale horizons.
+    note: >
+      Decision rule for plan-B scoping, not a pass/fail on a claim, hence kind report (condition
+      recorded; true = B must include a drift-aware reference). 1 day = 86400 s.
+    clauses:
+      - {metric: t_star_s, aggregation: median, filter: {model: D2, drift_scale: 1, tile_size: 256}, comparator: "<", threshold: 86400}

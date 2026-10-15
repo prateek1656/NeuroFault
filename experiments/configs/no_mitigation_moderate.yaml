@@ -1,0 +1,41 @@
+# Same arm as no_mitigation.yaml, with injection_interval recalibrated so the
+# fault regime doesn't saturate the crossbar before training finishes.
+#
+# no_mitigation.yaml's injection_interval=8 mirrors Implementation.ipynb's
+# original parameters faithfully, but measured directly during development: now
+# that stuck-at faults correctly persist (a real bug fixed during development -
+# they used to silently self-heal every batch, masking this), 118 injection
+# cycles at density=0.1 over a 15-epoch run drives every crossbar to 100.00%
+# permanently stuck within the first few epochs - not a regime any mitigation
+# strategy could differentiate itself in, since redundancy/soft-correction
+# capacity is exhausted almost immediately. This isn't a new problem this
+# development introduced: the original notebook used the identical density/
+# interval/epoch parameters, so its own results were very likely produced
+# under a fault model that also never truly persisted (or never computed through the corrupted conductance at all).
+#
+# injection_interval recalibrated to 315 (945 total batches / 3) so this arm
+# gets ~3 injection cycles total, landing at ~1-0.9^3 ≈ 27% final stuck
+# fraction - a real, felt fault burden, comfortably below saturation and
+# close to remapping_only_moderate.yaml's 15% redundancy capacity, so the
+# comparison across strategies actually has room to show a difference.
+# density/distribution/epoch counts unchanged from no_mitigation.yaml.
+name: no_mitigation_moderate
+simulator: crosssim
+epochs: 15
+num_batches: 128
+batch_size: 32
+train_samples: 2000
+test_samples: 1000
+eval_interval: 3
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 315
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

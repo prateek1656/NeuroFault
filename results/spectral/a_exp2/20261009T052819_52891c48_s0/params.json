@@ -1,0 +1,297 @@
+{
+  "d0_drift_magnitude": {
+    "source": "neurofault/config.py FaultConfig.drift_magnitude default",
+    "status": "sourced",
+    "sweep": null,
+    "value": 0.05,
+    "verified": true
+  },
+  "d1_nu": {
+    "source": "Joshi 2020: 'nu ~ 0.06 on average' (research-02 \u00a72.1; paper text not re-read)",
+    "status": "sourced",
+    "sweep": null,
+    "value": 0.06,
+    "verified": false
+  },
+  "d2_g_ref_uS": {
+    "source": "aihwkit 1.1.0 inference/noise/pcm.py PCMLikeNoiseModel ref g_max via SinglePairConductanceConverter default",
+    "status": "sourced",
+    "sweep": null,
+    "value": 25.0,
+    "verified": true
+  },
+  "d2_g_rel_floor": {
+    "source": "aihwkit 1.1.0 inference/noise/pcm.py PCMLikeNoiseModel _ZERO_CLIP (g_relative clamp min), natural log",
+    "status": "sourced",
+    "sweep": null,
+    "value": 1e-07,
+    "verified": true
+  },
+  "d2_mu_clip": {
+    "source": "aihwkit 1.1.0 inference/noise/pcm.py PCMLikeNoiseModel.generate_drift_coefficients mu_drift.clamp",
+    "status": "sourced",
+    "sweep": null,
+    "value": [
+      0.049,
+      0.1
+    ],
+    "verified": true
+  },
+  "d2_mu_intercept": {
+    "source": "aihwkit 1.1.0 inference/noise/pcm.py PCMLikeNoiseModel.generate_drift_coefficients mu_drift",
+    "status": "sourced",
+    "sweep": null,
+    "value": 0.0244,
+    "verified": true
+  },
+  "d2_mu_slope": {
+    "source": "aihwkit 1.1.0 inference/noise/pcm.py PCMLikeNoiseModel.generate_drift_coefficients mu_drift",
+    "status": "sourced",
+    "sweep": null,
+    "value": -0.0155,
+    "verified": true
+  },
+  "d2_sigma_clip": {
+    "source": "aihwkit 1.1.0 inference/noise/pcm.py PCMLikeNoiseModel.generate_drift_coefficients sig_drift.clamp",
+    "status": "sourced",
+    "sweep": null,
+    "value": [
+      0.008,
+      0.045
+    ],
+    "verified": true
+  },
+  "d2_sigma_intercept": {
+    "source": "aihwkit 1.1.0 inference/noise/pcm.py PCMLikeNoiseModel.generate_drift_coefficients sig_drift",
+    "status": "sourced",
+    "sweep": null,
+    "value": -0.0059,
+    "verified": true
+  },
+  "d2_sigma_slope": {
+    "source": "aihwkit 1.1.0 inference/noise/pcm.py PCMLikeNoiseModel.generate_drift_coefficients sig_drift",
+    "status": "sourced",
+    "sweep": null,
+    "value": -0.0125,
+    "verified": true
+  },
+  "d3_hotspot_width_frac": {
+    "source": "gaussian sigma / max(m, n); builder choice",
+    "status": "assumed",
+    "sweep": [
+      0.1,
+      0.2,
+      0.4
+    ],
+    "value": 0.2,
+    "verified": false
+  },
+  "d3_rank_r": {
+    "source": "plan-F0 \u00a75.3 D3 rank-r cosine field",
+    "status": "assumed",
+    "sweep": [
+      1,
+      2,
+      4
+    ],
+    "value": 2,
+    "verified": false
+  },
+  "d3_rho": {
+    "source": "plan-F0 \u00a75.3 D3; no measured correlation",
+    "status": "assumed",
+    "sweep": [
+      0.0,
+      0.25,
+      0.5,
+      1.0,
+      2.0,
+      4.0
+    ],
+    "value": 1.0,
+    "verified": false
+  },
+  "d4_Ea_eV": {
+    "source": "plan-F0 \u00a75.3 D4(i); research-02: no verified source",
+    "status": "assumed",
+    "sweep": [
+      0.2,
+      0.5,
+      1.0
+    ],
+    "value": 0.5,
+    "verified": false
+  },
+  "d4_T_K": {
+    "source": "operating temperature; builder choice",
+    "status": "assumed",
+    "sweep": [
+      310.0,
+      330.0,
+      360.0
+    ],
+    "value": 330.0,
+    "verified": false
+  },
+  "d4_T_ref_K": {
+    "source": "room temperature; FaultConfig default",
+    "status": "assumed",
+    "sweep": [
+      300.0
+    ],
+    "value": 300.0,
+    "verified": false
+  },
+  "d4_beta_per_K": {
+    "source": "0.05/0.1/0.3 %/K gain coefficient",
+    "status": "assumed",
+    "sweep": [
+      0.0005,
+      0.001,
+      0.003
+    ],
+    "value": 0.001,
+    "verified": false
+  },
+  "d4_dT_amp_K": {
+    "source": "plan-F0 \u00a75.3 D4(ii)",
+    "status": "assumed",
+    "sweep": [
+      5.0,
+      20.0,
+      40.0
+    ],
+    "value": 20.0,
+    "verified": false
+  },
+  "d5a_decay_mean_uS": {
+    "source": "aihwkit 1.1.0 inference/noise/reram.py ReRamCMONoiseModel.__init__ decay_dict['mean']",
+    "status": "sourced",
+    "sweep": null,
+    "value": [
+      -0.08900206
+    ],
+    "verified": true
+  },
+  "d5a_decay_std": {
+    "source": "aihwkit 1.1.0 inference/noise/reram.py ReRamCMONoiseModel.__init__ decay_dict['std'] = [slope_ln_t, intercept] uS",
+    "status": "sourced",
+    "sweep": null,
+    "value": [
+      0.04201137,
+      0.41183342
+    ],
+    "verified": true
+  },
+  "d5a_read_K": {
+    "source": "aihwkit 1.1.0 inference/noise/reram.py ReRamCMONoiseModel.__init__ read_dict['K']",
+    "status": "sourced",
+    "sweep": null,
+    "value": 0.0277316483,
+    "verified": true
+  },
+  "d5a_t_read_s": {
+    "source": "aihwkit 1.1.0 inference/noise/reram.py ReRamCMONoiseModel.__init__ read_dict['t_read']",
+    "status": "sourced",
+    "sweep": null,
+    "value": 1e-06,
+    "verified": true
+  },
+  "d5b_c": {
+    "source": "mean-reversion rate lambda = c ln(1 + t/t0)",
+    "status": "assumed",
+    "sweep": [
+      0.005,
+      0.01,
+      0.02
+    ],
+    "value": 0.01,
+    "verified": false
+  },
+  "d7_sigma_p": {
+    "source": "per-line gain spread, plan-F0 \u00a75.3 D7",
+    "status": "assumed",
+    "sweep": [
+      0.005,
+      0.01,
+      0.02
+    ],
+    "value": 0.01,
+    "verified": false
+  },
+  "fault_cluster_blob": {
+    "source": "faults/injection.py::_select_fault_indices clustered",
+    "status": "sourced",
+    "sweep": null,
+    "value": "3x3",
+    "verified": true
+  },
+  "fault_k": {
+    "source": "plan-F0 \u00a75.4",
+    "status": "assumed",
+    "sweep": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32,
+      64
+    ],
+    "value": 8,
+    "verified": false
+  },
+  "pcm_1f_exp": {
+    "source": "aihwkit 1.1.0 inference/noise/pcm.py PCMLikeNoiseModel.apply_drift_noise_to_conductance (g/gmax)^0.65",
+    "status": "sourced",
+    "sweep": null,
+    "value": 0.65,
+    "verified": true
+  },
+  "pcm_1f_q": {
+    "source": "aihwkit 1.1.0 inference/noise/pcm.py PCMLikeNoiseModel.apply_drift_noise_to_conductance q_s numerator",
+    "status": "sourced",
+    "sweep": null,
+    "value": 0.0088,
+    "verified": true
+  },
+  "pcm_1f_q_max": {
+    "source": "aihwkit 1.1.0 inference/noise/pcm.py PCMLikeNoiseModel.apply_drift_noise_to_conductance q_s clamp max",
+    "status": "sourced",
+    "sweep": null,
+    "value": 0.2,
+    "verified": true
+  },
+  "pcm_prog_coeff": {
+    "source": "aihwkit 1.1.0 inference/noise/pcm.py PCMLikeNoiseModel.__init__ prog_coeff (g_max ref 25)",
+    "status": "sourced",
+    "sweep": null,
+    "value": [
+      0.26348,
+      1.965,
+      -1.1731
+    ],
+    "verified": true
+  },
+  "t0_joshi_s": {
+    "source": "Joshi et al. Nat. Commun. 11, 2473 (2020) via research-02",
+    "status": "sourced",
+    "sweep": null,
+    "value": 25.0,
+    "verified": false
+  },
+  "t0_s": {
+    "source": "aihwkit 1.1.0 inference/noise/pcm.py PCMLikeNoiseModel.__init__ t_0=20.0 (generate/apply_drift use t = t_inf + t_0)",
+    "status": "sourced",
+    "sweep": null,
+    "value": 20.0,
+    "verified": true
+  },
+  "t_read_pcm_s": {
+    "source": "aihwkit 1.1.0 inference/noise/pcm.py PCMLikeNoiseModel.__init__ t_read=250e-9",
+    "status": "sourced",
+    "sweep": null,
+    "value": 2.5e-07,
+    "verified": true
+  }
+}

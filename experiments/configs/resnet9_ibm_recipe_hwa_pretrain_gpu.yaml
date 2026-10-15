@@ -1,0 +1,60 @@
+# Same IBM-matched recipe as resnet9_ibm_recipe_full_scale_gpu.yaml (SGD momentum=0.9, peak
+# LR=0.05, batch_size=128, one-cycle, label_smoothing=0.1, grad_clip_norm=1.0) - see that file's
+# header for the full recipe provenance. This config adds exactly ONE new lever on top: a float
+# pretraining phase, matching IBM's own published hardware-aware training methodology (Rasch
+# et al. 2023, arXiv:2302.08469, Fig. 1 - "DNNs are first trained in 32bit floating-point (FP32),
+# then re-trained in a hardware-aware manner"), not guessed.
+#
+# Real motivation: that first full 50-epoch run plateaued at 27.12%/30.18% -
+# worse than the pre-ResNet9 architecture's 49.5%/56.24%. A direct isolation test (revert to the
+# old proven Adam recipe, same architecture) also failed to train normally, ruling out the recipe
+# alone. Two follow-up local checks found the real mechanism: a per-layer float-vs-analog signal
+# probe measured cosine similarity collapsing to 0.47 in ResNet-9's deepest residual stage
+# (layer3->res2, three large crossbars in sequence, the last two forming a residual branch that
+# feeds an already-noisy signal back into itself) - a much harder optimization problem than
+# training from a random init while ALSO fighting that much signal loss. IBM's own methodology
+# avoids exactly this by pretraining clean first, then only fine-tuning (not learning from
+# scratch) through the noisy analog path.
+#
+# float_pretrain_epochs=10 (out of 50 total, leaving 40 for the analog hardware-aware phase) is a
+# reasoned, bounded starting point given local probes already reaching ~42-43% within a fifth of
+# one epoch of plain-float training on this exact architecture - not a guess, not IBM's own
+# unstated split.
+#
+# REAL RUN #1 (2026-09-23) used learning_rate's full one-cycle schedule (peak 0.05)
+# for the analog fine-tune phase too - i.e. restarted a from-scratch-scale LR ramp against an
+# already-88.70%-accurate pretrained model. Result: crashed at the phase transition (88.70% ->
+# 31.58%) and never recovered over 40 further epochs (final 22.70%, worse than every prior
+# attempt) - classic catastrophic-forgetting-from-too-high-a-finetuning-LR. Fixed by adding
+# finetune_learning_rate=0.001 (this project's own old, independently-verified-stable Adam LR,
+# not a guess) - standard fine-tuning practice universally uses a much smaller LR than original
+# training, never a full schedule restart at the same peak. See config.py's docstring for the
+# full incident.
+name: resnet9_ibm_recipe_hwa_pretrain_gpu
+simulator: crosssim
+epochs: 50
+float_pretrain_epochs: 10
+finetune_learning_rate: 0.001
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+lr_one_cycle: true
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  use_gpu: true
+fault:
+  density: 0.0
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

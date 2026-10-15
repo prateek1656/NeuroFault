@@ -1,0 +1,30 @@
+# E1: bidirectional vs forward-only localization read counts (C1).
+# sigma_c = per-cell read noise as a FRACTION of the tile max|w| (not of conductance).
+# Grid = plan {0.5,1,2,4}% plus the sourced realistic values of
+# Read-noise sourcing: 0.25% (CMO/HfOx ReRAM, Lombardo'24 0.2-2% of
+# G_target) and 3% (AIHWKit PCM 1/f model at typical programmed levels, 1.6-4.5%).
+experiment: e1
+ckpt_seeds: [42, 101, 102]
+layers: [layer2.0.0.weight, layer3.0.0.weight]
+tile_size: 256
+tiles_per_layer: 2
+fault_seeds: 5
+ks: [1, 2, 4, 8, 16, 32, 64]
+sigmas: [0.0025, 0.005, 0.01, 0.02, 0.03, 0.04]
+encoding: {kind: offset_refcol, g_min_frac: 0.01}
+fault: {kind: stuck_random, rail: mixed, device: pos}
+visible_frac: 0.1
+fa: 0.1
+target_f1: 0.9
+n_boot: 400
+subsets:                     # tile-size subset: (tile_size, layers, ckpts, tiles, fault_seeds, ks, sigmas)
+  - {tile_size: 128, layers: [layer2.0.0.weight], ckpt_seeds: [42], tiles_per_layer: 2, fault_seeds: 5, ks: [1, 4, 16], sigmas: [0.01, 0.02]}
+  - {tile_size: 512, layers: [layer3.0.0.weight], ckpt_seeds: [42], tiles_per_layer: 1, fault_seeds: 4, ks: [1, 4, 16], sigmas: [0.01, 0.02]}
+smoke:
+  ckpt_seeds: [42]
+  layers: [layer2.0.0.weight]
+  tiles_per_layer: 1
+  fault_seeds: 2
+  ks: [1, 8, 32]
+  sigmas: [0.01, 0.04]
+  subsets: []

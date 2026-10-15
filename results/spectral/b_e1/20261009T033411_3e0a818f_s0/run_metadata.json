@@ -1,0 +1,37 @@
+{
+  "allow_dirty": true,
+  "argv": [
+    "experiments/spectral/b_e1.py",
+    "--exp",
+    "e1",
+    "--allow-dirty",
+    "--jobs",
+    "4"
+  ],
+  "config_hash": "3e0a818f822b7efbef4a28f77010b9d11a0fe372b7b93b475702824d7fe136b2",
+  "environment": {
+    "aihwkit_version": "1.1.0",
+    "crosssim_version": "unknown",
+    "cupy_version": null,
+    "gpu_available": false,
+    "gpu_driver_version": null,
+    "gpu_name": null,
+    "hostname": "local-workstation",
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "python_version": "3.12.14",
+    "torch_cuda_version": null,
+    "torch_version": "2.14.0"
+  },
+  "extra": {
+    "mode": "full",
+    "n_points": 462
+  },
+  "git": {
+    "branch": "spectral-diagnosis",
+    "commit": "f6236c3568e53cf654b7f080b4ebb7aa733a31f8",
+    "dirty": true
+  },
+  "run_id": "20261009T033411_3e0a818f_s0",
+  "seed": 0,
+  "written_at_unix": 1791497051.773584
+}

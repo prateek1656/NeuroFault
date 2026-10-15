@@ -1,0 +1,128 @@
+{
+  "criteria_id": "b_c1b",
+  "criteria_sha256": "8ebf4009e8e386d0c54ff42118529c65be4bd5ce3f7c4d5eec1b0961cf1bf275",
+  "overall": "KILL",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "C1b": "KILL",
+    "T512_report": "INCONCLUSIVE"
+  },
+  "n_rows": 30,
+  "criteria": [
+    {
+      "id": "C1b-128",
+      "kind": "pass",
+      "scope": "C1b",
+      "source": "plan-B \u00a71.6 C1b",
+      "description": "Tile 128: >= 3 of k in {1,2,4,8,16} qualify at BOTH sigma_c in {1%, 2%}.",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "c1b_row_ok",
+            "aggregation": "sum",
+            "comparator": ">=",
+            "threshold": 3,
+            "value": 5.0,
+            "n": 5,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "C1b-256",
+      "kind": "pass",
+      "scope": "C1b",
+      "source": "plan-B \u00a71.6 C1b",
+      "description": "Tile 256: >= 3 of k in {1,2,4,8,16} qualify at BOTH sigma_c in {1%, 2%}.",
+      "note": null,
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "c1b_row_ok",
+            "aggregation": "sum",
+            "comparator": ">=",
+            "threshold": 3,
+            "value": 0.0,
+            "n": 5,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "C1b-kill",
+      "kind": "kill",
+      "scope": "C1b",
+      "source": "plan-B \u00a71.6 C1b-kill",
+      "description": "Kill if fewer than 1 k qualifies on tile 128 OR on tile 256.",
+      "note": null,
+      "status": "KILL",
+      "condition": true,
+      "detail": {
+        "combine": "any",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "c1b_row_ok",
+            "aggregation": "sum",
+            "comparator": "<",
+            "threshold": 1,
+            "value": 5.0,
+            "n": 5,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "c1b_row_ok",
+            "aggregation": "sum",
+            "comparator": "<",
+            "threshold": 1,
+            "value": 0.0,
+            "n": 5,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "T512-report",
+      "kind": "report",
+      "scope": "T512_report",
+      "source": "plan-B \u00a71.6 (supplementary)",
+      "description": "Tile 512 under the identical protocol: number of qualifying k (reported, no claim).",
+      "note": null,
+      "status": "REPORTED",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "c1b_row_ok",
+            "aggregation": "sum",
+            "comparator": ">=",
+            "threshold": 3,
+            "value": 1.0,
+            "n": 5,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    }
+  ],
+  "metrics_csv": "results/spectral/b_c1b/20261009T115059_609a698a_s0/verdict_metrics.csv"
+}

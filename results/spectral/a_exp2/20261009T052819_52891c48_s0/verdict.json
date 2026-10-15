@@ -1,0 +1,377 @@
+{
+  "criteria_id": "a_success",
+  "criteria_sha256": "c4836904c8d988739a6710016f1065f3632fa0ee47f8a5d41e0d9271eabdae3a",
+  "overall": "INCONCLUSIVE",
+  "overall_pass_rule": "any",
+  "by_scope": {
+    "A_corrector": "INCONCLUSIVE",
+    "A_headroom": "INCONCLUSIVE",
+    "C1": "PASS",
+    "C1_cost": "INCONCLUSIVE",
+    "C2": "INCONCLUSIVE"
+  },
+  "n_rows": 77,
+  "criteria": [
+    {
+      "id": "S1",
+      "kind": "pass",
+      "scope": "C1",
+      "source": "plan-A \u00a76 S1",
+      "description": "On D3 or D4 with r in the stated sourced range and on PCM, M2 or M3 beats B8 by >= 1.0 pt at >= 2 of 3 time points at matched calibration MVM budget (B <= 64/tile), sign-consistent in all seeds (paired 95% CI lower bound > 0), not worse than B8 by > 0.3 pt on D1/D2.\n",
+      "note": "Script emits, per (method, model, device): s1_n_timepoints_gain_ge_1pt, s1_ci_lower_paired_pt, s1_sign_consistent_all_seeds, and per-row delta_vs_b8_pt on D1/D2. 'Stated sourced range' of r is not numerically stated in the plan; the script must record its choice.\n",
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "s1_n_timepoints_gain_ge_1pt",
+            "aggregation": "max",
+            "comparator": ">=",
+            "threshold": 2,
+            "value": 3.0,
+            "n": 7,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "s1_ci_lower_paired_pt",
+            "aggregation": "max",
+            "comparator": ">",
+            "threshold": 0.0,
+            "value": 1.0999166666666635,
+            "n": 7,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "s1_sign_consistent_all_seeds",
+            "aggregation": "max",
+            "comparator": "==",
+            "threshold": 1,
+            "value": 1.0,
+            "n": 7,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "delta_vs_b8_pt",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": -0.3,
+            "value": 0.3066666666666625,
+            "n": 12,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "S1plus",
+      "kind": "report",
+      "scope": "C1",
+      "source": "plan-A \u00a76 S1 (stronger version S1+)",
+      "description": "S1+: same as S1 with AdaBS-N=256 stacked on both arms.",
+      "note": "Stronger version, reported not required: kind report. Same metrics restricted to stacked_adabs256 == true.",
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "s1_n_timepoints_gain_ge_1pt",
+            "aggregation": "max",
+            "comparator": ">=",
+            "threshold": 2,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "only 0 rows/groups after filter (min_n=1)"
+          },
+          {
+            "metric": "s1_ci_lower_paired_pt",
+            "aggregation": "max",
+            "comparator": ">",
+            "threshold": 0.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "only 0 rows/groups after filter (min_n=1)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S2",
+      "kind": "pass",
+      "scope": "C1_cost",
+      "source": "plan-A \u00a76 S2",
+      "description": "Cost win vs AdaBS: some method matches AdaBS-N=2600 within 0.3 pt using <= 1/10 of its MVM-equivalent cost, on >= 2 of 3 devices.",
+      "note": "One row per (method, device). A device counts if a row meets both conditions; devices counted as distinct values.",
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "device_code",
+            "aggregation": "nunique",
+            "comparator": ">=",
+            "threshold": 2,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "only 0 rows/groups after filter (min_n=1)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S3",
+      "kind": "pass",
+      "scope": "C2",
+      "source": "plan-A \u00a76 S3",
+      "description": "C2 positive: the M1/H2 trigger needs <= 1/3 of the recalibrations of the best of {timer tuned on nominal, free GDC-factor threshold} to stay within 1 pt (D7 mismatch + temperature events), with detection lag <= 1 time-grid step and false-trigger rate <= 5%. Or equal recalibration count with >= 1 pt higher accuracy-time mean.\n",
+      "note": "AMBIGUOUS: 'equal recalibration count' transcribed as ratio <= 1.0 (equal or fewer). Script emits recal_ratio_vs_best_baseline (ours / best baseline) and acc_time_mean_gain_pt. The lag and false-trigger conditions are applied to both alternatives.\n",
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "combine": "any",
+            "result": null,
+            "clauses": [
+              {
+                "metric": "recal_ratio_vs_best_baseline",
+                "aggregation": "median",
+                "comparator": "<=",
+                "threshold": 0.3333333333333333,
+                "value": null,
+                "n": 0,
+                "result": null,
+                "reason": "metric column 'recal_ratio_vs_best_baseline' missing"
+              },
+              {
+                "combine": "all",
+                "result": null,
+                "clauses": [
+                  {
+                    "metric": "recal_ratio_vs_best_baseline",
+                    "aggregation": "median",
+                    "comparator": "<=",
+                    "threshold": 1.0,
+                    "value": null,
+                    "n": 0,
+                    "result": null,
+                    "reason": "metric column 'recal_ratio_vs_best_baseline' missing"
+                  },
+                  {
+                    "metric": "acc_time_mean_gain_pt",
+                    "aggregation": "median",
+                    "comparator": ">=",
+                    "threshold": 1.0,
+                    "value": null,
+                    "n": 0,
+                    "result": null,
+                    "reason": "metric column 'acc_time_mean_gain_pt' missing"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "metric": "detection_lag_grid_steps",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 1,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'detection_lag_grid_steps' missing"
+          },
+          {
+            "metric": "false_trigger_rate",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.05,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'false_trigger_rate' missing"
+          }
+        ]
+      }
+    },
+    {
+      "id": "S4",
+      "kind": "report",
+      "scope": null,
+      "source": "plan-A \u00a76 S4",
+      "description": "C3 boundary result: always delivered - crossover map of structured:iid ratio at which each method beats per-column, with silicon-spread overlay.",
+      "note": null,
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "reason": "requires human judgement"
+      }
+    },
+    {
+      "id": "K1",
+      "kind": "kill",
+      "scope": "C1",
+      "source": "plan-A \u00a76 K1",
+      "description": "No method reaches S1 or S2 on any structured model with r <= 1 -> corrector claim dead; report S4 as negative result.",
+      "note": "Script emits bool reaches_s1_or_s2 per (method, model, r); kill when the count of True rows with r <= 1 is 0.",
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "reaches_s1_or_s2",
+            "aggregation": "sum",
+            "comparator": "==",
+            "threshold": 0,
+            "value": 5.0,
+            "n": 5,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "K2",
+      "kind": "kill",
+      "scope": "A_headroom",
+      "source": "plan-A \u00a76 K2",
+      "description": "AdaBS-N=256 stacked on per-column leaves < 1.0 pt to the oracle on W1 at all t AND W2 shows no corrector > 1.0 pt -> headroom is gone; stop at S4.\n",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "adabs256_percol_gap_to_oracle_pt",
+            "aggregation": "max",
+            "comparator": "<",
+            "threshold": 1.0,
+            "value": 0.7733333333333311,
+            "n": 8,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "corrector_gain_pt",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 1.0,
+            "value": 12.466666666666669,
+            "n": 32,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "K3",
+      "kind": "kill",
+      "scope": "C2",
+      "source": "plan-A \u00a76 K3",
+      "description": "M1/H2 partial AUC < 0.7 conditional on GDC factor, or trigger saves < 2x recalibrations vs free statistics -> drop C2.",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "any",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "m1_partial_auc_given_gdc",
+            "aggregation": "median",
+            "comparator": "<",
+            "threshold": 0.7,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'm1_partial_auc_given_gdc' missing"
+          },
+          {
+            "metric": "recal_savings_factor_vs_free_stats",
+            "aggregation": "median",
+            "comparator": "<",
+            "threshold": 2.0,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "metric column 'recal_savings_factor_vs_free_stats' missing"
+          }
+        ]
+      }
+    },
+    {
+      "id": "K4",
+      "kind": "kill",
+      "scope": "C1",
+      "source": "plan-A \u00a76 K4",
+      "description": "Gains vanish when the device/drift family changes (positive only on one assumed drift model) -> report as model-specific, do not claim C1.",
+      "note": "Script emits n_families_meeting_s1 (count of drift families where S1 holds). Kill when <= 1, i.e. positive on at most one family.",
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "n_families_meeting_s1",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 1,
+            "value": 2.0,
+            "n": 1,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "K5",
+      "kind": "redirect",
+      "scope": "A_corrector",
+      "source": "plan-A \u00a76 K5 (-> plan-A \u00a74)",
+      "description": "G0-b fails (gain not drift-structure specific) -> relabel/hold per Section 4.",
+      "note": null,
+      "status": "INCONCLUSIVE",
+      "condition": null,
+      "detail": {
+        "combine": "all",
+        "result": null,
+        "clauses": [
+          {
+            "metric": "specificity_gap",
+            "aggregation": "max",
+            "comparator": "<",
+            "threshold": 0.15,
+            "value": null,
+            "n": 0,
+            "result": null,
+            "reason": "filter failed: KeyError('k')"
+          }
+        ]
+      }
+    }
+  ],
+  "note": "S2 metric 'device' (nunique) evaluated on numeric twin device_code; see script",
+  "variant": "full"
+}

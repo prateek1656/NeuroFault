@@ -1,0 +1,116 @@
+schema_version: 1
+id: a_gate0
+title: "Direction A Gate 0' (G0-a..f) and its kill / redirect rules"
+source_plan: "plan-A-structured-drift §4"
+frozen: "2026-10-08"
+overall_pass: all
+note: >
+  r = sigma_struct / sigma_iid in {0, .25, .5, 1, 2, 4}. Real weights, 3 seeds, all 8 conv layers.
+  Anti-p-hacking (plan-A §6): methods / k / thresholds are fixed from seed-42 Gate 0' data only;
+  seeds 101/102 are confirmation, untouched. Overall = PASS needs every gate; read by_scope for the
+  go / crossover-only / relabel / kill outcome (master plan P1.5).
+criteria:
+  - id: G0-a
+    source: "plan-A §4 G0-a"
+    kind: pass
+    scope: A_corrector
+    description: >
+      Headroom: err(B8; r) - err(B8; r=0) >= 3 pp output error (relative) at realistic r (r <= 1,
+      else report as crossover), where B8 = GDC/per-column + mean-bias correction.
+    note: >
+      AMBIGUOUS quantifier ("at realistic r"): transcribed as max over r <= 1 >= 3 pp (some realistic
+      r). Script emits b8_excess_err_pp = err(B8;r) - err(B8;r=0).
+    clauses:
+      - {metric: b8_excess_err_pp, aggregation: max, filter: {r: {"<=": 1}}, comparator: ">=", threshold: 3.0}
+  - id: G0-b
+    source: "plan-A §4 G0-b"
+    kind: pass
+    scope: A_corrector
+    description: >
+      Specificity: (capture of centered, post-B8 residual by M2/M3 at k <= 16) at r >= 1 minus the same
+      at r = 0 must be >= 0.15 (absolute), i.e. gain attributable to drift structure, not input
+      concentration. Pilot: ~0.0-0.02 at k=8 (the likely failure).
+    note: >
+      AMBIGUOUS quantifier over r >= 1 and k <= 16: transcribed as max over (r >= 1, k <= 16).
+      Script emits specificity_gap = capture(r) - capture(r=0), absolute fraction.
+    clauses:
+      - {metric: specificity_gap, aggregation: max, filter: {r: {">=": 1}, k: {"<=": 16}}, comparator: ">=", threshold: 0.15}
+  - id: G0-c
+    source: "plan-A §4 G0-c"
+    kind: pass
+    scope: A_corrector
+    description: "Recoverability with noise: realizable (probe-fitted, 2% read noise, k+s probes) capture >= 60% of oracle capture."
+    clauses:
+      - {metric: realizable_over_oracle_capture, aggregation: median, comparator: ">=", threshold: 0.60}
+  - id: G0-d
+    source: "plan-A §4 G0-d"
+    kind: pass
+    scope: A_corrector
+    description: >
+      Accuracy-relevance: inject B8-residual vs (B8 + oracle rank-16 correction) into the network
+      (weight-space, F0 bridge); accuracy gap >= 1.0 pt at some t in {1e4..1e8 s} for r in the stated
+      range, else the headroom is below the AdaBS-closed regime.
+    note: "'Some t' => max over t. 'Stated range' read as r <= 1 (G0-a's range); not restated in the plan."
+    clauses:
+      - {metric: oracle16_vs_b8_acc_gap_pt, aggregation: max, filter: {r: {"<=": 1}, t_s: {">=": 10000.0, "<=": 100000000.0}}, comparator: ">=", threshold: 1.0}
+  - id: G0-e
+    source: "plan-A §4 G0-e"
+    kind: pass
+    scope: C2
+    description: "M1 sanity: AUC of sigma_1 shift / rotation for 'B8 residual > 1 pt' conditioned on the GDC factor (partial AUC) >= 0.7."
+    clauses:
+      - {metric: m1_partial_auc_given_gdc, aggregation: median, comparator: ">=", threshold: 0.7}
+  - id: G0-f
+    source: "plan-A §4 G0-f"
+    kind: pass
+    scope: C2
+    description: >
+      Identifiability: separate temperature offset vs drift vs aging in the signature (rank of Jacobian
+      of the statistic w.r.t. each latent); if one scalar is a linear function of the others, C2 is
+      dead as a classifier (still fine as a trigger).
+    note: >
+      The plan states NO numeric threshold. Transcribed as rank deficit == 0 (Jacobian rank equals the
+      number of latents). Script emits jacobian_rank_deficit.
+    clauses:
+      - {metric: jacobian_rank_deficit, aggregation: max, comparator: "==", threshold: 0}
+  - id: GK-dead
+    source: "plan-A §4 Kill/redirect bullet 1"
+    kind: kill
+    scope: A_corrector
+    description: >
+      If G0-a fails at all r <= 1 AND G0-d < 1 pt: Direction A as corrector is dead. Write C3
+      (negative boundary result), stop; capacity goes to B/C'.
+    clauses:
+      - {metric: b8_excess_err_pp, aggregation: max, filter: {r: {"<=": 1}}, comparator: "<", threshold: 3.0}
+      - {metric: oracle16_vs_b8_acc_gap_pt, aggregation: max, filter: {r: {"<=": 1}, t_s: {">=": 10000.0, "<=": 100000000.0}}, comparator: "<", threshold: 1.0}
+  - id: GK-crossover-only
+    source: "plan-A §4 Kill/redirect bullet 2"
+    kind: redirect
+    scope: A_corrector
+    description: >
+      If G0-a passes only for r >= 2 (beyond sourced silicon spread): keep as C3 + crossover
+      characterization only; no C1 claim; fund no network-level GPU runs.
+    clauses:
+      - {metric: b8_excess_err_pp, aggregation: max, filter: {r: {"<=": 1}}, comparator: "<", threshold: 3.0}
+      - {metric: b8_excess_err_pp, aggregation: max, filter: {r: {">=": 2}}, comparator: ">=", threshold: 3.0}
+  - id: GK-relabel
+    source: "plan-A §4 Kill/redirect bullet 3; plan-A §6 K5"
+    kind: redirect
+    scope: A_corrector
+    description: >
+      If G0-b fails but G0-a/d pass: the headroom exists but is a data-subspace/bias effect, not
+      drift structure -> re-label as "calibration-cost reduction vs AdaBS" (C1'): publishable only as
+      equal-accuracy at >= 10x fewer calibration MVMs vs AdaBS; drop "spectral" from the title.
+    clauses:
+      - {metric: specificity_gap, aggregation: max, filter: {r: {">=": 1}, k: {"<=": 16}}, comparator: "<", threshold: 0.15}
+      - {metric: b8_excess_err_pp, aggregation: max, filter: {r: {"<=": 1}}, comparator: ">=", threshold: 3.0}
+      - {metric: oracle16_vs_b8_acc_gap_pt, aggregation: max, filter: {r: {"<=": 1}, t_s: {">=": 10000.0, "<=": 100000000.0}}, comparator: ">=", threshold: 1.0}
+  - id: GK-drop-C2
+    source: "plan-A §4 Kill/redirect bullet 4"
+    kind: kill
+    scope: C2
+    description: "If G0-e/f fail: drop C2 (M1/H2) entirely."
+    combine: any
+    clauses:
+      - {metric: m1_partial_auc_given_gdc, aggregation: median, comparator: "<", threshold: 0.7}
+      - {metric: jacobian_rank_deficit, aggregation: max, comparator: ">", threshold: 0}

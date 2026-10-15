@@ -1,0 +1,31 @@
+# Golden config for the remap regression (see tests/golden/README.md).
+# 24 batches total; waves at global batches 0, 6, 12, 18 (4 waves); health checks every 2 forwards.
+name: remap_golden
+seed: 7
+simulator: crosssim
+dataset: cifar10
+epochs: 6
+num_batches: 4
+batch_size: 4
+train_samples: 16
+test_samples: 8
+eval_interval: 1
+float_pretrain_epochs: 0
+crossbar:
+  use_gpu: false
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_factor: 0.15
+  redundancy_scheme: idealized_per_cell
+  calibrate_adc: false
+  calibrate_dac: false
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 6
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: true
+  enable_layer_reset: false
+  enable_predictive: false
+  health_threshold: 75.0
+  health_check_interval: 2

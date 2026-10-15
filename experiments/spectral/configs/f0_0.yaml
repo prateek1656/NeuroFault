@@ -1,0 +1,23 @@
+# F0.0 validity gates. `full` is the pre-registered run; `smoke` never counts.
+full:
+  ckpt_seeds: [42, 101, 102]
+  a_trials: 200
+  b_n_devices: 100000
+  b_levels: [0.05, 0.2, 0.4, 0.6, 0.8, 1.0]   # target conductance / g_max (6 levels)
+  b_times_s: [60.0, 3600.0, 86400.0, 31536000.0]
+  c_layers: ["layer1.0.0.weight", "res1.conv_a.weight", "layer3.0.0.weight", "res2.conv_b.weight"]
+  c_times_s: [3600.0, 86400.0, 31536000.0]
+  c_trials: 20
+  d_seeds: 3
+  e_T: 256
+smoke:
+  ckpt_seeds: [42]
+  a_trials: 20
+  b_n_devices: 5000
+  b_levels: [0.2, 1.0]
+  b_times_s: [3600.0, 31536000.0]
+  c_layers: ["layer1.0.0.weight"]
+  c_times_s: [86400.0]
+  c_trials: 3
+  d_seeds: 1
+  e_T: 64

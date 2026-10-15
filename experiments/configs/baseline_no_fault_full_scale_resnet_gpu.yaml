@@ -1,0 +1,29 @@
+# The real target-scale run: full 50,000-
+# sample CIFAR-10 training set (not the 16k/32% partial scale used for every prior comparison),
+# current ResNet-style residual architecture (src/neurofault/models/cnn.py), on the rented GPU
+# box. num_batches=1562 = 50000/32 (batch_size), matching the same "num_batches is the real
+# binding constraint, not train_samples alone" lesson from earlier runs. use_gpu: true - verified working
+# on real CUDA hardware via gpu_smoke_test.yaml only after fixing the device-placement bugs this
+# development found.
+name: baseline_no_fault_full_scale_resnet_gpu
+simulator: crosssim
+epochs: 30
+num_batches: 1562
+batch_size: 32
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.001
+weight_decay: 0.0001
+lr_cosine_schedule: true
+eval_interval: 100
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  use_gpu: true
+fault:
+  density: 0.0
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

@@ -1,0 +1,49 @@
+{
+  "name": "no_mitigation_crosssim",
+  "seed": 42,
+  "simulator": "crosssim",
+  "dataset": "cifar10",
+  "train_samples": 64,
+  "test_samples": 32,
+  "batch_size": 32,
+  "learning_rate": 0.001,
+  "epochs": 1,
+  "num_batches": 3,
+  "eval_interval": 3,
+  "device": {
+    "name": "vteam",
+    "r_on": 100.0,
+    "r_off": 10000.0,
+    "time_series_resolution": 1e-10,
+    "extra_params": {}
+  },
+  "crossbar": {
+    "scheme": "DoubleColumn",
+    "tile_shape": null,
+    "patch_layer_types": [
+      "Linear",
+      "Conv2d"
+    ],
+    "max_input_voltage": 0.3,
+    "adc_resolution": 8,
+    "adc_overflow_rate": 0.0,
+    "quant_method": "linear",
+    "redundancy_factor": 0.15,
+    "redundancy_scheme": "idealized_per_cell"
+  },
+  "fault": {
+    "density": 0.1,
+    "distribution": "random",
+    "injection_interval": 8
+  },
+  "mitigation": {
+    "enable_soft_mitigation": false,
+    "enable_remapping": false,
+    "enable_layer_reset": false,
+    "enable_predictive": false,
+    "force_remapping": false,
+    "health_threshold": 75.0,
+    "health_check_interval": 10
+  },
+  "output_dir": "results"
+}

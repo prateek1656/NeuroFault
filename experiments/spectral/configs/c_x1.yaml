@@ -1,0 +1,43 @@
+# C-X1 pilot-loop vs MVM probe on real tiles. `smoke` never counts.
+# Reduction vs the plan grid (stated in the run's config): faults per cell 16 (not 300), tiles
+# (0,0) of two layers per N (not 3 per layer), G_lambda mismatch / A0 / offsets only on a
+# subset of settings and only on the first cell of each N, GBW as a post-hoc rescale (linear
+# regime), V_sat fixed 1 V, servo at f = 0.5 only.
+full:
+  ckpt_seeds: [42, 101, 102]
+  tiles:
+    "64": ["res1.conv_a.weight", "layer3.0.0.weight"]
+    "128": ["res1.conv_a.weight", "layer3.0.0.weight"]
+    "256": ["layer3.0.0.weight", "res2.conv_b.weight"]
+  betas: [0.0, 0.5, 1.0, 2.0, 3.0, 5.0, 10.0]
+  fs: [0.1, 0.25, 0.5, 0.75]
+  n_faults: 16
+  n_cal_faults: 400
+  t_end_cap: 6000.0
+  n_samples: 160
+  noise_draws: 8
+  gv_betas: [0.0, 0.5, 1.0, 2.0, 3.0, 5.0, 10.0]
+  gv_sigmas: [0.01, 0.03, 0.10]
+  gv_draws: 8
+  variants:
+    - {name: a0_60dB, a0: 1000.0, settings: [[0.0, 0.5, limiter_0.1], [1.0, 0.5, limiter_0.1], [3.0, 0.5, limiter_0.1], [3.0, 0.5, agc_ideal]]}
+    - {name: a0_100dB, a0: 100000.0, settings: [[0.0, 0.5, limiter_0.1], [1.0, 0.5, limiter_0.1], [3.0, 0.5, limiter_0.1], [3.0, 0.5, agc_ideal]]}
+    - {name: mism_0.3pct, g_lambda_mismatch_sigma: 0.003, settings: [[0.0, 0.5, limiter_0.1], [1.0, 0.5, limiter_0.1], [3.0, 0.5, limiter_0.1], [3.0, 0.5, agc_ideal]]}
+    - {name: mism_1pct, g_lambda_mismatch_sigma: 0.01, settings: [[0.0, 0.5, limiter_0.1], [1.0, 0.5, limiter_0.1], [3.0, 0.5, limiter_0.1], [3.0, 0.5, agc_ideal]]}
+    - {name: mism_2pct, g_lambda_mismatch_sigma: 0.02, settings: [[0.0, 0.5, limiter_0.1], [1.0, 0.5, limiter_0.1], [3.0, 0.5, limiter_0.1], [3.0, 0.5, agc_ideal]]}
+    - {name: offset_1mV, v_os_rms: 0.001, settings: [[0.0, 0.5, limiter_0.1], [1.0, 0.5, limiter_0.1], [3.0, 0.5, limiter_0.1], [3.0, 0.5, agc_ideal]]}
+smoke:
+  ckpt_seeds: [42]
+  tiles:
+    "64": ["res1.conv_a.weight"]
+  betas: [0.0, 3.0]
+  fs: [0.5]
+  n_faults: 6
+  n_cal_faults: 100
+  t_end_cap: 3000.0
+  n_samples: 100
+  noise_draws: 4
+  gv_betas: [0.0, 3.0]
+  gv_sigmas: [0.03]
+  gv_draws: 3
+  variants: []

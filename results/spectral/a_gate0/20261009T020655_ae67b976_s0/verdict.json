@@ -1,0 +1,324 @@
+{
+  "criteria_id": "a_gate0",
+  "criteria_sha256": "1b3b4c9503e204bb8d2428bdc3fe8a8d4b5d02932e31f57f90d20be489e5c562",
+  "overall": "KILL",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "A_corrector": "INCONCLUSIVE",
+    "C2": "KILL"
+  },
+  "n_rows": 1020,
+  "criteria": [
+    {
+      "id": "G0-a",
+      "kind": "pass",
+      "scope": "A_corrector",
+      "source": "plan-A \u00a74 G0-a",
+      "description": "Headroom: err(B8; r) - err(B8; r=0) >= 3 pp output error (relative) at realistic r (r <= 1, else report as crossover), where B8 = GDC/per-column + mean-bias correction.\n",
+      "note": "AMBIGUOUS quantifier (\"at realistic r\"): transcribed as max over r <= 1 >= 3 pp (some realistic r). Script emits b8_excess_err_pp = err(B8;r) - err(B8;r=0).\n",
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "b8_excess_err_pp",
+            "aggregation": "max",
+            "comparator": ">=",
+            "threshold": 3.0,
+            "value": 4.0186865114625725,
+            "n": 72,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "G0-b",
+      "kind": "pass",
+      "scope": "A_corrector",
+      "source": "plan-A \u00a74 G0-b",
+      "description": "Specificity: (capture of centered, post-B8 residual by M2/M3 at k <= 16) at r >= 1 minus the same at r = 0 must be >= 0.15 (absolute), i.e. gain attributable to drift structure, not input concentration. Pilot: ~0.0-0.02 at k=8 (the likely failure).\n",
+      "note": "AMBIGUOUS quantifier over r >= 1 and k <= 16: transcribed as max over (r >= 1, k <= 16). Script emits specificity_gap = capture(r) - capture(r=0), absolute fraction.\n",
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "specificity_gap",
+            "aggregation": "max",
+            "comparator": ">=",
+            "threshold": 0.15,
+            "value": 0.09540907052440006,
+            "n": 432,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "G0-c",
+      "kind": "pass",
+      "scope": "A_corrector",
+      "source": "plan-A \u00a74 G0-c",
+      "description": "Recoverability with noise: realizable (probe-fitted, 2% read noise, k+s probes) capture >= 60% of oracle capture.",
+      "note": null,
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "realizable_over_oracle_capture",
+            "aggregation": "median",
+            "comparator": ">=",
+            "threshold": 0.6,
+            "value": -2.1960099752048388,
+            "n": 120,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "G0-d",
+      "kind": "pass",
+      "scope": "A_corrector",
+      "source": "plan-A \u00a74 G0-d",
+      "description": "Accuracy-relevance: inject B8-residual vs (B8 + oracle rank-16 correction) into the network (weight-space, F0 bridge); accuracy gap >= 1.0 pt at some t in {1e4..1e8 s} for r in the stated range, else the headroom is below the AdaBS-closed regime.\n",
+      "note": "'Some t' => max over t. 'Stated range' read as r <= 1 (G0-a's range); not restated in the plan.",
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "oracle16_vs_b8_acc_gap_pt",
+            "aggregation": "max",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": 3.0333333333333314,
+            "n": 9,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "G0-e",
+      "kind": "pass",
+      "scope": "C2",
+      "source": "plan-A \u00a74 G0-e",
+      "description": "M1 sanity: AUC of sigma_1 shift / rotation for 'B8 residual > 1 pt' conditioned on the GDC factor (partial AUC) >= 0.7.",
+      "note": null,
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "m1_partial_auc_given_gdc",
+            "aggregation": "median",
+            "comparator": ">=",
+            "threshold": 0.7,
+            "value": 0.6018848294927782,
+            "n": 24,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "G0-f",
+      "kind": "pass",
+      "scope": "C2",
+      "source": "plan-A \u00a74 G0-f",
+      "description": "Identifiability: separate temperature offset vs drift vs aging in the signature (rank of Jacobian of the statistic w.r.t. each latent); if one scalar is a linear function of the others, C2 is dead as a classifier (still fine as a trigger).\n",
+      "note": "The plan states NO numeric threshold. Transcribed as rank deficit == 0 (Jacobian rank equals the number of latents). Script emits jacobian_rank_deficit.\n",
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "jacobian_rank_deficit",
+            "aggregation": "max",
+            "comparator": "==",
+            "threshold": 0,
+            "value": 1.0,
+            "n": 24,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "GK-dead",
+      "kind": "kill",
+      "scope": "A_corrector",
+      "source": "plan-A \u00a74 Kill/redirect bullet 1",
+      "description": "If G0-a fails at all r <= 1 AND G0-d < 1 pt: Direction A as corrector is dead. Write C3 (negative boundary result), stop; capacity goes to B/C'.\n",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "b8_excess_err_pp",
+            "aggregation": "max",
+            "comparator": "<",
+            "threshold": 3.0,
+            "value": 4.0186865114625725,
+            "n": 72,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "oracle16_vs_b8_acc_gap_pt",
+            "aggregation": "max",
+            "comparator": "<",
+            "threshold": 1.0,
+            "value": 3.0333333333333314,
+            "n": 9,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "GK-crossover-only",
+      "kind": "redirect",
+      "scope": "A_corrector",
+      "source": "plan-A \u00a74 Kill/redirect bullet 2",
+      "description": "If G0-a passes only for r >= 2 (beyond sourced silicon spread): keep as C3 + crossover characterization only; no C1 claim; fund no network-level GPU runs.\n",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "b8_excess_err_pp",
+            "aggregation": "max",
+            "comparator": "<",
+            "threshold": 3.0,
+            "value": 4.0186865114625725,
+            "n": 72,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "b8_excess_err_pp",
+            "aggregation": "max",
+            "comparator": ">=",
+            "threshold": 3.0,
+            "value": 19.423613449583616,
+            "n": 48,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "GK-relabel",
+      "kind": "redirect",
+      "scope": "A_corrector",
+      "source": "plan-A \u00a74 Kill/redirect bullet 3; plan-A \u00a76 K5",
+      "description": "If G0-b fails but G0-a/d pass: the headroom exists but is a data-subspace/bias effect, not drift structure -> re-label as \"calibration-cost reduction vs AdaBS\" (C1'): publishable only as equal-accuracy at >= 10x fewer calibration MVMs vs AdaBS; drop \"spectral\" from the title.\n",
+      "note": null,
+      "status": "REDIRECT",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "specificity_gap",
+            "aggregation": "max",
+            "comparator": "<",
+            "threshold": 0.15,
+            "value": 0.09540907052440006,
+            "n": 432,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "b8_excess_err_pp",
+            "aggregation": "max",
+            "comparator": ">=",
+            "threshold": 3.0,
+            "value": 4.0186865114625725,
+            "n": 72,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "oracle16_vs_b8_acc_gap_pt",
+            "aggregation": "max",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": 3.0333333333333314,
+            "n": 9,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "GK-drop-C2",
+      "kind": "kill",
+      "scope": "C2",
+      "source": "plan-A \u00a74 Kill/redirect bullet 4",
+      "description": "If G0-e/f fail: drop C2 (M1/H2) entirely.",
+      "note": null,
+      "status": "KILL",
+      "condition": true,
+      "detail": {
+        "combine": "any",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "m1_partial_auc_given_gdc",
+            "aggregation": "median",
+            "comparator": "<",
+            "threshold": 0.7,
+            "value": 0.6018848294927782,
+            "n": 24,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "jacobian_rank_deficit",
+            "aggregation": "max",
+            "comparator": ">",
+            "threshold": 0,
+            "value": 1.0,
+            "n": 24,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    }
+  ],
+  "variant": "full"
+}

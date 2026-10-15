@@ -1,0 +1,410 @@
+{
+ "16|0.01": {
+  "csb": {
+   "algo": "A5",
+   "cal_f1": 0.974449875,
+   "cal_reached_target": true,
+   "cal_reads": 8.0,
+   "cfg": "P8dense",
+   "dir": "bidir"
+  },
+  "csf": {
+   "algo": "A5",
+   "cal_f1": 0.9846307083333333,
+   "cal_reached_target": true,
+   "cal_reads": 16.0,
+   "cfg": "P16dense",
+   "dir": "fwd"
+  },
+  "hpe": {
+   "algo": "A2",
+   "cal_f1": 0.11768062500000034,
+   "cal_reached_target": false,
+   "cal_reads": 160.0,
+   "cfg": "r32",
+   "dir": "fwd"
+  },
+  "roth": {
+   "algo": "A2b",
+   "cal_f1": 0.9751377499999995,
+   "cal_reached_target": true,
+   "cal_reads": 51.0,
+   "cfg": "r2",
+   "dir": "fwd"
+  }
+ },
+ "16|0.02": {
+  "csb": {
+   "algo": "A5",
+   "cal_f1": 0.9699775416666662,
+   "cal_reached_target": true,
+   "cal_reads": 12.0,
+   "cfg": "P12dense",
+   "dir": "bidir"
+  },
+  "csf": {
+   "algo": "A5",
+   "cal_f1": 0.9645562499999999,
+   "cal_reached_target": true,
+   "cal_reads": 16.0,
+   "cfg": "P16dense",
+   "dir": "fwd"
+  },
+  "hpe": {
+   "algo": "A2",
+   "cal_f1": 0.11621000000000033,
+   "cal_reached_target": false,
+   "cal_reads": 160.0,
+   "cfg": "r32",
+   "dir": "fwd"
+  },
+  "roth": {
+   "algo": "A2b",
+   "cal_f1": 0.9313130833333327,
+   "cal_reached_target": true,
+   "cal_reads": 65.0,
+   "cfg": "r16",
+   "dir": "fwd"
+  }
+ },
+ "16|0.04": {
+  "csb": {
+   "algo": "A5",
+   "cal_f1": 0.9488198749999991,
+   "cal_reached_target": true,
+   "cal_reads": 32.0,
+   "cfg": "P32dense",
+   "dir": "bidir"
+  },
+  "csf": {
+   "algo": "A5",
+   "cal_f1": 0.9471977916666657,
+   "cal_reached_target": true,
+   "cal_reads": 32.0,
+   "cfg": "P32dense",
+   "dir": "fwd"
+  },
+  "hpe": {
+   "algo": "A2",
+   "cal_f1": 0.11473937500000031,
+   "cal_reached_target": false,
+   "cal_reads": 160.0,
+   "cfg": "r32",
+   "dir": "fwd"
+  },
+  "roth": {
+   "algo": "A2b",
+   "cal_f1": 0.3704510416666669,
+   "cal_reached_target": false,
+   "cal_reads": 65.0,
+   "cfg": "r16",
+   "dir": "fwd"
+  }
+ },
+ "1|0.01": {
+  "csb": {
+   "algo": "A5",
+   "cal_f1": 0.9375002083333338,
+   "cal_reached_target": true,
+   "cal_reads": 4.0,
+   "cfg": "P4dense",
+   "dir": "bidir"
+  },
+  "csf": {
+   "algo": "A5",
+   "cal_f1": 0.9777780000000004,
+   "cal_reached_target": true,
+   "cal_reads": 16.0,
+   "cfg": "P16dense",
+   "dir": "fwd"
+  },
+  "hpe": {
+   "algo": "A2",
+   "cal_f1": 0.9333333333333333,
+   "cal_reached_target": true,
+   "cal_reads": 9.533333333333333,
+   "cfg": "r2",
+   "dir": "fwd"
+  },
+  "roth": {
+   "algo": "A2b",
+   "cal_f1": 0.95,
+   "cal_reached_target": true,
+   "cal_reads": 25.854166666666668,
+   "cfg": "r2",
+   "dir": "fwd"
+  }
+ },
+ "1|0.02": {
+  "csb": {
+   "algo": "A5",
+   "cal_f1": 0.9319448333333337,
+   "cal_reached_target": true,
+   "cal_reads": 16.0,
+   "cfg": "P16dense",
+   "dir": "bidir"
+  },
+  "csf": {
+   "algo": "A5",
+   "cal_f1": 0.9611113333333338,
+   "cal_reached_target": true,
+   "cal_reads": 16.0,
+   "cfg": "P16dense",
+   "dir": "fwd"
+  },
+  "hpe": {
+   "algo": "A2",
+   "cal_f1": 0.9791666666666666,
+   "cal_reached_target": true,
+   "cal_reads": 39.46666666666667,
+   "cfg": "r8",
+   "dir": "fwd"
+  },
+  "roth": {
+   "algo": "A2b",
+   "cal_f1": 0.875,
+   "cal_reached_target": false,
+   "cal_reads": 30.8125,
+   "cfg": "r8",
+   "dir": "fwd"
+  }
+ },
+ "1|0.04": {
+  "csb": {
+   "algo": "A5",
+   "cal_f1": 0.9555558333333337,
+   "cal_reached_target": true,
+   "cal_reads": 64.0,
+   "cfg": "P64dense",
+   "dir": "bidir"
+  },
+  "csf": {
+   "algo": "A5",
+   "cal_f1": 0.9361112083333334,
+   "cal_reached_target": true,
+   "cal_reads": 48.0,
+   "cfg": "P48dense",
+   "dir": "fwd"
+  },
+  "hpe": {
+   "algo": "A2",
+   "cal_f1": 0.9708333333333333,
+   "cal_reached_target": true,
+   "cal_reads": 157.33333333333334,
+   "cfg": "r32",
+   "dir": "fwd"
+  },
+  "roth": {
+   "algo": "A2b",
+   "cal_f1": 0.2125,
+   "cal_reached_target": false,
+   "cal_reads": 19.458333333333332,
+   "cfg": "r8",
+   "dir": "fwd"
+  }
+ },
+ "4|0.01": {
+  "csb": {
+   "algo": "A5",
+   "cal_f1": 0.9783233333333331,
+   "cal_reached_target": true,
+   "cal_reads": 6.0,
+   "cfg": "P6dense",
+   "dir": "bidir"
+  },
+  "csf": {
+   "algo": "A5",
+   "cal_f1": 0.9573214166666666,
+   "cal_reached_target": true,
+   "cal_reads": 12.0,
+   "cfg": "P12dense",
+   "dir": "fwd"
+  },
+  "hpe": {
+   "algo": "A2",
+   "cal_f1": 0.4000000000000012,
+   "cal_reached_target": false,
+   "cal_reads": 10.0,
+   "cfg": "r2",
+   "dir": "fwd"
+  },
+  "roth": {
+   "algo": "A2b",
+   "cal_f1": 0.9686504999999991,
+   "cal_reached_target": true,
+   "cal_reads": 27.0,
+   "cfg": "r2",
+   "dir": "fwd"
+  }
+ },
+ "4|0.02": {
+  "csb": {
+   "algo": "A5",
+   "cal_f1": 0.9401351666666656,
+   "cal_reached_target": true,
+   "cal_reads": 8.0,
+   "cfg": "P8dense",
+   "dir": "bidir"
+  },
+  "csf": {
+   "algo": "A5",
+   "cal_f1": 0.9312497916666661,
+   "cal_reached_target": true,
+   "cal_reads": 12.0,
+   "cfg": "P12dense",
+   "dir": "fwd"
+  },
+  "hpe": {
+   "algo": "A2",
+   "cal_f1": 0.4000000000000012,
+   "cal_reached_target": false,
+   "cal_reads": 40.0,
+   "cfg": "r8",
+   "dir": "fwd"
+  },
+  "roth": {
+   "algo": "A2b",
+   "cal_f1": 0.9167454999999995,
+   "cal_reached_target": false,
+   "cal_reads": 41.0,
+   "cfg": "r16",
+   "dir": "fwd"
+  }
+ },
+ "4|0.04": {
+  "csb": {
+   "algo": "A5",
+   "cal_f1": 0.941543874999999,
+   "cal_reached_target": true,
+   "cal_reads": 32.0,
+   "cfg": "P32dense",
+   "dir": "bidir"
+  },
+  "csf": {
+   "algo": "A5",
+   "cal_f1": 0.938041874999999,
+   "cal_reached_target": true,
+   "cal_reads": 32.0,
+   "cfg": "P32dense",
+   "dir": "fwd"
+  },
+  "hpe": {
+   "algo": "A2",
+   "cal_f1": 0.4000000000000012,
+   "cal_reached_target": false,
+   "cal_reads": 160.0,
+   "cfg": "r32",
+   "dir": "fwd"
+  },
+  "roth": {
+   "algo": "A2b",
+   "cal_f1": 0.33154825000000016,
+   "cal_reached_target": false,
+   "cal_reads": 40.6875,
+   "cfg": "r16",
+   "dir": "fwd"
+  }
+ },
+ "64|0.01": {
+  "csb": {
+   "algo": "A5",
+   "cal_f1": 0.9888525000000001,
+   "cal_reached_target": true,
+   "cal_reads": 12.0,
+   "cfg": "P12dense",
+   "dir": "bidir"
+  },
+  "csf": {
+   "algo": "A5",
+   "cal_f1": 0.9534947500000001,
+   "cal_reached_target": true,
+   "cal_reads": 16.0,
+   "cfg": "P16dense",
+   "dir": "fwd"
+  },
+  "hpe": {
+   "algo": "A2",
+   "cal_f1": 0.026028291666666776,
+   "cal_reached_target": false,
+   "cal_reads": 160.0,
+   "cfg": "r32",
+   "dir": "fwd"
+  },
+  "roth": {
+   "algo": "A2b",
+   "cal_f1": 0.9448649583333322,
+   "cal_reached_target": true,
+   "cal_reads": 51.0,
+   "cfg": "r2",
+   "dir": "fwd"
+  }
+ },
+ "64|0.02": {
+  "csb": {
+   "algo": "A5",
+   "cal_f1": 0.9519194166666664,
+   "cal_reached_target": true,
+   "cal_reads": 12.0,
+   "cfg": "P12dense",
+   "dir": "bidir"
+  },
+  "csf": {
+   "algo": "A5",
+   "cal_f1": 0.9833884166666671,
+   "cal_reached_target": true,
+   "cal_reads": 24.0,
+   "cfg": "P24dense",
+   "dir": "fwd"
+  },
+  "hpe": {
+   "algo": "A2",
+   "cal_f1": 0.023976958333333416,
+   "cal_reached_target": false,
+   "cal_reads": 160.0,
+   "cfg": "r32",
+   "dir": "fwd"
+  },
+  "roth": {
+   "algo": "A2b",
+   "cal_f1": 0.8875492499999997,
+   "cal_reached_target": false,
+   "cal_reads": 65.0,
+   "cfg": "r16",
+   "dir": "fwd"
+  }
+ },
+ "64|0.04": {
+  "csb": {
+   "algo": "A5",
+   "cal_f1": 0.9488586666666655,
+   "cal_reached_target": true,
+   "cal_reads": 32.0,
+   "cfg": "P32dense",
+   "dir": "bidir"
+  },
+  "csf": {
+   "algo": "A5",
+   "cal_f1": 0.9468640416666657,
+   "cal_reached_target": true,
+   "cal_reads": 32.0,
+   "cfg": "P32dense",
+   "dir": "fwd"
+  },
+  "hpe": {
+   "algo": "A2",
+   "cal_f1": 0.0202589166666667,
+   "cal_reached_target": false,
+   "cal_reads": 160.0,
+   "cfg": "r32",
+   "dir": "fwd"
+  },
+  "roth": {
+   "algo": "A2b",
+   "cal_f1": 0.27456879166666687,
+   "cal_reached_target": false,
+   "cal_reads": 65.0,
+   "cfg": "r16",
+   "dir": "fwd"
+  }
+ }
+}

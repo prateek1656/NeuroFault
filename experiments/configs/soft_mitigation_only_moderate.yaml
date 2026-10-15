@@ -1,0 +1,31 @@
+# Same arm as soft_mitigation_only.yaml, with injection_interval recalibrated
+# to a non-saturating fault regime - see no_mitigation_moderate.yaml's
+# comment for the full rationale (measured directly: the original
+# injection_interval=8 drives every crossbar to 100% permanently stuck
+# within a few epochs, leaving no mitigation strategy anything to
+# differentiate itself against).
+#
+# injection_interval recalibrated to 420 (1260 total batches / 3) for the
+# same ~3-injection-cycle, ~27% final stuck fraction target as the other
+# moderate-regime arms. density/distribution/epoch counts unchanged.
+name: soft_mitigation_only_moderate
+simulator: crosssim
+epochs: 20
+num_batches: 128
+batch_size: 32
+train_samples: 2000
+test_samples: 1000
+eval_interval: 3
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 420
+mitigation:
+  enable_soft_mitigation: true
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false
+  health_threshold: 75.0

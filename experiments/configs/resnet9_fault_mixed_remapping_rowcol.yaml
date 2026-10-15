@@ -1,0 +1,51 @@
+# Milestone-2 plan item 2 - "free, zero new code" per that plan's own framing:
+# RowColumnRedundancyPool (src/neurofault/crossbar/self_healing.py:112) and its selector
+# (CrossbarConfig.redundancy_scheme="row_col_granularity") already exist and are already
+# unit-tested (tests/unit/test_self_healing_row_col.py) - this is a one-line YAML swap from
+# resnet9_fault_mixed_remapping.yaml's redundancy_scheme="idealized_per_cell", nothing else
+# changed. The code's own module docstring flags idealized_per_cell as "an idealized,
+# software-only upper bound - no physical spare-hardware analogue": real spare hardware
+# repairs whole rows/columns (coarser-grained, burns more spare capacity per fault) than the
+# per-cell scheme credits. This is the honesty check on whether remapping's near-total
+# wave-1 recovery (documented in resnet9_fault_remapping.yaml's header) survives a
+# realistic hardware model or is partly an artifact of an overly generous assumption.
+# redundancy_condemn_threshold left at CrossbarConfig's own default (0.5).
+name: resnet9_fault_mixed_remapping_rowcol
+simulator: crosssim
+epochs: 50
+float_pretrain_epochs: 10
+finetune_learning_rate: 0.001
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+lr_one_cycle: true
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+save_checkpoint: true  # real, reported-number run
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: row_col_granularity
+  use_gpu: true
+  calibrate_adc: true
+  adc_calibration_images: 320
+  calibrate_dac: true
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+secondary_fault:
+  failure_model: drift
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: true
+  enable_layer_reset: false
+  enable_predictive: false

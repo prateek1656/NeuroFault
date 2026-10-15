@@ -1,0 +1,79 @@
+run,seed,dirs,complete,identical_results,identical_config,finals,n_events,starts,newest
+baseline_no_fault,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+baseline_no_fault_full_scale_resnet_gpu,20260922,"_live,top","True,True",True,True,"None,None","None,None",",",top
+baseline_no_fault_scaled_check,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+baseline_no_fault_scaled_check,5000,"_live,top","True,True",True,True,"None,None","None,None",",",top
+baseline_no_fault_scaled_check_deep,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+baseline_no_fault_scaled_check_resnet,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+calibrate_adc_smoke,1,"_live,top","True,True",True,True,"None,None","None,None",",",top
+combined_all_strategies,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+combined_all_strategies_moderate,7,"_live,top","True,True",True,True,"None,None","None,None",",",top
+combined_all_strategies_moderate,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+combined_all_strategies_moderate,123,"_live,top","True,True",True,True,"None,None","None,None",",",top
+combined_smoke,1,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_fefet_combined_moderate,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_fefet_crosssim,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_fefet_layer_reset_moderate,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_fefet_no_mitigation_moderate,7,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_fefet_no_mitigation_moderate,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_fefet_no_mitigation_moderate,123,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_fefet_remapping_moderate,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_fefet_soft_mitigation_moderate,7,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_fefet_soft_mitigation_moderate,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_fefet_soft_mitigation_moderate,123,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_sttmram_combined_moderate,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_sttmram_layer_reset_moderate,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_sttmram_no_mitigation_moderate,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_sttmram_remapping_moderate,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+device_sttmram_soft_mitigation_moderate,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+fault_aware_retraining,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+layer_reset_only,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+layer_reset_only_moderate,7,"_live,top","True,True",True,True,"None,None","None,None",",",top
+layer_reset_only_moderate,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+layer_reset_only_moderate,123,"_live,top","True,True",True,True,"None,None","None,None",",",top
+local_check_no_dac,7,"_live,top","True,True",True,True,"None,None","None,None",",",top
+local_check_with_dac,7,"_live,top","True,True",True,True,"None,None","None,None",",",top
+no_mitigation,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+no_mitigation_aihwkit_moderate,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+no_mitigation_crosssim,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+no_mitigation_mnist,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+no_mitigation_mnist_moderate,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+no_mitigation_moderate,7,"_live,top","True,True",True,True,"None,None","None,None",",",top
+no_mitigation_moderate,42,"_live,_live,top,top","True,True,True,True",True,False,"None,None,None,None","None,None,None,None",",,,",top
+no_mitigation_moderate,123,"_live,top","True,True",True,True,"None,None","None,None",",",top
+pretrain_smoke,1,"_live,top","True,True",True,True,"None,None","None,None",",",top
+remapping_only,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+remapping_only_moderate,7,"_live,top","True,True",True,True,"None,None","None,None",",",top
+remapping_only_moderate,42,"_live,_live,top,top","True,True,True,True",True,False,"None,None,None,None","None,None,None,None",",,,",top
+remapping_only_moderate,123,"_live,top","True,True",True,True,"None,None","None,None",",",top
+resnet9_crossbar_probe_cpu,0,"_live,top","True,True",True,True,"None,None","None,None",",",top
+resnet9_deploy_c_living_g5,42,"_live5,_live6","True,True",False,True,"85.64,86.1","6,6","2026-10-08 07:19:42,2026-10-08 21:00:37",_live6
+resnet9_deploy_d_ew2,42,"_live3,_live5","True,True",False,False,"56.14,87.94","3,3","2026-10-06 21:21:18,2026-10-08 09:04:40",_live5
+resnet9_deploy_d_ew2,101,"_live3,_live6","True,True",False,False,"55.32,87.44","3,3","2026-10-06 21:56:37,2026-10-08 20:21:25",_live6
+resnet9_deploy_d_ew2,102,"_live3,_live6","True,True",False,False,"60.12,87.24","3,3","2026-10-06 22:29:35,2026-10-08 20:42:34",_live6
+resnet9_deploy_d_ew6,42,"_live3,_live5","True,True",False,False,"73.38,87.32","3,3","2026-10-06 21:27:37,2026-10-08 09:13:36",_live5
+resnet9_deploy_d_ew6,101,"_live3,_live6","True,True",False,False,"74.04,87.62","3,3","2026-10-06 22:03:24,2026-10-08 20:32:07",_live6
+resnet9_deploy_d_ew6,102,"_live3,_live6","True,True",False,False,"76.42,87.94","3,3","2026-10-06 22:36:03,2026-10-08 20:50:03",_live6
+resnet9_deploy_d_g5,42,"_live5,_live6","True,True",False,False,"80.28,88.0","6,6","2026-10-08 08:19:43,2026-10-08 21:09:30",_live6
+resnet9_fault_combined,42,"_live,top","True,True",True,True,"None,None","None,None","2026-09-30 07:47:17,2026-09-30 07:47:17",top
+resnet9_fault_layer_reset,42,"_live,top","True,True",True,True,"None,None","None,None","2026-09-30 04:23:31,2026-09-30 04:23:31",top
+resnet9_fault_no_mitigation,42,"_live,top","True,True",True,True,"None,None","None,None","2026-09-29 19:08:13,2026-09-29 19:08:13",top
+resnet9_fault_remapping,42,"_live,top","True,True",True,True,"None,None","None,None","2026-09-30 01:58:48,2026-09-30 01:58:48",top
+resnet9_fault_soft_mitigation,42,"_live,top","True,True",True,True,"None,None","None,None","2026-09-29 22:21:14,2026-09-29 22:21:14",top
+resnet9_fault_soft_mitigation_drift,42,"_live,top","True,True",True,True,"None,None","None,None","2026-09-30 13:34:27,2026-09-30 13:34:27",top
+resnet9_ibm_recipe_full_scale_gpu,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+resnet9_ibm_recipe_hwa_calibrated_gpu,202609241000,"_live,top","True,True",True,True,"None,None","None,None",",",top
+resnet9_ibm_recipe_hwa_full_calibrated_gpu,101,"_live,top","True,True",True,True,"None,None","None,None",",",top
+resnet9_ibm_recipe_hwa_full_calibrated_gpu,102,"_live,top","True,True",True,True,"None,None","None,None",",",top
+resnet9_ibm_recipe_hwa_full_calibrated_gpu,103,"_live,top","True,True",True,True,"None,None","None,None",",",top
+resnet9_ibm_recipe_hwa_full_calibrated_gpu,202609241730,"_live,top","True,True",True,True,"None,None","None,None",",",top
+resnet9_ibm_recipe_hwa_pretrain_gpu,20260923,"_live,top","True,True",True,True,"None,None","None,None",",",top
+resnet9_ibm_recipe_hwa_pretrain_gpu,20260923002,"_live,top","True,True",True,True,"None,None","None,None",",",top
+smoke_full_calibrated_cpu,1,"_live,top","True,True",True,True,"None,None","None,None",",",top
+smoke_row_col,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+smoke_tile_shape,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+smoke_weibull,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+soft_mitigation_only,42,"_live,top","True,True",True,True,"None,None","None,None",",",top
+soft_mitigation_only_moderate,7,"_live,top","True,True",True,True,"None,None","None,None",",",top
+soft_mitigation_only_moderate,42,"_live,_live,top,top","True,True,True,True",True,False,"None,None,None,None","None,None,None,None",",,,",top
+soft_mitigation_only_moderate,123,"_live,top","True,True",True,True,"None,None","None,None",",",top

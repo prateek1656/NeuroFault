@@ -1,0 +1,158 @@
+{
+  "criteria_id": "b_concurrent",
+  "criteria_sha256": "09a86da3dc24192de6cb27e59f168a043661f86ca0665feb3415111607eab7e6",
+  "overall": "INCONCLUSIVE",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "H7": "INCONCLUSIVE",
+    "H7_detect": "INCONCLUSIVE",
+    "H7_report": "INCONCLUSIVE"
+  },
+  "n_rows": 678,
+  "criteria": [
+    {
+      "id": "H7-C5-detect",
+      "kind": "pass",
+      "scope": "H7",
+      "source": "plan-B \u00a75 C5 (detection part)",
+      "description": "Concurrent regression detection (A8 alarm, as plan-B C5 words it): for k = 1 'big' faults, detection probability >= 0.99 within 64 inference MVMs, in every checkpoint seed.\n",
+      "note": null,
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "det_prob_big_k1",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 0.99,
+            "value": 0.05384615384615385,
+            "n": 3,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H7-C5-locate",
+      "kind": "pass",
+      "scope": "H7",
+      "source": "plan-B \u00a75 C5 (localization part)",
+      "description": "A8 localizes the faulty line(s) (input-line F1 >= 0.9, mean over instances) within 256 inference MVMs for k = 1 and k = 4, in every checkpoint seed.\n",
+      "note": null,
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "line_f1",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 0.9,
+            "value": 0.06349206349206349,
+            "n": 6,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H7-beats-HPE",
+      "kind": "pass",
+      "scope": "H7",
+      "source": "master plan \u00a710 H7 (new comparison vs the closest prior art)",
+      "description": "At k = 4 and T = 256, A8 line F1 exceeds HPE line F1 by >= 0.10 in every checkpoint seed.\n",
+      "note": null,
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "a8_minus_hpe_line_f1",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 0.1,
+            "value": 0.08808658008658009,
+            "n": 3,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H7-detect-is-prior-art",
+      "kind": "kill",
+      "scope": "H7_detect",
+      "source": "plan-B \u00a75 C5 kill (research-03 E5 kill)",
+      "description": "If the plain checksum (CK) already reaches 99% detection of k = 1 big faults within 8 MVMs in every seed, detection is prior art and the concurrent contribution is localization only (no detection claim is made).\n",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "det_prob_big_k1_ck",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 0.99,
+            "value": 0.0,
+            "n": 3,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H7-T7-kill",
+      "kind": "kill",
+      "scope": "H7",
+      "source": "plan-B \u00a75 C5 kill (identifiability)",
+      "description": "Concurrent-only localization is dead (hybrid A9 becomes the claim) if the median dead-input fraction over tiles exceeds 0.20.\n",
+      "note": null,
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "dead_frac",
+            "aggregation": "median",
+            "comparator": ">",
+            "threshold": 0.2,
+            "value": 0.0,
+            "n": 84,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H7-report",
+      "kind": "report",
+      "scope": "H7_report",
+      "source": "master plan \u00a710 H7 (report only)",
+      "description": "Full curves: detection probability vs T (all k, A8 and CK), line / row / cell F1 vs T for A8, HPE, HPE-VOTE, images_equiv, per-layer split, GT vs RP dedicated detection power, empirical FA of controls (A8, CK, per-sample).\n",
+      "note": null,
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "reason": "requires human judgement"
+      }
+    }
+  ],
+  "variant": "full"
+}

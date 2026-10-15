@@ -1,0 +1,47 @@
+# Same base as resnet9_ibm_recipe_hwa_pretrain_gpu.yaml (float_pretrain_epochs=10, finetune_learning_rate=0.001 - see that file's header for the full pretrain/finetune-LR provenance) - adds the ADC-range-calibration fix from plan doc §26 on top.
+#
+# Real motivation: real run #2 (this exact config minus calibrate_adc) recovered to a real
+# peak of 33.26% before slowly decaying to 25.90% final - genuinely better than every prior
+# attempt but still far below the pre-ResNet9 architecture's 49.5%/56.24%. A seven-fork
+# investigation found the dominant cause is quantization-error compounding across the
+# network's 9 sequential analog layers, and along the way found and fixed a real, separate bug:
+# ADCRangeLimits.MAX (the previous default) wastes most of the ADC's resolution on large
+# crossbars specifically (range scales linearly with crossbar size, real signal only ~sqrt(size)).
+# The landed calibrate_adc fix (config.py/crosssim_backend.py/system.py/run.py) derives each
+# layer's real ADC range from an actual calibration pass instead - verified to give a real, if
+# individually modest (+0.42pp in isolation), improvement, 10/10 layers' signal improved.
+#
+# This run combines everything validated so far - pretrain, gentle finetune LR, AND the
+# calibration fix - to see the best currently achievable number. Given the compounding-noise
+# diagnosis (this fix addresses one real bug, not the compounding itself), this is not expected
+# to fully close the gap to 50% on its own, but should be a genuine improvement over 33.26%/25.90%.
+name: resnet9_ibm_recipe_hwa_calibrated_gpu
+simulator: crosssim
+epochs: 50
+float_pretrain_epochs: 10
+finetune_learning_rate: 0.001
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+lr_one_cycle: true
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  use_gpu: true
+  calibrate_adc: true
+  adc_calibration_images: 320
+fault:
+  density: 0.0
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

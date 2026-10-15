@@ -1,0 +1,222 @@
+{
+  "criteria_id": "f0_headroom",
+  "criteria_sha256": "47d587b5dcdc8c1b3a013676473f8b4cb0bc881c890d20ef68693ac58431d5ea",
+  "overall": "KILL",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "A_network_accuracy": "PASS",
+    "B_drift_aware_reference": "INCONCLUSIVE",
+    "M1_watchdog": "KILL",
+    "sensing_vs_timer": "PASS",
+    "vertical_A": "INCONCLUSIVE"
+  },
+  "n_rows": 144,
+  "criteria": [
+    {
+      "id": "H3.1",
+      "kind": "pass",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.3 H3.1",
+      "description": "Replication sanity (not a kill): D2 reproduces Joshi's ordering none << GDC < AdaBS at 1 d and 1 yr (sign agreement; magnitude within a factor 2 of +0.9 pt at 1 d). Gross mismatch means the drift model or bridge is wrong, which blocks everything downstream.\n",
+      "note": "\"magnitude within a factor 2 of +0.9 pt at 1 d\" is read as gain in [0.45, 1.8] pt. The plan does not name which gain (AdaBS minus GDC is the natural reading). Script emits h31_ordering_ok (0/1) and h31_gain_1d_pt.\n",
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "h31_ordering_ok",
+            "aggregation": "min",
+            "comparator": "==",
+            "threshold": 1,
+            "value": 0.0,
+            "n": 6,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "h31_gain_1d_pt",
+            "aggregation": "mean",
+            "comparator": "between",
+            "threshold": [
+              0.45,
+              1.8
+            ],
+            "value": 1.1333333333333353,
+            "n": 3,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H3.2",
+      "kind": "pass",
+      "scope": "A_network_accuracy",
+      "source": "plan-F0 \u00a79 F0.3 H3.2",
+      "description": "Headroom gate for A: headroom := top-1(oracle-or-FullReadout) - top-1(best incumbent among B1-B3) averaged over 3 seeds. A is ALLOWED to proceed only if headroom >= 1.0 pt at >= 2 time points for at least one of {D2 with drift_scale in {1,2}, D3 rho <= 2, D4} and sign-consistent across seeds.\n",
+      "note": "Script sets bool column h32_model_eligible for rows in the allowed model set and emits per-model h32_n_timepoints_ge_1pt and h32_sign_consistent_across_seeds. Pass if ANY eligible model qualifies (max over eligible models of the pass flag).\n",
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "h32_n_timepoints_ge_1pt",
+            "aggregation": "max",
+            "comparator": ">=",
+            "threshold": 2,
+            "value": 2.0,
+            "n": 6,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H3.2-kill",
+      "kind": "kill",
+      "scope": "A_network_accuracy",
+      "source": "plan-F0 \u00a79 F0.3 H3.2 (else clause)",
+      "description": "Else KILL A as a network-accuracy story (it may survive purely as \"cheaper than AdaBS/per-column\" with a cost model - say so).\n",
+      "note": "Exact complement of H3.2 on the same metrics (no eligible model reaches 2 time points with consistent sign).",
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "h32_n_timepoints_ge_1pt",
+            "aggregation": "max",
+            "comparator": "<",
+            "threshold": 2,
+            "value": 2.0,
+            "n": 6,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H3.3",
+      "kind": "pass",
+      "scope": "sensing_vs_timer",
+      "source": "plan-F0 \u00a79 F0.3 H3.3",
+      "description": "Under mismatch factor >= 1.25 (drift_scale or Ea deviating from nominal) the timer baseline B6 loses >= 1.0 pt to B1a at >= 1 time point (confirms the research-05 row-2 gap exists in the simulator). If not, \"sensing beats timer\" has no motivation.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "timer_loss_vs_b1a_pt",
+            "aggregation": "max",
+            "comparator": ">=",
+            "threshold": 1.0,
+            "value": 57.633333333333326,
+            "n": 12,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H3.4",
+      "kind": "kill",
+      "scope": "M1_watchdog",
+      "source": "plan-F0 \u00a79 F0.3 H3.4",
+      "description": "Watchdog value: AUC of (|alpha_GDC - 1|, sigma_1 ratio, sum-current) for detecting \"GDC residual > 1 pt equivalent eps\" along drift trajectories. KILL M1-as-watchdog if its AUC < 0.7 or is not >= 0.05 above the free GDC-factor statistic's AUC.\n",
+      "note": null,
+      "status": "KILL",
+      "condition": true,
+      "detail": {
+        "combine": "any",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "auc_sigma1_ratio",
+            "aggregation": "median",
+            "comparator": "<",
+            "threshold": 0.7,
+            "value": 0.923469387755102,
+            "n": 45,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "auc_sigma1_minus_auc_gdc_factor",
+            "aggregation": "median",
+            "comparator": "<",
+            "threshold": 0.05,
+            "value": 0.007653061224489832,
+            "n": 45,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H3.5",
+      "kind": "kill",
+      "scope": "vertical_A",
+      "source": "plan-F0 \u00a79 F0.3 H3.5",
+      "description": "Research-03's E4 kill: stop the vertical if GDC / per-column / a rank-r probe correction (k <= 4, P <= 4) recovers >= 90% of what the spectral tracker recovers on every non-uniform field.\n",
+      "note": "Script emits b5_recovery_fraction_of_spectral per non-uniform drift field; 'every field' => min.",
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "b5_recovery_fraction_of_spectral",
+            "aggregation": "min",
+            "comparator": ">=",
+            "threshold": 0.9,
+            "value": 0.7290204458735919,
+            "n": 24,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "K4.1",
+      "kind": "report",
+      "scope": "B_drift_aware_reference",
+      "source": "plan-F0 \u00a79 F0.4 K4.1",
+      "description": "If t* < 1 day at nominal D2 for T=256, B's plan MUST include a drift-aware reference (low-rank + sparse); otherwise the plain residual is adequate for deployment-scale horizons.\n",
+      "note": "Decision rule for plan-B scoping, not a pass/fail on a claim, hence kind report (condition recorded; true = B must include a drift-aware reference). 1 day = 86400 s.\n",
+      "status": "REPORTED",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "t_star_s",
+            "aggregation": "median",
+            "comparator": "<",
+            "threshold": 86400,
+            "value": 1000000000.0,
+            "n": 45,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    }
+  ],
+  "variant": "full"
+}

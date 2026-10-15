@@ -1,0 +1,38 @@
+# Magnetic (STT-MRAM/spintronic domain-wall) device technology on the
+# CrossSim backend. CrossSim
+# has no swappable per-technology device class (see devices/registry.py's
+# docstring) - only the conductance range (r_on/r_off) differs by technology
+# on this backend, not switching dynamics.
+#
+# Honest sourcing note: the domain-wall MTJ synapse literature checked for
+# this project (Sengupta et al., "Proposal for an All-Spin Artificial Neural
+# Network...", arXiv:1510.00459; the comparative arXiv:1910.12919) documents
+# near-linear conductance vs. domain-wall position but no single canonical
+# Gmax/Gmin ratio the way the FeFET paper's 45x figure is explicit - r_on/r_off
+# below are left at this project's existing generic default (100x) rather
+# than inventing a technology-specific number with no cited source. Revisit
+# if/when a specific pinning-site-count target is chosen from the literature.
+name: device_sttmram_crosssim
+simulator: crosssim
+epochs: 15
+num_batches: 128
+batch_size: 32
+train_samples: 2000
+test_samples: 1000
+eval_interval: 3
+device:
+  name: sttmram
+  r_on: 100.0
+  r_off: 10000.0
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 8
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: false
+  enable_layer_reset: false
+  enable_predictive: false

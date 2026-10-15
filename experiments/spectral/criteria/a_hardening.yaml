@@ -1,0 +1,77 @@
+schema_version: 1
+id: a_hardening
+title: "Hardening H2: M4 vs stronger calibration baselines on BatchNorm-folded deployment"
+source_plan: "master plan §10 Phase H (registered 2026-10-10, before any H2 run)"
+frozen: "2026-10-10"
+overall_pass: all
+note: >
+  Same platform as a_bnfold (W2 BN-folded ResNet-9; CIFAR-10 and CIFAR-100; ckpt seeds 42/101/102;
+  scenarios D2, D3 {hotspot, rank_r, row_gradient} x rho {1, 2}, D4; t {1h, 1d, 30d, 1yr}; 2% per-cell
+  probe read noise; 10k-image evaluation) with ALL random streams offset +2000 (fresh vs a_bnfold's +1000).
+  M4 = the strict variant that passed a_bnfold (FieldFit cos order 4, 8 fwd + 7 bwd + 1 bias = 16 MVMs/tile).
+  New baselines (each must be implemented faithfully and documented):
+    HB1_N8, HB1_N32: digital per-output-channel affine recalibration (gain + bias per channel of every
+      analog layer, least squares of analog vs stored digital reference outputs) from N calibration
+      images (augmented train images; no test leakage). Cost = N images x per-image MVMs per tile.
+    HB2: per-column reference-column correction in the style of US 11663458 (a few reference columns per
+      tile programmed to known values; per-column affine gain/offset estimated from them each recal).
+      Cost = reference-column reads (+ the area of the reference columns, reported).
+    HB3: VeRA+/LoRA-style open-loop adapters - offline-trained digital low-rank (rank 4) corrections for a
+      grid of nominal drift times, switched by a timer (no on-chip sensing). Cost = 0 reads at runtime.
+  Columns per row (dataset, ckpt_seed, scenario, model, t_s, method): acc, cost_mvm_eq, and for each
+  baseline b in {HB1_N8, HB1_N32, HB2, HB3}: m4_minus_<b>_pt (M4 acc minus b acc, same row) and
+  <b>_cost_le_m4 (1 if b's cost in MVM-equivalents <= M4's, else 0).
+criteria:
+  - id: H2-NI-HB1_N8
+    source: "master plan §10 H2 non-inferiority"
+    kind: pass
+    scope: H2
+    description: "M4 is non-inferior to HB1_N8: per dataset, mean over scenarios of (M4 - HB1_N8) >= -0.3 pt at >= 3 of 4 time points."
+    clauses:
+      - {metric: m4_minus_HB1_N8_pt, filter: {dataset: cifar10}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+      - {metric: m4_minus_HB1_N8_pt, filter: {dataset: cifar100}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+  - id: H2-NI-HB1_N32
+    source: "master plan §10 H2 non-inferiority"
+    kind: pass
+    scope: H2
+    description: "M4 is non-inferior to HB1_N32 (same rule)."
+    clauses:
+      - {metric: m4_minus_HB1_N32_pt, filter: {dataset: cifar10}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+      - {metric: m4_minus_HB1_N32_pt, filter: {dataset: cifar100}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+  - id: H2-NI-HB2
+    source: "master plan §10 H2 non-inferiority"
+    kind: pass
+    scope: H2
+    description: "M4 is non-inferior to HB2 (same rule)."
+    clauses:
+      - {metric: m4_minus_HB2_pt, filter: {dataset: cifar10}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+      - {metric: m4_minus_HB2_pt, filter: {dataset: cifar100}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+  - id: H2-NI-HB3
+    source: "master plan §10 H2 non-inferiority"
+    kind: pass
+    scope: H2
+    description: "M4 is non-inferior to HB3 (same rule)."
+    clauses:
+      - {metric: m4_minus_HB3_pt, filter: {dataset: cifar10}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+      - {metric: m4_minus_HB3_pt, filter: {dataset: cifar100}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: ">=", threshold: -0.3}, comparator: ">=", threshold: 0.75}
+  - id: H2-kill-cheaper-wins
+    source: "master plan §10 H2 kill"
+    kind: kill
+    scope: H2
+    description: >
+      Kill M4's superiority claim if any baseline whose cost is <= M4's (in MVM-equivalents) beats M4 by
+      >= 1.0 pt (scenario mean) at >= 3 of 4 time points on either dataset.
+    combine: any
+    clauses:
+      - {metric: m4_minus_HB2_pt, filter: {dataset: cifar10, HB2_cost_le_m4: 1}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: "<=", threshold: -1.0}, comparator: ">=", threshold: 0.75}
+      - {metric: m4_minus_HB2_pt, filter: {dataset: cifar100, HB2_cost_le_m4: 1}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: "<=", threshold: -1.0}, comparator: ">=", threshold: 0.75}
+      - {metric: m4_minus_HB3_pt, filter: {dataset: cifar10, HB3_cost_le_m4: 1}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: "<=", threshold: -1.0}, comparator: ">=", threshold: 0.75}
+      - {metric: m4_minus_HB3_pt, filter: {dataset: cifar100, HB3_cost_le_m4: 1}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: "<=", threshold: -1.0}, comparator: ">=", threshold: 0.75}
+      - {metric: m4_minus_HB1_N8_pt, filter: {dataset: cifar10, HB1_N8_cost_le_m4: 1}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: "<=", threshold: -1.0}, comparator: ">=", threshold: 0.75}
+      - {metric: m4_minus_HB1_N8_pt, filter: {dataset: cifar100, HB1_N8_cost_le_m4: 1}, per_group: {by: [t_s], aggregation: mean}, aggregation: frac, inner: {comparator: "<=", threshold: -1.0}, comparator: ">=", threshold: 0.75}
+  - id: H2-superiority-report
+    source: "master plan §10 H2 (report only)"
+    kind: report
+    scope: H2_report
+    description: "Report M4's margin over each baseline per dataset and time (no pass/fail)."
+    manual: true

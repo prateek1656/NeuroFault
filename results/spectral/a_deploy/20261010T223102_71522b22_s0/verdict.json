@@ -1,0 +1,119 @@
+{
+  "criteria_id": "a_deploy",
+  "criteria_sha256": "8dd4161ca3d2e6cf32ce6cd6a1559ecce3d96bd8e44679b9fecf4b4d9fbcd303",
+  "overall": "KILL",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "H5": "KILL",
+    "H5_report": "INCONCLUSIVE"
+  },
+  "n_rows": 192,
+  "criteria": [
+    {
+      "id": "H5-deploy",
+      "kind": "pass",
+      "scope": "H5",
+      "source": "master plan \u00a710 H5",
+      "description": "The zero-inference-overhead variant M4-r1 beats B8 by >= 1.0 pt (scenario mean) with paired-CI lower bound > 0 at >= 3 of 4 time points, on both datasets.\n",
+      "note": null,
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "gain_m4r1_minus_b8_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.25,
+            "n": 4,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "gain_m4r1_ci_lower_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.5,
+            "n": 4,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "gain_m4r1_minus_b8_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.25,
+            "n": 4,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "gain_m4r1_ci_lower_pt",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.75,
+            "value": 0.0,
+            "n": 4,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H5-kill-free-variant",
+      "kind": "kill",
+      "scope": "H5",
+      "source": "master plan \u00a710 H5",
+      "description": "If M4-r1's pooled paired-CI lower bound vs B8 is <= 0 at every time point on either dataset, the zero-overhead claim is dead: the paper must state that M4's gain requires extra inference passes or reprogramming.\n",
+      "note": null,
+      "status": "KILL",
+      "condition": true,
+      "detail": {
+        "combine": "any",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "gain_m4r1_ci_lower_pt",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.0,
+            "value": 0.7070833333333345,
+            "n": 96,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "gain_m4r1_ci_lower_pt",
+            "aggregation": "max",
+            "comparator": "<=",
+            "threshold": 0.0,
+            "value": -0.5837604166666672,
+            "n": 96,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H5-report",
+      "kind": "report",
+      "scope": "H5_report",
+      "source": "master plan \u00a710 H5 (report only)",
+      "description": "Accuracy vs (calibration MVMs, extra inference passes, writes per cell) for B8, M4-r1, M4-r2, M4-full, REPROG; ablation table.",
+      "note": null,
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "reason": "requires human judgement"
+      }
+    }
+  ],
+  "variant": "full"
+}

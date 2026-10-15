@@ -1,0 +1,30 @@
+# STT-MRAM device technology, all three mitigations combined, moderate
+# fault regime - see device_sttmram_no_mitigation_moderate.yaml for the
+# recalibration rationale (injection_interval=210 = 630 total batches / 3,
+# matching this arm's 10-epoch length).
+name: device_sttmram_combined_moderate
+simulator: crosssim
+epochs: 10
+num_batches: 128
+batch_size: 32
+train_samples: 2000
+test_samples: 1000
+eval_interval: 3
+device:
+  name: sttmram
+  r_on: 100.0
+  r_off: 10000.0
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_factor: 0.15
+  redundancy_scheme: idealized_per_cell
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 210
+mitigation:
+  enable_soft_mitigation: true
+  enable_remapping: true
+  enable_layer_reset: true
+  enable_predictive: true
+  health_threshold: 75.0

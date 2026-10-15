@@ -1,0 +1,247 @@
+{
+  "criteria_id": "f0_stuck_scaling",
+  "criteria_sha256": "335588296cf77b1cd9bd59aa2187c1ed2ac97c00d7041a2c46b79e68ec1285ed",
+  "overall": "INCONCLUSIVE",
+  "overall_pass_rule": "all",
+  "by_scope": {
+    "spectral_line_fault_claim": "INCONCLUSIVE"
+  },
+  "n_rows": 12529,
+  "criteria": [
+    {
+      "id": "H1.1",
+      "kind": "pass",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.1 H1.1",
+      "description": "Sparse blindness: sigma_1 detection AUC for k=1 at 2% per_cell noise is < 0.60 in >= 95% of (layer, tile-size, encoding, seed) cells. PASS = old verdict confirmed for all encodings.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "sigma1_auc",
+            "aggregation": "frac",
+            "comparator": ">=",
+            "threshold": 0.95,
+            "value": 0.9940476190476191,
+            "n": 504,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H1.1-escalate",
+      "kind": "escalate",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.1 H1.1 (escalation clause)",
+      "description": "If AUC > 0.80 in any encoding for any tile size >= 128 => the old probe's signed/exact-SVD simplification was hiding a real signal: ESCALATE (report, re-plan C'/A-M1).\n",
+      "note": "Evaluated at k=1, 2% per_cell noise (the H1.1 setting); the plan does not restate it.",
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "sigma1_auc",
+            "aggregation": "max",
+            "comparator": ">",
+            "threshold": 0.8,
+            "value": 0.5890444444444445,
+            "n": 378,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H1.2",
+      "kind": "pass",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.1 H1.2",
+      "description": "Median relative shift of sigma_1 scales as tile_size^-1 (fit slope in [-1.15, -0.85]) and as k^0.5 for random-sign incoherent faults (slope in [0.35, 0.65]). Mismatch => theory needs revising.\n",
+      "note": "Slopes are fitted by the script (log-log) and emitted one row per fit as h12_slope_tile / h12_slope_k.",
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "h12_slope_tile",
+            "aggregation": "median",
+            "comparator": "between",
+            "threshold": [
+              -1.15,
+              -0.85
+            ],
+            "value": -1.4010661538454896,
+            "n": 48,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "h12_slope_k",
+            "aggregation": "median",
+            "comparator": "between",
+            "threshold": [
+              0.35,
+              0.65
+            ],
+            "value": 0.8136212504128626,
+            "n": 336,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H1.3-line",
+      "kind": "pass",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.1 H1.3",
+      "description": "A fully stuck row/column on T >= 128 tiles gives sigma_1 AUC > 0.9 at 2% noise (spectral detection of line faults is real).\n",
+      "note": "AMBIGUOUS aggregation: \"gives AUC > 0.9\" is not stated per cell or pooled. Transcribed as the strictest reading (min over all T>=128 line-fault cells > 0.9). Revisit only via a logged change.\n",
+      "status": "NOT_MET",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "sigma1_auc",
+            "aggregation": "min",
+            "comparator": ">",
+            "threshold": 0.9,
+            "value": 0.6921555555555555,
+            "n": 1260,
+            "result": false,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H1.3-kill",
+      "kind": "kill",
+      "scope": "spectral_line_fault_claim",
+      "source": "plan-F0 \u00a79 F0.1 H1.3",
+      "description": "The line-fault claim survives only if it also beats the 1-row-checksum at equal MVM budget: checksum AUC >= spectral AUC at <= 1/10 cost => KILL the spectral line-fault claim (keep as footnote).\n",
+      "note": "AMBIGUOUS aggregation (median over line-fault cells chosen). Script emits checksum_minus_spectral_auc (>= 0 means checksum at least as good) and checksum_to_spectral_cost_ratio.\n",
+      "status": "CLEAR",
+      "condition": false,
+      "detail": {
+        "combine": "all",
+        "result": false,
+        "clauses": [
+          {
+            "metric": "checksum_minus_spectral_auc",
+            "aggregation": "median",
+            "comparator": ">=",
+            "threshold": 0.0,
+            "value": -0.0055444444444445184,
+            "n": 2688,
+            "result": false,
+            "reason": null
+          },
+          {
+            "metric": "checksum_to_spectral_cost_ratio",
+            "aggregation": "median",
+            "comparator": "<=",
+            "threshold": 0.1,
+            "value": 0.0078125,
+            "n": 2688,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H1.4",
+      "kind": "pass",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.1 H1.4",
+      "description": "Encoding robustness: conclusions of H1.1 are identical across signed_ideal and diff_pair g_min in {0, 0.01, 0.05}.\n",
+      "note": "Script emits h14_h11_conclusion_identical (1 if the H1.1 criterion has the same outcome in every encoding, else 0). The FaultTruth.delta_w distribution report is not a pass/fail item.\n",
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "h14_h11_conclusion_identical",
+            "aggregation": "min",
+            "comparator": "==",
+            "threshold": 1,
+            "value": 1.0,
+            "n": 1,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "H1.5",
+      "kind": "report",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.1 H1.5",
+      "description": "Noise placement: report whether output_referred vs per_cell noise changes the best probe weight (dense vs sparse design); no pass/fail, input to B.\n",
+      "note": null,
+      "status": "REPORTED",
+      "condition": null,
+      "detail": {
+        "reason": "requires human judgement"
+      }
+    },
+    {
+      "id": "H1.6",
+      "kind": "pass",
+      "scope": null,
+      "source": "plan-F0 \u00a79 F0.1 H1.6",
+      "description": "Probe baseline reproduces: single-probe row localization 45-70% in the old setting (the 55-62% figure); P=8 probes > 90% at k=1. Fail => decoder bug.\n",
+      "note": null,
+      "status": "PASS",
+      "condition": true,
+      "detail": {
+        "combine": "all",
+        "result": true,
+        "clauses": [
+          {
+            "metric": "rowloc_p1",
+            "aggregation": "median",
+            "comparator": "between",
+            "threshold": [
+              0.45,
+              0.7
+            ],
+            "value": 0.5625,
+            "n": 12,
+            "result": true,
+            "reason": null
+          },
+          {
+            "metric": "rowloc_p8",
+            "aggregation": "median",
+            "comparator": ">",
+            "threshold": 0.9,
+            "value": 0.9775,
+            "n": 12,
+            "result": true,
+            "reason": null
+          }
+        ]
+      }
+    }
+  ],
+  "variant": "full"
+}

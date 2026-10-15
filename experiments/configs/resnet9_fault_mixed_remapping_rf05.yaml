@@ -1,0 +1,49 @@
+# Milestone-2 plan item 3 - redundancy_factor sweep against the fixed 3-wave injection
+# schedule, on top of the now-fixed mixed-regime comparison (item 1). Identical to
+# resnet9_fault_mixed_remapping.yaml (redundancy_factor left at CrossbarConfig's own
+# default, 0.15) except redundancy_factor=0.05 (one third of baseline) - part of a 5-point
+# sweep {0.05, 0.10, 0.15 (baseline, see the un-suffixed config), 0.20, 0.30} meant to turn
+# "remapping has a capacity ceiling" (resnet9_fault_remapping.yaml's confirmed single-burst-
+# then-gated-out finding) into an actual spare-capacity-% vs. waves-survived curve.
+# redundancy_scheme left at idealized_per_cell (this sweep's own axis is capacity, not
+# scheme - see resnet9_fault_mixed_remapping_rowcol.yaml for the separate scheme axis).
+name: resnet9_fault_mixed_remapping_rf05
+simulator: crosssim
+epochs: 50
+float_pretrain_epochs: 10
+finetune_learning_rate: 0.001
+num_batches: 390
+batch_size: 128
+train_samples: 50000
+test_samples: 5000
+learning_rate: 0.05
+optimizer: sgd
+momentum: 0.9
+lr_one_cycle: true
+label_smoothing: 0.1
+grad_clip_norm: 1.0
+weight_decay: 0.0001
+eval_interval: 100
+save_checkpoint: true  # real, reported-number run
+crossbar:
+  patch_layer_types: [Linear, Conv2d]
+  redundancy_scheme: idealized_per_cell
+  redundancy_factor: 0.05
+  use_gpu: true
+  calibrate_adc: true
+  adc_calibration_images: 320
+  calibrate_dac: true
+fault:
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+secondary_fault:
+  failure_model: drift
+  density: 0.1
+  distribution: random
+  injection_interval: 5200
+mitigation:
+  enable_soft_mitigation: false
+  enable_remapping: true
+  enable_layer_reset: false
+  enable_predictive: false
