@@ -1,0 +1,10 @@
+# P1.6: real layer-input (im2col) statistics of trained ResNet-9
+experiment: p1_6_activations
+dataset: cifar10
+split: test
+n_images: 5000
+batch_size: 250
+seeds: [42, 101, 102]
+positions_per_image: 16   # random spatial positions per image per layer (all if layer has fewer)
+cache_cols: 4096          # random columns of X kept per layer for held-out error evaluation
+top_k_pcs: 64

@@ -1,0 +1,15 @@
+{
+  "batch_size": 250,
+  "cache_cols": 4096,
+  "dataset": "cifar10",
+  "experiment": "p1_6_activations",
+  "n_images": 5000,
+  "positions_per_image": 16,
+  "seeds": [
+    42,
+    101,
+    102
+  ],
+  "split": "test",
+  "top_k_pcs": 64
+}

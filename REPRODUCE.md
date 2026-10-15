@@ -98,15 +98,39 @@ Compute: the main Paper A results rest on a few hundred complete deployment life
 
 CIFAR-10 and CIFAR-100 are downloaded by torchvision on first use into `./data` (relative to the working directory) via `download=True`. No manual step is needed. Run from the repository root so the data lands in `./data`.
 
-### Pre-deployment checkpoints
+### Pre-deployment checkpoints and activation caches
 
-Deployment-regime runs start from a fault-free, trained pre-deployment checkpoint (`pre_deploy.pt`). The checkpoints used for the papers (about 581 MB, 11 files) are published as a GitHub Release asset.
+Re-running experiments (not needed for L1 and L2) needs the trained pre-deployment checkpoints and, for
+Paper B, cached layer-input activation samples. They are published as assets of the GitHub release
+[`data-v1`](https://github.com/prateek1656/NeuroFault/releases/tag/data-v1):
 
-TODO(release): link
+| Asset | Contents | Size |
+|---|---|---|
+| `neurofault-predeploy-checkpoints.tar.gz` | all 21 `pre_deploy.pt` files listed in `results/derived/predeploy_checkpoints.csv` (ResNet-9 CIFAR-10/100, VGG-6, ViT; seeds 42, 101-104) | 583 MB |
+| `neurofault-spectral-activations-cifar10.tar.gz` | `results/spectral/activations/<seed>/` (seeds 42, 101, 102) | 442 MB |
+| `neurofault-spectral-activations-cifar100.tar.gz` | `results/spectral/activations_c100/<seed>/` | 407 MB |
+| `SHA256SUMS` | checksums of the three archives | |
 
-Pass a checkpoint with `--pre-deploy-checkpoint`.
+Each archive holds repo-relative paths, so extract it at the repository root:
 
-Paper B re-runs also need trained checkpoints and activation caches. These are not shipped in the repository and will be provided as a release asset. The Paper B scripts load a ResNet-9 checkpoint by seed from `results/_live2/resnet9_predeploy_seed<seed>/pre_deploy.pt` (`neurofault.spectral.tiles.checkpoint_path`) and read cached activation samples from `results/spectral/activations/<seed>/`. Place the release files at those paths. Without them, the Paper B experiment scripts cannot run; the shipped CSVs and verdicts are enough for L1 and L2.
+```bash
+sha256sum -c SHA256SUMS            # macOS: shasum -a 256 -c SHA256SUMS
+tar -xzf neurofault-predeploy-checkpoints.tar.gz
+tar -xzf neurofault-spectral-activations-cifar10.tar.gz
+tar -xzf neurofault-spectral-activations-cifar100.tar.gz
+```
+
+Each checkpoint's sha256 prefix is recorded in the `sha12` column of
+`results/derived/predeploy_checkpoints.csv`. Pass a checkpoint to a deployment run with
+`--pre-deploy-checkpoint`. The Paper B scripts find checkpoints by seed at
+`results/_live2/resnet9_predeploy_seed<seed>/pre_deploy.pt` (`neurofault.spectral.tiles.checkpoint_path`)
+and activation samples at `results/spectral/activations/<seed>/`.
+
+The CIFAR-10 activation caches were produced by `experiments/spectral/p1_6_activation_stats.py`
+(config `experiments/configs/spectral_p1_6_activations.yaml`; run records in
+`results/spectral/p1_6_activations/`); `experiments/spectral/a_bnfold.py` computes the CIFAR-100 ones if
+missing. Both keep a random column subsample, so regenerated caches are statistically equivalent but
+not bit-identical to the published ones; use the release files to reproduce the shipped numbers exactly.
 
 ### Paper A: one arm
 
