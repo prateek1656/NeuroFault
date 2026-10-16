@@ -13,11 +13,8 @@
 \newcommand{\mn}{\ensuremath{-}}
 \newcommand{\pt}{\,pt}
 
-% ---- figure helper: framed placeholder if a figure PDF is missing -------------------------------
-\newcommand{\figorbox}[3]{%
-  \IfFileExists{#1}{\includegraphics[width=#2]{#1}}{%
-    \fbox{\parbox[c][#3][c]{\dimexpr#2-2\fboxsep-2\fboxrule\relax}{\centering\footnotesize
-    Figure placeholder\\\texttt{\detokenize{#1}}}}}}
+% figure helper: a missing figure is a hard error
+\newcommand{\figorbox}[3]{\includegraphics[width=#2]{#1}}
 
 \begin{document}
 
