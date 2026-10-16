@@ -29,31 +29,39 @@
 
 % =================================================================================================
 \begin{abstract}
-Memristor crossbars lose cells while deployed, and a finite pool of spare cells is the repair budget.
-Prior repair methods remap and retrain once from a known fault map, and they are rarely compared with baselines that have equal compute and a tuned learning rate.
-We study in simulation (ResNet-9, CIFAR-10, three fault waves, 15\% spares) what repairs such a chip over its life.
-Remapping to a frozen reference can overwrite learned weights, which living spares avoid by construction; a pre-registered tuned-rate control, however, finds no accuracy difference (+0.03 points, 3 seeds), and an earlier +2.48 came from a barely working rate.
-A forward-only BatchNorm refit stays at chance once the spare pool is exhausted (76.06 points below our controller, 0 of 8 seeds).
-Our controller D, which paces spare use and gates retraining on a canary set, beats equal-compute retraining-only by 3.78 points (5 of 5 seeds).
-Its apparent 34.0-point lead over a living-spares rival, however, shrinks to 4.2 points once that rival's learning rate is tuned, to 1.06 once compute is matched, and to $-0.005$ in a pre-registered eight-seed replication.
-On final accuracy D is not distinguishable from the matched rival or from a one-shot Liu-style retrain, so we compare these designs by what each costs, and results vary across seeds.
-Tuned, compute-matched baselines and a replication are therefore needed before a repair controller's margin means anything.
-All results are simulated; Section~\ref{sec:discussion} gives the caveats.
+None of the memristor-crossbar repair papers we examined tests against a tuned, equal-compute baseline.
+We measured what that omission is worth.
+Our repair controller (D) paces its spare cells and gates retraining on a held-out set.
+It first looked 34.0 points ahead of a rival with \emph{living} spares (a spare keeps training from the cell's current weight).
+Tuning the rival's learning rate cut the lead to 4.2 points.
+Giving it D's number of retraining (burst) steps cut it to 1.06.
+A pre-specified eight-seed replication cut it to $-0.005$ points (95\% CI $-1.7$ to $+1.7$).
+An unfair baseline manufactured a 34-point win, and fair baselines removed it.
+D still beats retraining-only at equal burst steps by 3.78 points (5 of 5 seeds), so the controller is genuine where it holds.
+Two more findings: a forward-only BatchNorm refit stays at chance once spares run out (76.06 points below D, 0 of 8 seeds), and living spares match frozen-reference spares at a tuned rate (+0.03 points; an earlier +2.48 came from a barely working rate).
+The scope is simulation, ResNet-9 on CIFAR-10.
+The lesson is a call to the field: tuned, step-matched baselines and a replication are the price of a credible margin.
+All code, runs and analysis are public.
 \end{abstract}
 
 
 \begin{IEEEkeywords}
-Memristor crossbar, stuck-at faults, spare cells, fault-aware retraining, in-memory computing, reliability, pre-registration.
+Memristor crossbar, stuck-at faults, spare cells, fault-aware retraining, in-memory computing, reliability, baseline tuning, replication.
 \end{IEEEkeywords}
 
 % =================================================================================================
 \section{Introduction}
-\IEEEPARstart{A}{n} analog resistive-memory (RRAM) chip stores neural-network weights as cell conductances.
+\IEEEPARstart{R}{epair} controllers for memristor crossbars report large wins.
+In the papers we examined, none faces a rival that was tuned and given the same compute.
+We built such a controller, saw it lead by 34 points, and then did the control experiment: we tuned the rival's learning rate, matched its retraining steps, and replicated on pre-specified seeds.
+The lead fell to zero.
+This paper reports that fall, step by step, and what survives it.
+
+An analog resistive-memory (RRAM) chip stores neural-network weights as cell conductances.
 Cells fail while the chip is deployed.
 A failed cell is stuck at a high or a low conductance and cannot be written again.
 A chip designer can keep a pool of spare cells and replace failed cells with spares.
-The pool is finite.
-Each wave of new faults uses part of it.
+The pool is finite, and each wave of new faults uses part of it.
 Spare cells are therefore a budget that the chip spends over its life.
 
 Two repair tools exist.
@@ -61,57 +69,68 @@ Remapping moves a failed weight onto a spare cell.
 Retraining adjusts the healthy weights so the network works around the faults.
 Prior work uses each tool, often once and from a known fault map \cite{liu17dac,chen17date,song21ittrna}.
 A deployed chip needs both, repeatedly, across several fault waves.
-
-Those papers compare against baselines that rarely receive the same compute or a tuned learning rate \cite{xia19tcad,song21ittrna}.
-It does not ask what happens when remapping and retraining alternate over a chip's life.
+In the papers we examined (Table~\ref{tab:positioning}), no baseline received both the same compute and a tuned learning rate; Xia et al.\ report a 1.2x iteration count for their method, and Song et al.\ match iterations for one baseline \cite{xia19tcad,song21ittrna}.
+We re-ran none of these methods, so this describes what the papers report, not how the methods would perform.
 Two questions follow.
-Do the two tools interact?
-And how much of the apparent gain of a clever repair controller survives a fair comparison?
+Do remapping and retraining interact?
+And how much of a clever repair controller's gain survives a fair comparison?
 
-We find that they interact.
+They do interact.
 Remap restored a spare toward a reference that the chip captured once, before any retraining, so each remap overwrote the compensation that earlier retraining had learned.
 We found this by reading the write paths, then measured it.
-A simple fix exists.
-A remapped spare takes the cell's current weight and then trains in later bursts.
+The fix is simple: a remapped spare takes the cell's current weight and trains in later bursts.
 We call these living spares.
-We first measured a gain of 2.48 points for living spares over frozen references, but at an under-tuned burst rate. A pre-registered control at the tuned rate (3 seeds, paired within seed) found +0.03 points, which is noise-level, and a lifetime accuracy 0.31 points lower.
-The +2.48 is therefore superseded, and we report the overwrite as a code-level observation, not as an accuracy gain.
+Living spares first showed a gain of 2.48 points over frozen references, but at an under-tuned burst rate.
+A pre-specified control at the tuned rate (3 seeds, paired within seed) found +0.03 points, which is noise-level, and a lifetime accuracy 0.31 points lower.
+The +2.48 was an artifact.
+We report the overwrite as a code-level observation, not as an accuracy gain.
 
 Living spares make a second question matter: how fast to spend the pool, and when to retrain.
 Our controller D spends a per-wave share of the free spares (pacing).
 It ranks cells by saliency, refits BatchNorm statistics, and retrains in a short burst only when a held-out canary set shows a loss.
-Importance-ranked remap, BatchNorm refit, plateau stop and canary-triggered retraining each have prior art \cite{liu17dac,jung21date,li19rramedy}.
-We do not claim them.
-We use D to ask whether this machinery buys accuracy when every rival gets the same compute.
+Importance-ranked remap, BatchNorm refit, plateau stop and canary-triggered retraining each have prior art \cite{liu17dac,jung21date,li19rramedy}, and we do not claim them.
+We use D to ask whether this machinery buys accuracy when every rival gets the same number of burst steps.
 
-\textit{Methodology and rigor.}
+\textit{The ladder.}
+The answer is the paper's centerpiece.
 A first version of this work reported a 34-point lead over a living-spares rival.
 At least 97\% of that lead came from an untuned learning rate and unequal compute.
-We rebuilt the evaluation to remove both.
-We registered hypotheses and decision rules before the counted runs.
-We gave each rival D's exact number of burst steps.
+Each fix removed a slice of it:
+\begin{center}
+34.0 $\rightarrow$ 4.2 $\rightarrow$ 1.06 $\rightarrow$ $-0.005$ points\\
+{\footnotesize\emph{(old rate, unmatched $\rightarrow$ tuned $\rightarrow$ step-matched, 5 seeds $\rightarrow$ 8-seed replication)}}
+\end{center}
+That ladder is a quantified decomposition of how an unfair baseline builds a large win.
+We caught our own 34-point illusion.
+Any repair-controller paper can now be checked against it.
+
+\textit{What we did differently.}
+We specified hypotheses and decision rules before the counted runs (a commitment in the author's own timestamped repository, not an independent registry).
+We gave each rival D's exact number of burst steps (Section~\ref{sec:honest}).
 We tuned each arm's learning rate and report both a test-picked and a canary-picked choice.
 We audited the raw run data and fixed simulator errors that had changed earlier numbers.
-We ran a pre-registered replication of our own best margin, and two pre-registered reviewer baselines.
+We replicated our own best margin and ran two pre-specified reviewer baselines.
 
-\textit{Results in brief.}
-D beats equal-compute retraining-only by 3.78 points, in 5 of 5 seeds, significant after Holm correction.
-This is a sequential result: seeds were extended from 3 to 5 after a first look.
-D does not beat the strongest matched rival.
-The 5-seed lead of 1.06 points over C$'$-matched did not replicate on three new seeds, and the eight-seed mean is $-0.005$ (6 of 8 seeds ahead, Holm $p=1.0$).
-That is not a tie we can prove: D is ahead on 6 of 8 seeds by 0.44 to 1.52 points and behind by about 3 points on the 2 seeds where its gate skipped a burst, and we ran no equivalence test.
-A one-shot Liu-style retrain at D's compute is not distinguishable from D on final accuracy (Holm $p=0.66$).
-It does not match D on service through life (Section~\ref{sec:e1e2}).
-A forward-only BatchNorm repair stays at chance in the tested regime, where the spare pool is exhausted (Section~\ref{sec:e1e2}).
-On two of the eight seeds, D's canary gate drifted and skipped a needed burst (Section~\ref{sec:gate}).
-We also report settings with no edge or a deficit: VGG6 (mixed), many small waves with a gate fixed to the best-so-far canary (mixed), and calibrated drift (D trails B-matched by 0.65 to 3.54 points; negative with 5\% spares; 3 seeds).
+\textit{What D still wins.}
+D beats retraining-only at equal burst steps by 3.78 points, in 5 of 5 seeds, significant after Holm correction.
+That is a real result where it holds.
+Against the strongest matched rival (living-spare retraining at D's burst steps, C$'$-matched) and a one-shot Liu-style retrain at D's burst steps (E1), D is not distinguishable on final accuracy.
+The eight-seed mean against C$'$-matched is $-0.005$ (95\% CI $-1.69$ to $+1.68$; 6 of 8 seeds ahead, Holm $p=1.0$).
+D is ahead on 6 of 8 seeds by 0.44 to 1.52 points and behind by about 3 points on the 2 seeds where its gate skipped a burst (Section~\ref{sec:gate}).
+D serves far better through life than the one-shot retrain (Section~\ref{sec:e1e2}).
+A forward-only BatchNorm repair stays at chance when the spare pool is exhausted.
+Sections~\ref{sec:stress} and~\ref{sec:discussion} give the other settings and every limit.
 
 \textit{Contributions.}
+This paper is a quantified case study, not a new repair method and not a methodological discovery: that baselines should be tuned and matched is established practice (Section~\ref{sec:background}).
+It is the missing control experiment for a memristor repair controller, run end to end and published in full.
 \begin{enumerate}
-\item We identify, by reading the write paths, that a frozen-reference remap restores the original value over retrained weights (Section~\ref{sec:method}), and we report that a pre-registered tuned-rate control found no measurable accuracy effect of the living-spares fix (+0.03 points, 3 seeds; Section~\ref{sec:overwrite}); our design cannot test the remap-after-retraining case.
-\item We show that a BatchNorm refit does not rescue a chip whose spare pool is exhausted (the tested regime): it stays at chance on 8 of 8 seeds (Section~\ref{sec:e1e2}).
-\item We give a compute-matched, tuned, pre-registered evaluation that cut a 44.7-point (retraining-only) and a 34.0-point (living-spares rival) apparent lead to 3.78 points (5 seeds, significant, sequential design) and to zero (8 seeds, no equivalence test), respectively, and to no detectable difference from a one-shot Liu-style retrain (Sections~\ref{sec:tuning}, \ref{sec:replication} and~\ref{sec:e1e2}). A matched comparison shows that several designs reach about the same final accuracy, and Table~\ref{tab:tradeoffs} gives what each costs in spares, canary data, tuning and service through life.
-\item We report the controller's limits: pacing and gating show no accuracy gain at matched compute, the gate has a drift failure mode, and D has no edge or trails on calibrated drift and with many small waves (Sections~\ref{sec:gate} and~\ref{sec:stress}). We also give a closed-loop test of D on a probe-estimated fault map with its limits (Section~\ref{sec:closedloop}), and a condensed catalogue of simulator pitfalls that we found and fixed (Section~\ref{sec:fidelity}).
+\item We \textbf{quantify} how an unfair baseline manufactures a win: a 34.0-point lead falls to 4.2 (tuned rate), 1.06 (step-matched) and $-0.005$ (8-seed replication, 95\% CI $-1.7$ to $+1.7$), and a 44.7-point retraining-only lead falls to 3.78 (Sections~\ref{sec:tuning} and~\ref{sec:replication}).
+\item We \textbf{show} that D still beats retraining-only at equal burst steps by 3.78 points in 5 of 5 seeds, and that a one-shot Liu-style retrain at D's steps cannot be told apart from D on final accuracy but serves far worse through life (Section~\ref{sec:e1e2}).
+\item We \textbf{trace} a frozen-reference remap that overwrites retrained weights, and we \textbf{retire} its apparent payoff: living spares give +0.03 points at the tuned rate, against +2.48 at a barely working one (Section~\ref{sec:overwrite}).
+\item We \textbf{establish} that a BatchNorm refit does not rescue a chip whose spare pool is exhausted: it stays at chance on 8 of 8 seeds (Section~\ref{sec:e1e2}). Table~\ref{tab:tradeoffs} gives what each design that reaches the same final accuracy costs in spares, canary data, tuning and service through life.
+\item We \textbf{diagnose} the controller's gate drift failure mode, \textbf{test} D on a probe-estimated fault map, and \textbf{catalogue} the simulator pitfalls that would have silently corrupted results, each with a stored measurement (Sections~\ref{sec:gate}, \ref{sec:closedloop} and~\ref{sec:fidelity}).
+\item We \textbf{release} everything: code, configurations, raw run records and analysis scripts are public, and the numbers re-derive from the stored event logs (Availability).
 \end{enumerate}
 
 The rest of the paper is organized as follows.
@@ -135,15 +154,35 @@ We use one term for one thing.
 \emph{Wave}: one fault event.
 Faults are permanent: a stuck cell stays at its high-resistance (HRS) or low-resistance (LRS) conductance.
 \emph{Burst}: a short retraining run between waves.
-\emph{Canary set}: 1,024 held-out training images that serve as the only health signal.
-\emph{Arm}: one policy in a comparison.
+\emph{Canary set} (a calibration set): 1,024 held-out training images that serve as the only health signal.
+\emph{Arm}: one policy in a comparison (letters are defined in Table~\ref{tab:legend}).
 \emph{Deployment regime}: we train once to a checkpoint, then run inference through $K$ fault waves.
 Retraining happens only inside policy bursts.
 Labelled data for bursts is assumed to be available on the device or at the edge.
 
+\begin{table}[t]
+\centering
+\caption{Legend: arm letters and experiment labels used in the text.}
+\label{tab:legend}
+\footnotesize
+\begin{tabular}{@{}p{1.9cm}p{6.2cm}@{}}
+\toprule
+Label & Meaning \\
+\midrule
+D & our controller (paced remap, saliency ranking, BatchNorm refit, canary-gated burst) \\
+C$'$-matched & living-spare retraining at D's burst steps (strongest fair rival) \\
+B-matched & retraining only, no remap, at D's burst steps \\
+R0 / R1 & no repair / remap only \\
+E1 (-last, -first) & Liu-style one-shot retrain at the last / first wave \\
+E2 & BatchNorm refit only, no optimizer step \\
+E3 & replication of D versus C$'$-matched on 3 new seeds \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Related work}
 Table~\ref{tab:positioning} positions the closest work.
-We read each paper listed there.
+We read each paper listed there; several 2025--2026 items are preprints or recent journal articles, and we checked their identifiers in October 2026.
 Our claims are limited by the coverage of that reading and of our search.
 
 \emph{Retrain once, from a known map.}
@@ -187,7 +226,15 @@ STAR repairs a network without any fault localization, using Equilibrium Propaga
 Its learning rule does not port to our backpropagation network.
 Our arm B-matched is the unassisted baseline of that class, not STAR itself.
 Xia et al.\ report a 1.2x iteration count for their method, and Song et al.\ match iterations for one baseline \cite{xia19tcad,song21ittrna}.
-We give every rival the controller's step count and tune each arm's learning rate.
+We give every rival the controller's burst-step count and tune each arm's learning rate.
+
+\emph{Baseline tuning in machine learning.}
+That weak or untuned baselines inflate reported gains is documented elsewhere.
+Blalock et al.\ found that pruning papers were hard to compare for lack of standard baselines and benchmarks \cite{blalock20pruning}.
+Melis et al.\ showed that a well-tuned standard LSTM beat more recent language models \cite{melis18ppl}, and Lucic et al.\ found that most GAN variants reach similar scores given enough tuning and restarts \cite{lucic18gans}.
+Dodge et al.\ argue for reporting results as a function of the tuning budget \cite{dodge19work}, and Bouthillier et al.\ quantify the variance that seeds and tuning add to benchmark comparisons \cite{bouthillier21variance}.
+In memristor inference, Joshi et al.\ train with injected noise so that phase-change-memory inference is accurate \cite{joshi20pcm}; their setting is analog noise, not stuck-at faults.
+Our case study applies the same lesson, with a measured decomposition, to a fault-repair controller.
 
 \begin{table*}[t]
 \centering
@@ -264,8 +311,10 @@ D used 1,375 to 1,500 burst steps per seed on the first five seeds, and 700 to 1
 \subsection{Arms}
 Table~\ref{tab:arms} defines every arm.
 B-matched and C$'$-matched receive the same number of burst steps as D on the same seed.
-That equal compute is the main control of this study.
-E1 and E2 are the two reviewer baselines that we registered.
+That equal burst steps is the main control of this study.
+It does not charge D for its extra passes: Fisher-saliency scoring, canary forward passes and BatchNorm refit passes are not counted as steps, so D does less comparable work than its step count suggests and the matched rivals are not given those passes.
+The rivals also receive D's step count after the fact, which a deployed rival could not know in advance.
+E1 and E2 are the two reviewer baselines that we specified in advance.
 
 \begin{table*}[t]
 \centering
@@ -278,7 +327,7 @@ Arm & Definition & Role \\
 \midrule
 R0 / R1 & No mitigation / remap only, random order, no retraining & Static baselines \\
 B & One fixed burst after every wave; no remap, no spares & Retraining only (RRAMedy-class policy under an oracle map) \\
-B-matched & B with D's total burst steps for the seed & Equal-compute retraining-only \\
+B-matched & B with D's total burst steps for the seed & Equal-burst-step retraining-only \\
 C & Remap; burst only when a wave overflows the pool; frozen reference & Overwrite bug \\
 C$'$ & C with living spares & Spares without a controller \\
 C$'$-matched & C$'$ with D's burst steps for the seed & Strongest fair rival \\
@@ -305,41 +354,42 @@ The pool holds 15\% spares, one per cell, without area or routing cost.
 The fault map is an oracle in the main runs.
 Accuracy is the accuracy after the last wave's burst on the first 5,000 test images (sampling noise about $\pm 0.5$ points).
 The main test uses seeds 42, 101, 102, 103 and 104, and E3 adds seeds 105, 106 and 107.
+Learning rates and D's settings (gate margin, plateau rule, priors) were chosen on seed 42 and the first seeds, and the ResNet-9 rates on test accuracy; these seeds and images are also evaluation seeds and images, so no result here comes from data untouched by tuning.
 B and B-matched were not run on seeds 105 to 107.
 The same seed gives the same checkpoint and the same fault maps to every arm; we check the fault-map hash.
-Rate and gate settings are in the logs of each run (\texttt{effective\_params}), not in the stored configuration.
+Rate and gate settings are in the logs of each run, not in the stored configuration.
 
 \subsection{Statistics}
 We pair arms by seed and use a two-sided paired $t$ test as the primary test.
-Holm correction runs inside families fixed in advance: a headline family H of 15 comparisons, a limitation family N of 5, and an exploratory family S of 64.
+Holm correction runs inside families fixed in advance (the members of family H are listed in the appendix): a headline family H of 15 comparisons, a limitation family N of 5, and an exploratory family S of 64.
 The E1 and E2 comparisons form a family E of 4, and the lifetime (area under the per-wave curve) comparisons form a family of 28.
 Rows in family S are exploratory: we mark them ``significant (exploratory family)''.
 We call a result \emph{significant} only if the Holm-adjusted $p$ is below 0.05 and the one-sided sign test is below 0.05.
 That needs $n \ge 5$ and all seeds in one direction.
 We call a result \emph{consistent} if all seeds agree but it is not significant, \emph{mixed} if seeds disagree, and \emph{noise-level} if the mean is under twice the noise of the mean.
 Ten identical reruns differ by an RMS of 0.46 points; the noise of a mean of five seeds is about 0.20.
-With $n=3$, no result can be significant.
+With $n=3$, no result can be significant, by construction of this rule; a three-seed row is therefore never evidence of absence of an effect, only of too little power to show one.
 
 \subsection{Methodology and rigor}
 \label{sec:honest}
 Table~\ref{tab:ledger} lists each control and its limit.
 We kept four habits.
 
-\emph{We registered before we ran.}
-The pre-registration of E1 to E5 was committed before any counted run of them.
-It states hypotheses, direction, decision rules and the families for Holm correction.
+\emph{We specified before we ran.}
+The plan is pre-specified, not pre-registered: the criteria for E1 to E5 were committed to the author's own timestamped development repository before any counted run of them, but not to an independent registry, so the timestamp is not independently verifiable.
+The plan states hypotheses, direction, decision rules and the families for Holm correction.
 For E3 it says what counts as a replication (Section~\ref{sec:replication}).
 Seeds 103 and 104 were added after a first look at seeds 42, 101 and 102.
 Seeds 105 to 107 (E3) were added after the five-seed analysis, so the +1.06 point result on five seeds is an interim look.
-E3 (seeds 105 to 107) was registered in commit 018276a before it ran.
+E3 (seeds 105 to 107) was specified in commit 018276a before it ran (Availability).
 
-\emph{We matched compute and tuned every arm.}
+\emph{We matched burst steps and tuned every arm.}
 Each rival gets D's burst steps.
 Each arm's burst learning rate is swept.
 The learning rate was the largest hidden factor we found (Section~\ref{sec:tuning}).
 
 \emph{We audited the raw data.}
-An independent pass re-derived the numbers from the stored event logs.
+An audit pass by the author's scripts, not an independent party, re-derived the numbers from the stored event logs.
 It checked 683 complete deployment lifetimes: 562 passed, 121 raised benign warnings, and none failed.
 It also corrected 53 wording errors in our own earlier report.
 We list the remaining provenance limits in the table.
@@ -348,7 +398,7 @@ We list the remaining provenance limits in the table.
 E3 did not replicate our best margin, and E1 could not be separated from D on final accuracy.
 A closed-loop extension was killed at 4\% noise.
 We found a failure mode of our own controller's gate after the verdicts were fixed, and we label that diagnosis post-hoc.
-A pre-registered variant of D, called D2 (D with an adaptive trigger that stops bursts earlier, about 1,220 against 1,470 steps), failed its main-test criterion, and D stays the controller.
+A pre-specified variant of D, called D2 (D with an adaptive trigger that stops bursts earlier, about 1,220 against 1,470 steps), failed its main-test criterion, and D stays the controller.
 D2 passed its calibrated-scenario criterion in 4 of 4 scenarios.
 Section~\ref{sec:results} reports each outcome as it came.
 
@@ -361,16 +411,16 @@ Section~\ref{sec:results} reports each outcome as it came.
 \toprule
 Control & What we did & Known limit \\
 \midrule
-Pre-registration & E1 to E5 (including E3) registered at commit 018276a (2026-10-14) before any counted run; decision rules fixed in advance
-& Earlier experiments (first-wave spectral work) were registered after nine runs; see companion paper (in preparation) \\
+Pre-specification & E1 to E5 (including E3) committed at 018276a (2026-10-14) before any counted run; decision rules fixed in advance
+& Author-timestamped, not independently registered; earlier experiments (first-wave spectral work) were specified after nine runs; see companion paper (in preparation) \\
 Sequential design & Seeds 103 and 104 added after a first look at seeds 42, 101 and 102; E3 adds seeds 105 to 107
 & The eight-seed test is a second look; its $p$ value is optimistic. D versus B-matched (5 seeds) was also extended after a first look. We print new seeds alone and pooled; B-matched has five seeds \\
-Equal compute & B-matched and C$'$-matched get D's exact steps ($\pm 1$) per seed
-& Compute, not write cycles; endurance is not costed \\
+Equal burst steps & B-matched and C$'$-matched get D's exact steps ($\pm 1$) per seed
+& Steps of the burst only: D's saliency, canary and BatchNorm-refit passes are not charged; rivals get D's step count in hindsight; write cycles and endurance are not costed \\
 Learning-rate tuning & Per-arm rate sweeps; D keeps the rate it was tuned at
-& ResNet-9 rates were picked on seed-42 \emph{test} accuracy; we print both picks (Table~\ref{tab:lr}). D has more settings (gate margin, plateau rule, priors, rate) than the matched rivals (rate only) \\
+& ResNet-9 rates were picked on seed-42 \emph{test} accuracy (5,000 images), and seed 42 is an evaluation seed; we print both picks (Table~\ref{tab:lr}). D has more settings (gate margin, plateau rule, priors, rate) than the matched rivals (rate only); matched arms were not re-swept at matched compute \\
 Raw-data audit & Numbers re-derived from event logs; fault-map hashes equal across arms within a seed
-& No run records its code commit (0 of 683); one snapshot commit, 32aa9ae, holds the code the runs used \\
+& No run records its code commit (0 of 683); one snapshot commit, 32aa9ae, holds the code the runs used (Availability) \\
 Fault-map pairing & Same seed, same hash across arms
 & The same seed gives different maps on different GPU models (9 of 9 multi-GPU buckets differ); seeds 103 and 104 ran on another GPU than 42 to 102 \\
 Noise floor & Rerun RMS 0.46 points; largest single difference 1.22
@@ -385,7 +435,7 @@ Failed replications and kills reported & E3 failure, E1 not distinguishable, clo
 \label{sec:fidelity}
 A simulator that gives the wrong answer for the right reasons is dangerous.
 Our simulator needed many fixes before its numbers meant anything.
-We keep the catalogue as a contribution, because other groups use similar tools.
+We publish the catalogue because other groups use similar tools.
 We report only entries with a stored measurement in Table~\ref{tab:bugs}.
 We found further errors in our development log, such as a training step that never reached the analog core and a backend whose forward pass ignored conductance.
 We do not report effect sizes for those, because a stored probe is still missing.
@@ -452,13 +502,14 @@ The test has eight seeds for D, C$'$-matched, E1, E2 and R1.
 B and B-matched have five seeds, because E3 did not run them on the three new seeds.
 Three groups of arms appear.
 Remap-only (R1) and the forward-only BatchNorm repair (E2) end at chance.
-B-matched, the equal-compute retraining-only arm, ends near 85 percent.
-D, C$'$-matched and the one-shot Liu-style arm (E1-last) end within 0.6 points of each other on the mean and are not distinguishable on 8 seeds (no equivalence test).
+B-matched, the equal-burst-step retraining-only arm, ends near 85 percent.
+D, C$'$-matched and the one-shot Liu-style arm (E1-last) end within 0.6 points of each other on the mean and are not distinguishable on 8 seeds (no equivalence test; the 95\% interval for D minus C$'$-matched is $-1.69$ to $+1.68$).
 
 D beats B-matched by 3.78 points (per seed +4.14, +3.52, +3.68, +4.46, +3.10; 5 seeds).
 The 95\% interval is +3.1 to +4.4.
-The Holm-adjusted $p$ is 0.0014, so the result is significant.
-This is a sequential design: we extended the seeds from 3 to 5 after a first look, so the label is optimistic.
+The Holm-adjusted $p$ is 0.0014 (raw paired-$t$ $p=9.2\times10^{-5}$), so the result is significant.
+This is a sequential design: we looked at 3 seeds, then extended to 5, and no alpha-spending was planned, so the label is optimistic.
+As a check, splitting 0.05 evenly over the two looks (0.025 each) leaves both the raw and the Holm-adjusted $p$ below the threshold; the family itself is listed in the appendix and also fixes how much the Holm adjustment costs.
 Without seed 42, the seed where rates were picked, the gap is 3.69 in 4 of 4 seeds.
 On these five seeds D ends at 88.50 percent, B-matched at 84.72, and the fault-free chip at 88.92.
 This is a five-seed result: B-matched was not run on seeds 105 to 107.
@@ -470,13 +521,13 @@ That contrast compares spares and remap with retraining only, so it does not iso
 \begin{figure}[t]
 \centering
 \figorbox{figs/fig3_main.pdf}{\columnwidth}{2.1in}
-\caption{Final test accuracy per arm after the last wave (ResNet-9, CIFAR-10, three waves of 10\%, 15\% spares, oracle map). Each marker is one seed; the black bar is the mean. Eight seeds (42, 101--107) for D, C$'$-matched, E1, E2 and R1; five seeds (42, 101--104) for B and B-matched; three for R0. Means: D 86.64, C$'$-matched 86.64, E1-last 86.08, B-matched 84.72, E2 10.58. Notice that D and C$'$-matched have the same mean, and that the two low D seeds (105, 106) are the ones that pull D down. The axis is broken between 30 and 79.}
+\caption{Final test accuracy per arm after the last wave (ResNet-9, CIFAR-10, three waves of 10\%, 15\% spares, oracle map). Each marker is one seed; the black bar is the mean. Eight seeds (42, 101--107) for D, C$'$-matched, E1, E2 and R1; five seeds (42, 101--104) for B and B-matched; three for R0. Means: D 86.64, C$'$-matched 86.64, E1-last 86.08, B-matched 84.72, E2 10.58. Notice that D and C$'$-matched have the same mean, and that the two low D seeds (105, 106) are the ones that pull D down. The vertical axis is broken between 30 and 79, so the vertical distance between the low group and the high group is not to scale.}
 \label{fig:main}
 \end{figure}
 
 \begin{table*}[t]
 \centering
-\caption{Main paired contrasts, ResNet-9, CIFAR-10, 15\% spares (final accuracy, points, unless marked lifetime). Per-seed values follow seed order 42, 101, 102, 103, 104 (and 105, 106, 107 where $n=8$). Fam.\ is the Holm family: H (headline, 15), E (reviewer baselines, 4), S (exploratory, 64). Holm $p$ is within that family. Rows in family S are exploratory, so ``significant'' there is not a headline claim. D $-$ B-matched is a sequential design (seeds extended from 3 to 5 after a first look). The two lifetime rows are exploratory and not pre-registered; their $p$ values are unadjusted. Status follows Section~\ref{sec:methodology}. Wins count seeds where the first arm is ahead.}
+\caption{Main paired contrasts, ResNet-9, CIFAR-10, 15\% spares (final accuracy, points, unless marked lifetime). Per-seed values follow seed order 42, 101, 102, 103, 104 (and 105, 106, 107 where $n=8$). Fam.\ is the Holm family: H (headline, 15), E (reviewer baselines, 4), S (exploratory, 64). Holm $p$ is within that family. Rows in family S are exploratory, so ``significant'' there is not a headline claim. D $-$ B-matched is a sequential design (seeds extended from 3 to 5 after a first look). The two lifetime rows are exploratory and not pre-specified; their $p$ values are unadjusted. Status follows Section~\ref{sec:methodology}. Wins count seeds where the first arm is ahead. The 95\% interval (paired $t$) for D $-$ C$'$-matched, all seeds, is $-1.69$ to $+1.68$; the 0.056 for the first five seeds is the Holm value in family H with that contrast at $n=5$ in place of $n=8$.}
 \label{tab:main}
 \small
 \begin{tabular}{p{3.0cm}p{0.4cm}p{0.95cm}p{4.6cm}p{1.35cm}p{0.55cm}p{1.15cm}p{2.3cm}}
@@ -493,13 +544,13 @@ E2 $-$ R1 & 8 & +0.67 & +0.40, $-$2.18, +0.94, $-$0.02, +3.04, +0.36, +3.38, $-$
 E1-last $-$ R1 & 8 & +76.18 & --- & 8/8 & E & $<$0.001 & significant \\
 C$'$-matched $-$ B-matched & 5 & +2.72 & +2.86, +3.08, +2.50, +2.94, +2.22 & 5/5 & S & 0.004 & significant (exploratory family) \\
 D $-$ R1 & 5 & +78.77 & --- & 5/5 & S & $<$0.001 & significant (exploratory family) \\
-E1-last $-$ D, lifetime & 8 & $-$24.02 & $-$25.37, $-$25.15, $-$24.53, $-$23.21, $-$24.06, $-$22.67, $-$21.79, $-$25.35 & 0/8 (E1 ahead) & S & unadj.\ $3\times10^{-10}$ & exploratory; not pre-registered \\
-E2 $-$ D, lifetime & 8 & $-$47.02 & $-$49.56, $-$48.59, $-$46.79, $-$48.21, $-$46.29, $-$44.25, $-$42.46, $-$50.01 & 0/8 (E2 ahead) & S & unadj.\ $3\times10^{-10}$ & exploratory; not pre-registered \\
+E1-last $-$ D, lifetime & 8 & $-$24.02 & $-$25.37, $-$25.15, $-$24.53, $-$23.21, $-$24.06, $-$22.67, $-$21.79, $-$25.35 & 0/8 (E1 ahead) & S & unadj.\ $3\times10^{-10}$ & exploratory; not pre-specified \\
+E2 $-$ D, lifetime & 8 & $-$47.02 & $-$49.56, $-$48.59, $-$46.79, $-$48.21, $-$46.29, $-$44.25, $-$42.46, $-$50.01 & 0/8 (E2 ahead) & S & unadj.\ $3\times10^{-10}$ & exploratory; not pre-specified \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-\subsection{Tuning and compute explain most of the first headline}
+\subsection{Tuning and burst steps explain most of the first headline}
 \label{sec:tuning}
 Our first draft reported D 83.3 against C$'$ 49.3 and B 38.6.
 The burst learning rate was at the edge of the calibration grid for B and C$'$.
@@ -507,7 +558,7 @@ At the tuned rate, B rises from 38.59 to 83.32 (+44.73, 3 of 3 seeds, Holm 0.003
 C$'$ rises from 49.30 to 84.31 (+35.01), and D from 83.33 to 88.52 (+5.19).
 The lead of D over C$'$ shrinks from 34.03 points (old rate, unmatched), to 4.21 (tuned, unmatched), to 0.97 (tuned and step-matched, 3 seeds) and 1.06 (5 seeds).
 On eight seeds it is $-0.005$.
-Compute matching and tuning changed the conclusion at every step.
+Burst-step matching and tuning changed the conclusion at every step.
 Figure~\ref{fig:tuning} shows the arms before and after tuning.
 The same pattern holds on VGG6 and ViT-tiny, where tuning gains for B are +44.56 and +24.17 points.
 
@@ -526,7 +577,8 @@ The test pick helped the baselines, not D.
 D has more settings than the matched rivals, which have only a learning rate: a gate margin, a plateau rule and priors (taken from one seed's checkpoint).
 This favors D, so the lack of an edge over the rivals is not due to an under-tuned D.
 VGG6 and ViT-tiny rates were picked on canary accuracy only.
-Matched arms exist only at rate 0.5, so the canary-picked matched gaps are projections: D minus B-matched shifts by at most +0.45, and D minus C$'$-matched by +0.05.
+Matched arms exist only at rate 0.5, taken from the sweep of the unmatched arms; the rate was not re-swept at matched compute, which may favor or disfavor either side.
+So the canary-picked matched gaps are projections: D minus B-matched shifts by at most +0.45, and D minus C$'$-matched by +0.05.
 
 \begin{table}[t]
 \centering
@@ -544,7 +596,7 @@ D & 0.3 & 0.3 & 0.00 \\
 \end{tabular}
 \end{table}
 
-\subsection{The matched rival: pre-registered replication}
+\subsection{The matched rival: pre-specified replication}
 \label{sec:replication}
 The strongest fair rival is C$'$-matched.
 It has living spares and D's burst steps.
@@ -553,8 +605,8 @@ The Holm-adjusted $p$ was 0.056, so we labelled the result consistent, not signi
 We also did not quote the sign test, because seeds 103 and 104 were added after our first look.
 That interim result is the reason we planned E3.
 
-E3 is a pre-registered replication on three new seeds, 105 to 107.
-The rules were fixed before the runs (commit 018276a).
+E3 is a pre-specified replication on three new seeds, 105 to 107.
+The rules were fixed before the runs (Section~\ref{sec:honest}).
 \emph{Success} needs a positive mean, at least 7 of 8 seeds ahead, a Holm $p$ below 0.05, and all three new seeds ahead.
 \emph{Failure} is a mean below +0.5 or at most 5 of 8 seeds ahead.
 The outcome is a failure.
@@ -567,16 +619,21 @@ First, the +1.06 lead is not a claim of this paper, and we do not call it replic
 The five seeds that showed it were the seeds that prompted E3, so the estimate was likely too high.
 Second, the defensible headline against matched rivals is no detectable difference on 8 seeds, not a proven tie.
 We ran no equivalence test.
+The 95\% interval for D minus C$'$-matched is $-1.69$ to $+1.68$ points (paired $t$, $n=8$, SD 2.01; recomputed from the per-seed differences in Table~\ref{tab:main}).
+So a deficit or a lead of up to about 1.7 points cannot be excluded.
+Even the 90\% interval used for a two-one-sided test ($\pm1.35$) is wider than a 1-point margin, so equivalence at 1 point is not shown.
 The mean of $-0.005$ mixes two groups: D is ahead on 6 of 8 seeds by 0.44 to 1.52 points, and behind by 3.12 and 3.32 points on the 2 seeds where the gate skipped a burst.
+That pattern fits ``no edge'' and fits ``D is ahead unless its gate fails'' about equally, and we cannot tell them apart.
 Third, the E3 test is a sequential design with an interim look: three seeds were added after a five-seed analysis.
 Any $p$ value from the eight-seed set is optimistic, so we print the new seeds alone and the pooled set.
 The fix for the gate (a fixed pre-deployment reference) is untested, so we can neither claim that D works when fixed nor dismiss it.
 Recomputing the Holm family with the eight-seed contrast leaves the D versus B-matched result significant ($p=0.0014$).
+Seeds 105 to 107 were run on separate hardware batches from seeds 42 to 102, and the same seed gives different fault maps on different GPU models; the GPU model is not recorded in the stored run metadata, so we cannot say whether the two failing seeds share a machine or a fault-map family with each other or differ from the other six.
 
 \begin{figure}[t]
 \centering
 \figorbox{figs/fig6_replication.pdf}{\columnwidth}{2.1in}
-\caption{Per-seed difference D minus C$'$-matched in final accuracy, all eight seeds. The five original seeds (42, 101--104) gave +1.28, +0.44, +1.18, +1.52, +0.88 (mean +1.06). The three pre-registered new seeds (105, 106, 107; E3) gave $-3.12$, $-3.32$, +1.10 (mean $-1.78$). The eight-seed mean is $-0.005$, with D ahead on 6 of 8 seeds. The numbers under each seed are D's burst steps (1475, 1500, 1375, 1500, 1500, 775, 700, 1500). Notice that the two strongly negative new seeds are the low-step ones.}
+\caption{Per-seed difference D minus C$'$-matched in final accuracy, all eight seeds. The five original seeds (42, 101--104) gave +1.28, +0.44, +1.18, +1.52, +0.88 (mean +1.06). The three pre-specified new seeds (105, 106, 107; E3) gave $-3.12$, $-3.32$, +1.10 (mean $-1.78$). The eight-seed mean is $-0.005$, with D ahead on 6 of 8 seeds. The numbers under each seed are D's burst steps (1475, 1500, 1375, 1500, 1500, 775, 700, 1500). Notice that the two strongly negative new seeds are the low-step ones.}
 \label{fig:replication}
 \end{figure}
 
@@ -586,13 +643,13 @@ Reviewers will ask two questions.
 Does the closest prior art, adapted to waves, match D?
 Does a forward-only BatchNorm repair already recover most of the gain?
 E1 and E2 answer them.
-Their rules were registered before the runs.
+Their rules were specified before the runs.
 
 \emph{E1 is not distinguishable from D on final accuracy.}
 E1 runs one Liu-style burst at the last wave, with a greedy saliency-ordered remap each wave.
 Its burst has D's step count and a rate of 0.5 from an earlier plateau; we did not re-sweep it.
 E1-last minus D is $-0.55$ points over eight seeds (D ahead on 6 of 8; E1 ahead on seeds 105 and 106), Holm $p=0.66$.
-The pre-registered label is mixed: D and E1 cannot be told apart on 8 seeds, and we ran no equivalence test.
+The pre-specified label is mixed: D and E1 cannot be told apart on 8 seeds, and we ran no equivalence test.
 The result is heterogeneous: D is ahead on 6 seeds by 0.88 to 2.06 points, and E1 is ahead by 2.02 and 2.82 points on seeds 105 and 106, where D's gate skipped a burst.
 E1 is far above remap-only (+76.18, 8 of 8 seeds, significant), so the sanity check passes.
 A single burst at the first wave (E1-first) collapses once later waves arrive: finals are 10.08 to 27.88 percent, and the mean is 68.11 points below D (0 of 8 seeds).
@@ -601,16 +658,16 @@ On final accuracy, a simple one-shot retrain at D's compute is not distinguishab
 It does not say that E1 is the better design: E1 has no repair between waves, and it ran with a rate that was not swept.
 
 \emph{E1 does not serve through life.}
-Final accuracy is the registered measure for E1, but a deployed chip must serve between waves.
+Final accuracy is the pre-specified measure for E1, but a deployed chip must serve between waves.
 We therefore computed lifetime accuracy (mean of the three per-wave accuracies) for E1-last and E2 on the same runs.
-This analysis is exploratory, not pre-registered, and in family S.
+This analysis is exploratory, not pre-specified, and in family S.
 E1-last minus D is $-24.02$ points over 8 seeds (D ahead on 8 of 8).
 E2 minus D is $-47.02$ points (D ahead on 8 of 8).
 The mechanism is plain.
 E1 repairs wave 0 by greedy remap, then the pool is empty, and with no retraining before the last wave it serves at 10 to 17 percent after wave 1.
 Its single last-wave burst brings it back to 83.3 to 87.7 percent.
 This gap is close to by construction for a one-shot method, and we do not read it as D beating Liu's method.
-C$'$-matched also retrains in service, and it is not distinguishable from D on lifetime ($-0.17$, mixed; Section~\ref{sec:spares}).
+C$'$-matched also retrains in service, and it is not significantly different from D on lifetime: D minus C$'$-matched is $-0.70$ points over 8 seeds (95\% interval $-1.59$ to $+0.19$; D ahead on 2 of 8, mixed; Section~\ref{sec:spares}), carried mostly by seeds 105 and 106 ($-1.93$, $-2.77$) where D's gate skipped a burst.
 The lesson is that one terminal retrain matches D on the final number but not on service through life.
 
 \emph{E2 stays at chance when the spare pool is exhausted.}
@@ -621,7 +678,7 @@ Then the spares run out and accuracy falls.
 The eight finals range from 8.58 to 13.64 percent, with a mean of 10.58.
 E2 minus D is $-76.06$ points (0 of 8 seeds, negative).
 E2 minus R1 is +0.67 (5 of 8 seeds, Holm $p=0.66$, mixed): BatchNorm statistics alone do not repair the collapse.
-The pre-registered rule says that if E2 came within 2 points of D, we must withdraw the claim that bursts are needed.
+The pre-specified rule says that if E2 came within 2 points of D, we must withdraw the claim that bursts are needed.
 E2 is far outside that range, so the claim stands: burst retraining is required in this scenario.
 E2 ran at 27.1\% cumulative faults and 15\% spares, where remap-only is also at chance because the pool runs out.
 We therefore claim only that BatchNorm refit does not rescue a chip whose spare pool is exhausted (the tested regime).
@@ -640,16 +697,16 @@ The reference moves down after a weak burst, so the bar moves down with it.
 We read this as a reference-drift failure mode, seen in 2 of 8 seeds, and report it as a limitation.
 C$'$-matched (fixed burst length, no gate) and E1 (one fixed burst) are not exposed to it.
 D's under-spending also gave the step-matched rivals fewer steps on those seeds, yet they finished 2.0 to 3.3 points higher.
-The causal reading is a judgment from one trace per seed, not a registered test.
-A gate that measures against the pre-deployment canary would be a new design, and it needs its own pre-registered test.
+The causal reading is a judgment from one trace per seed, not a pre-specified test.
+A gate that measures against the pre-deployment canary would be a new design, and it needs its own pre-specified test.
 We did not run it, so the gate fix is untested.
 
 \subsection{The overwrite effect}
 \label{sec:overwrite}
 At the old burst rate (0.005), living spares gained 2.48 points over frozen references (46.82 against 49.30 percent; 3 of 3 seeds; Figure~\ref{fig:overwrite}).
 Both arms ended at 47 to 49 percent there, so that rate barely worked, and we report the number only as an old-rate result that is superseded.
-We then ran a pre-registered control at the tuned rate (0.5; 3 seeds; on a different GPU, with fault maps identical across arms within a seed).
-Living minus frozen final accuracy is $+0.03$ points (per seed $+0.08$, $0.00$, $0.00$), which is noise-level, and the pre-registered decision was NOT SUPPORTED.
+We then ran a pre-specified control at the tuned rate (0.5; 3 seeds; on a different GPU, with fault maps identical across arms within a seed).
+Living minus frozen final accuracy is $+0.03$ points (per seed $+0.08$, $0.00$, $0.00$), which is noise-level, and the pre-specified decision was NOT SUPPORTED.
 A third arm that starts the spare from its original value also lies within noise.
 The lifetime mean accuracy is $0.31$ points lower for living spares, on 3 of 3 seeds.
 Frozen ran 0.42 to 0.96 points above living after the first wave, and the last burst brought the arms together.
@@ -658,7 +715,7 @@ The design also cannot test the case it is about.
 In the capacity policy, every remap happens before the first retraining burst, so the value at fault of each remapped cell equals its original programmed value.
 The C versus C$'$ contrast (old and new rate) therefore compares only a pinned spare with a trainable one; it never tests overwriting learned compensation.
 Only D remaps after retraining, and it has no isolated ablation of that step.
-This result fits the paper's main thesis: a tuned, matched comparison erased an apparent gain, here the living-spares gain, as it erased D's lead.
+This result fits the paper's main thesis: a tuned comparison removed an apparent gain, here the living-spares gain, as it removed D's lead over the matched rival.
 The stuck-weight freeze has no isolated measurement for quantized devices.
 
 \begin{figure}[t]
@@ -694,12 +751,12 @@ Figure~\ref{fig:lifetime} shows accuracy after each wave.
 On the five original seeds, D serves 86.09, 87.44 and 88.50 percent after waves 1, 2 and 3.
 C$'$-matched serves 88.92, 86.18 and 87.44.
 D's lead over C$'$-matched on those seeds exists only at end of life, and it did not replicate (Section~\ref{sec:replication}).
-Averaged over the lifetime, D minus C$'$-matched is $-0.17$ points (2 of 5 seeds, mixed).
+Averaged over the lifetime, D minus C$'$-matched is $-0.17$ points on these five seeds (2 of 5 seeds, mixed) and $-0.70$ points over all eight seeds (95\% interval $-1.59$ to $+0.19$; D ahead on 2 of 8, mixed), because D's gate skipped a burst on seeds 105 and 106 ($-1.93$, $-2.77$).
 D minus B-matched is +4.32 points (5 of 5 seeds, Holm 0.0027, significant).
 Pacing holds spares back, so D misses the strict clean-minus-2 floor after wave 1 in all five seeds.
-In an ablation with equal steps, pacing adds about 0.7 points (3 seeds, consistent, confounded: the ablated arm fires two fixed bursts and D fires three adaptive ones).
-After the E3 result we do not read this as an accuracy gain of pacing or gating over step-matched baselines.
-Pacing is a lifetime trade-off: it lowers early accuracy and does not raise final accuracy over a matched rival.
+In an ablation with equal steps, pacing adds about 0.7 points (3 seeds, consistent but Holm $p=1$, confounded: the ablated arm fires two fixed bursts and D fires three adaptive ones).
+After the E3 result we do not read this as an accuracy gain of pacing or gating over step-matched baselines, with the caveat that the gate tested is the drift-prone one.
+Pacing is a lifetime trade-off: it lowers early accuracy and did not raise final accuracy over a matched rival as implemented.
 
 \begin{figure}[t]
 \centering
@@ -712,12 +769,12 @@ Pacing is a lifetime trade-off: it lowers early accuracy and does not raise fina
 \subsection{Several designs, the same final accuracy: what each costs}
 \label{sec:tradeoffs}
 Table~\ref{tab:tradeoffs} puts the designs that reach about the same final accuracy side by side.
-Matching D on final accuracy is itself a result: it tells a reader that the choice can be made on cost, not on a margin we could not show.
+Matching D on final accuracy within our resolution (about 1.7 points on the matched rival) is itself a result: it tells a reader that the choice can be made on cost, not on a margin we could not show.
 The rows differ in what they need and in how they fail, not in a ranking.
 
 \begin{table*}[t]
 \centering
-\caption{Designs that reach the same final accuracy at matched compute, and what each costs (ResNet-9, CIFAR-10, three waves of 10\%, 15\% spares). Final accuracy is the mean over $n$ seeds, in percent. Lifetime is the mean over the three per-wave accuracies, given as the arm minus D in points; the E1-last row is exploratory and not pre-registered. ``Settings'' lists the choices a user must make, as our implementation exposes them; it is a qualitative list, not a measured quantity. This is a comparison of costs and failure modes, not a ranking.}
+\caption{Designs that reach the same final accuracy at matched burst steps, and what each costs (ResNet-9, CIFAR-10, three waves of 10\%, 15\% spares). Final accuracy is the mean over $n$ seeds, in percent. Lifetime is the mean over the three per-wave accuracies, given as the arm minus D in points; the E1-last row is exploratory and not pre-specified. ``Settings'' lists the choices a user must make, as our implementation exposes them; it is a qualitative list, not a measured quantity. This is a comparison of costs and failure modes, not a ranking.}
 \label{tab:tradeoffs}
 \footnotesize
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{1.55cm}>{\raggedright\arraybackslash}p{0.95cm}>{\raggedright\arraybackslash}p{1.45cm}>{\raggedright\arraybackslash}p{0.9cm}>{\raggedright\arraybackslash}p{1.2cm}>{\raggedright\arraybackslash}p{2.4cm}>{\raggedright\arraybackslash}p{2.2cm}>{\raggedright\arraybackslash}p{4.3cm}@{}}
@@ -725,7 +782,7 @@ The rows differ in what they need and in how they fail, not in a ranking.
 Design & Final acc. ($n$) & Lifetime vs D & Spares? & Canary / held-out set? & Settings to tune & When it retrains & Known failure mode \\
 \midrule
 D (controller) & 86.64 (8) & --- & Yes, living & Yes (gate and plateau stop) & Several: burst rate, gate threshold, plateau rule, expected waves, BN batches & After a wave, in an adaptive burst, if the canary drops & Gate reference drifted and skipped a needed burst on 2 of 8 seeds (about 3 points behind on those) \\
-C$'$-matched (capacity trigger) & 86.64 (8) & +0.17 ($n=5$, mixed) & Yes, living & No & Burst rate and burst length (set to D's step budget) & In a fixed burst when a wave overflows the spare pool & None observed in the main test; living spares gave +0.03 over frozen at the tuned rate (noise-level) \\
+C$'$-matched (capacity trigger) & 86.64 (8) & +0.70 ($n=8$; D ahead on 2 of 8) & Yes, living & No & Burst rate and burst length (set to D's step budget) & In a fixed burst when a wave overflows the spare pool & None observed in the main test; living spares gave +0.03 over frozen at the tuned rate (noise-level) \\
 E1-last (one Liu-style retrain) & 86.08 (8) & $-24.02$ ($n=8$) & Yes & No & Burst rate and length; which wave & Once, at the last wave & Serves at 10--17\% between waves once the pool is empty; D ahead on 6 of 8 seeds, not distinguishable \\
 B-matched (retrain only) & 84.72 (5) & $-4.32$ ($n=5$) & No & No & Burst rate and length & After every wave, fixed burst & 3.78 points below D (5 of 5 seeds); not re-run on seeds 105--107 \\
 R1 (remap only) & 9.90 (8) & Collapses after wave 1 & Yes & No & None & Never & At chance once the pool is exhausted (E2, a BatchNorm refit, does too: 10.58) \\
@@ -736,15 +793,17 @@ R1 (remap only) & 9.90 (8) & Collapses after wave 1 & Yes & No & None & Never & 
 Which design to choose depends on what the deployment can afford.
 If only final accuracy matters, the simplest design that matches D is C$'$-matched: it needs no canary set and no gate, and it is not exposed to the gate drift we found.
 One terminal retrain (E1-last) is enough only if accuracy in service between waves does not matter, because it serves at 10--17 percent until the last wave.
-If the lifetime curve matters, retraining in service is needed, and C$'$-matched and D are not distinguishable on it.
+If the lifetime curve matters, retraining in service is needed; C$'$-matched is 0.70 points higher than D on lifetime over 8 seeds (interval $-1.59$ to $+0.19$ for D minus C$'$-matched), so the two are not significantly different on it.
 Spares together with in-service retraining are the necessary core: retraining alone ends 3.78 points lower, and remap alone ends at chance once the pool is exhausted.
-What D adds is a canary-driven trigger and paced spare use, and at matched compute we did not measure that they buy accuracy; the gate also has the drift failure mode above.
+What D adds is a canary-driven trigger and paced spare use, and at matched burst steps we did not measure that they buy accuracy; the gate also has the drift failure mode above.
 
 \subsection{Other networks, fault patterns and stress cases}
 \label{sec:stress}
 Table~\ref{tab:other} lists the other settings.
 These rows are separate three- or five-seed runs.
-They are not a general edge over C$'$-matched, and the E3 result applies to all of them.
+E3 was run only on the default ResNet-9 setting, so the eight-seed result does not by itself cover these rows.
+A three-seed row cannot be significant under our rule ($n\ge5$ and all seeds in one direction), so these rows are not evidence of absence of an edge; they are also too few seeds to establish one.
+Against C$'$-matched, D is ahead on 3 of 3 seeds in 7 of the 10 three-seed rows (all except 5\% spares, six small waves and calibrated drift at 5\% spares), and behind or mixed on VGG6 and in S4.
 On CIFAR-100, D's gap over the best C$'$-matched rate is +7.16 points (3 of 3 seeds, indicative); the rates were picked on test accuracy of seed 42, and the C$'$ rate sweep may overstate the gap.
 On realistic fault models (Weibull timing, stuck-at plus drift, line faults), the gaps are +0.94, +1.11 and +0.73 points (3 of 3 seeds each, consistent).
 On ViT-tiny the gap is mixed (+1.50, 4 of 5 seeds).
@@ -756,7 +815,7 @@ On hardware-calibrated scenarios (S4, small steady drift), D trails B-matched by
 We believe, but have not tested, that the canary gate and plateau stop end bursts too early under small steady drift.
 The seed 105 and 106 traces point to the same family of failure (Section~\ref{sec:gate}).
 The drift size and timing in S4 are our assumptions and drive the result.
-The D2 variant (an adaptive trigger that stops bursts earlier), written down before any run, addressed this.
+The D2 variant (an adaptive trigger that stops bursts earlier), specified before any run, addressed this.
 It passed its calibrated-scenario criterion in 4 of 4 scenarios and failed its main-test criterion, so D stays the controller.
 
 \begin{table*}[t]
@@ -786,7 +845,7 @@ Calibrated drift S4b, 5\% spares & 3 & $-$4.95 (0/3) & $-$3.54 (0/3) & negative 
 \end{table*}
 
 \subsection{What the parts contribute}
-We ablated D's parts (3 seeds).
+We ablated D's parts (3 seeds; no row can be significant).
 Importance ranking beats random order by 1.65 to 1.73 points, consistent.
 Ranking is prior art and a design choice here.
 Fisher saliency is no better than weight magnitude (+0.00 and +0.29, mixed).
@@ -799,16 +858,16 @@ The part that carries weight in our evidence is the retraining bursts (Section~\
 \label{sec:closedloop}
 All main results use an oracle fault map.
 We replaced it with a map estimated from counted, noisy probe reads.
-The estimator and its registered tests belong to the companion paper (in preparation).
+The estimator and its pre-specified tests belong to the companion paper (in preparation).
 Here we use it as a black box.
 It reads each 256 by 256 tile with random $\pm 1$ probes, decodes a sparse set of stuck cells, and falls back to a full readout when decoding hits a cap.
 We ran D on the estimated map and on the oracle map with the same seed and the same fault realization (42 pairs, equal fault-map hashes).
-Registered bars were non-inferiority at $-1.0$ points (dense) and $-0.5$ points (sparse).
+Pre-specified bars were non-inferiority at $-1.0$ points (dense) and $-0.5$ points (sparse).
 
 At 2\% read noise, we define the gap as D on the estimated map minus D on the oracle map.
 The mean gap is $-0.04$ points in a dense regime and $-0.07$ in a sparse regime (5 seeds each; ranges $-0.42$ to $+0.24$ and $-0.24$ to $+0.02$).
-Both are above the registered bars of $-1.0$ and $-0.5$ points.
-On the 3-seed registered run, the largest per-seed gap is 0.24 points.
+Both are above the pre-specified bars of $-1.0$ and $-0.5$ points.
+On the 3-seed pre-specified run, the largest per-seed gap is 0.24 points.
 One identical oracle rerun differed by 0.24 points, and rerun noise elsewhere has an RMS of 0.46 points, so we cannot separate these gaps from noise.
 This is not an equivalence test.
 
@@ -816,7 +875,7 @@ Three limits apply.
 First, the dense regime is a full-readout fallback in 99\% of tiles, at 1.12 times the reads of a full readout.
 It shows that a measured map suffices, not that probing localizes.
 Only the sparse regime tests probing.
-Second, the registered reads bar (at most 0.25 of a full readout on every seed) held on the 3-seed run.
+Second, the pre-specified reads bar (at most 0.25 of a full readout on every seed) held on the 3-seed run.
 On five seeds, one seed used 0.2525, so that clause was not met.
 Third, at 4\% noise the sparse extension was killed: the worst-wave recall of new stuck cells was 0.853 to 0.894 against a bar of 0.90.
 Accuracy still held (+0.06 points sparse, +0.30 dense).
@@ -831,19 +890,21 @@ It addresses the oracle-map objection only within that scope.
 \subsection{What the evidence supports}
 The evidence supports four statements.
 First, a remap that restores a frozen reference can erase learned compensation.
-At the tuned rate, living spares showed no measurable accuracy effect (+0.03 points, 3 seeds, pre-registered, NOT SUPPORTED); the earlier +2.48 was an old-rate artefact, and our design cannot test remap after retraining.
+At the tuned rate, living spares showed no measurable accuracy effect (+0.03 points, 3 seeds, pre-specified, NOT SUPPORTED); the earlier +2.48 was an old-rate artefact, and our design cannot test remap after retraining.
 Second, retraining is needed once the pool is exhausted.
 A forward-only BatchNorm refit stays at chance on 8 of 8 seeds, 76.06 points below D, in the tested regime only.
-Third, at equal burst compute and a tuned rate, D beats retraining-only by 3.78 points, significant after Holm correction on five seeds (a sequential design: seeds were extended from 3 to 5 after a first look).
-Fourth, D is not distinguishable from the best matched living-spares rival (eight seeds, mean $-0.005$) or from a one-shot Liu-style retrain at D's compute ($-0.55$, Holm $p=0.66$) on final accuracy; we ran no equivalence test, and the result is heterogeneous (D ahead on 6 of 8 seeds, behind by about 3 points on 2).
+Third, at equal burst steps and a tuned rate, D beats retraining-only by 3.78 points, significant after Holm correction on five seeds (a sequential design: seeds were extended from 3 to 5 after a first look).
+Fourth, on default ResNet-9, D is not distinguishable from the best matched living-spares rival (eight seeds, mean $-0.005$, 95\% CI $-1.69$ to $+1.68$) or from a one-shot Liu-style retrain at D's compute ($-0.55$, Holm $p=0.66$) on final accuracy; we ran no equivalence test, and the result is heterogeneous (D ahead on 6 of 8 seeds, behind by about 3 points on 2).
 The one-shot retrain serves far below D through life (exploratory, $-24.02$ points over 8 seeds).
-These statements hold only in simulation.
+These statements hold only in simulation, for one controller, one network and one fault model; E3 was run only on default ResNet-9.
+In other settings D is ahead of the matched rival on 3 of 3 seeds in 7 of 10 three-seed rows, including CIFAR-100 (+7.16 points), but 3-seed rows cannot reach significance under our rule, so they neither support nor rule out an edge there.
 
-The most useful result for other groups may be the evaluation record.
-A 34-point lead fell to 4.2 points when we tuned the rival's rate, to 1.06 when we matched compute, and to $-0.005$ when a pre-registered replication added three seeds.
+The most useful result for other groups is the evaluation record.
+A 34-point lead fell to 4.2 points when we tuned the rival's rate, to 1.06 when we matched compute, and to $-0.005$ when a pre-specified replication added three seeds.
 The living-spares control points the same way: a gain of 2.48 points at an old rate vanished at the tuned rate.
-A repair controller needs a tuned, compute-matched baseline before its margin means anything.
-It also needs a replication, because our own five-seed result of +1.06 points did not survive one.
+For this controller, the margin was not interpretable until it had a tuned baseline at matched burst steps, and not trustworthy until a replication confirmed it: our own five-seed +1.06 points did not survive one.
+We recommend the same checks for any repair-controller claim.
+This is a recommendation from one measured case, not a measurement of other papers.
 
 \subsection{Why simple matched baselines are not distinguishable from the controller}
 We did not test why D is not distinguishable from them.
@@ -856,13 +917,16 @@ Practitioners can take one lesson: spend the retraining compute. Keeping learned
 
 \subsection{Limitations}
 \begin{itemize}
+\item \textbf{Scope.}
+The headline is a ResNet-9 / CIFAR-10 result for one controller.
+Other networks and fault patterns are 3- to 5-seed runs, E3 was not repeated on them, and D is ahead of the matched rival in several of them.
 \item \textbf{Simulation only.}
 Every result is from one simulator (CrossSim) with stuck-at faults injected by us.
 There is no device measurement.
 Main runs have no read noise, programming error or drift.
 The total stuck rate and the HRS to LRS mix in S4 come from one second-hand report; timing is assumed.
-\item \textbf{No controller margin over matched rivals.}
-D has no measured margin over C$'$-matched (eight seeds, mean $-0.005$, Holm $p=1.0$) or over E1-last (Holm $p=0.66$) on final accuracy.
+\item \textbf{No measured controller margin over matched rivals on the default setting.}
+D has no measured margin over C$'$-matched (eight seeds, mean $-0.005$, 95\% CI $-1.69$ to $+1.68$, Holm $p=1.0$) or over E1-last (Holm $p=0.66$) on final accuracy; effects of up to about 1.7 points either way are not excluded.
 We ran no equivalence test, and the results are heterogeneous (D ahead on 6 of 8 seeds, behind by about 3 points on the 2 gate-skip seeds).
 The five-seed +1.06 is an interim-look result that did not replicate.
 A single-seed gap under 1.22 points is within rerun noise.
@@ -875,6 +939,7 @@ A repaired gate (a fixed pre-deployment reference) was not tested.
 Canary-gated retraining and the plateau stop have prior art and no measured benefit at the tuned rate.
 \item \textbf{Sequential design.}
 Seeds 103 and 104 were added after a first look, and E3 added seeds 105 to 107 after a five-seed analysis.
+D versus B-matched was extended from 3 to 5 seeds after a first look, and its Holm value depends on the 15-member family H (appendix).
 \item \textbf{The network matters.}
 D's edge over C$'$-matched is mixed on VGG6 and ViT-tiny.
 CIFAR-100 and ViT-tiny have three and five seeds.
@@ -885,44 +950,88 @@ Closed loop at 2\% read noise narrows this; the 4\% extension was killed.
 \item \textbf{Controller inputs.}
 D needs the expected number of waves.
 Its priors came from one seed's checkpoint, and one priors file moved a single-seed result by 7.7 points.
-\item \textbf{Cost.}
-Retraining compute and write endurance are not costed; all matched arms spend the same compute.
+\item \textbf{Cost and compute matching.}
+Matching is on burst steps only. D's saliency, canary and BatchNorm-refit passes are not charged, rivals receive D's step count in hindsight, and the matched arms' rate (0.5) was not re-swept at matched compute.
+Write endurance is not costed.
 Labelled data must be available on the device or at the edge.
 \item \textbf{Baselines.}
 E1's burst rate was not re-swept.
 An earlier, simpler Liu-style reimplementation (remap, then plain retraining, rate swept) trailed D by 2.03 points on three seeds; it is not the faithful comparison and is not used as evidence. Its 0.3--0.5 rate plateau is only the source of E1's fixed rate.
 Retraining-free compensation schemes were not run.
 \item \textbf{Selection and provenance.}
-ResNet-9 rates were picked on test data (both picks printed).
+ResNet-9 rates were picked on test data of seed 42 (first 5,000 test images; both picks printed), and D's settings were developed on the first seeds, which are also evaluation seeds; no held-out seeds were used for tuning.
 D has more settings than the matched rivals, which have only a learning rate.
-Pooled seeds mix fault maps from two GPU models.
+Pooled seeds mix fault maps from two GPU models; seeds 103 to 104 and 105 to 107 ran as separate batches, the GPU model is not recorded in the stored run metadata, and a hardware effect on the two failing seeds (105, 106) cannot be ruled out.
 No run records its code commit, and one snapshot commit holds the code used.
 \end{itemize}
 
 \subsection{Next steps}
-A pre-registered test of a gate that measures against the pre-deployment canary would show whether the drift failure mode costs accuracy.
-We would also run B-matched on seeds 105 to 107 under a registered plan, sweep E1's burst rate, test the overwrite in a policy that remaps after retraining (the tuned-rate control is done), and run spare counts between 15 and 30\%.
+A pre-specified test of a gate that measures against the pre-deployment canary would show whether the drift failure mode costs accuracy.
+We would also run B-matched on seeds 105 to 107 under a pre-specified plan, sweep E1's burst rate, test the overwrite in a policy that remaps after retraining (the tuned-rate control is done), and run spare counts between 15 and 30\%.
 
 % =================================================================================================
 \section{Conclusion}
 \label{sec:conclusion}
-A chip that loses cells over its life spends a finite spare budget.
-We found, by code reading, that remapping to a frozen reference restores the original value over what retraining had learned.
-Living spares gave no measurable accuracy gain at the tuned rate (+0.03 points, 3 seeds, pre-registered; an earlier +2.48 at an old rate is superseded), and our design could not test remap after retraining.
-This agrees with the main finding: tuned, compute-matched baselines erase apparent gains.
-A forward-only BatchNorm refit does not rescue a chip whose spare pool is exhausted (the tested regime).
-At equal compute and tuned rates, our controller D beats retraining-only by 3.78 points, in 5 of 5 seeds, significant after Holm correction; the seeds were extended from 3 to 5 after a first look.
-D is not distinguishable from the matched living-spares rival or a one-shot Liu-style retrain on final accuracy (8 seeds, no equivalence test).
-The result is heterogeneous: D is ahead on 6 of 8 seeds and behind by about 3 points on the 2 seeds where its gate skipped a burst, and the gate fix is untested.
-The one-shot retrain serves far below D through life (exploratory, 8 seeds), so one terminal retrain matches D on the final number but not on service through life.
-At matched compute we found no accuracy gain from pacing or gating.
-The 34-point lead of our first draft shrank to zero under compute matching, tuning and a pre-registered replication.
-With a probe-estimated map at 2\% read noise, D stayed within the registered non-inferiority bars of its oracle-map accuracy (not an equivalence test), and D has no edge or trails on calibrated drift and with many small waves.
-The condensed catalogue of simulator errors may help other groups avoid the same ones.
+A repair controller's margin is only as credible as the baseline it beat.
+Ours looked 34.0 points ahead of a living-spares rival.
+Tuning the rival's learning rate left 4.2 points, matching its burst steps left 1.06, and a pre-specified eight-seed replication left $-0.005$ (95\% CI $-1.7$ to $+1.7$).
+Almost all of the apparent win came from an unfair baseline, and measuring that step by step is the contribution of this paper.
+
+What is real stays real.
+At equal burst steps and tuned rates, D beats retraining-only by 3.78 points in 5 of 5 seeds, significant after Holm correction.
+A forward-only BatchNorm refit does not rescue a chip whose spare pool is exhausted.
+Living spares match frozen-reference spares at the tuned rate (+0.03 points).
+On default ResNet-9, D is not distinguishable from the matched living-spares rival or from a one-shot Liu-style retrain on final accuracy, and it serves far better than the one-shot retrain through life; Section~\ref{sec:discussion} states every limit, including the untested gate fix.
+The simulator catalogue and the public code, runs and analysis let others re-derive each number and run the same control on their own controllers.
+Tuned, step-matched baselines and a replication are the price of a credible margin.
+
+% =================================================================================================
+\appendix[Members of Holm family H]
+\label{app:familyh}
+Table~\ref{tab:familyh} lists the 15 comparisons of the headline family H, taken from the stored statistics file.
+The statistics method, including this family definition, was written before any $p$-value was computed (results/derived/stats-final.md in the public repository, section 1, ``fixed before looking at any p-value''); this is the author's own record, not an independently timestamped one.
+The family contains D versus B-matched and D versus C$'$-matched on the main test, and thirteen further comparisons of D against C$'$-matched (best-rate C$'$ on CIFAR-100) in secondary settings, among them VGG6, which is included although it is not a win.
+Because the family is large, the Holm-adjusted $p$ of every member depends on the others.
+The main-test D versus C$'$-matched member uses all 8 seeds, replacing the 5-seed contrast of the first analysis.
+D versus B-matched was never run on seeds 105 to 107 and not on the stress settings.
+
+\begin{table}[t]
+\centering
+\caption{Holm family H (15 comparisons; final accuracy, points, paired $t$). Wins count seeds where D is ahead. Holm $p$ is within the family.}
+\label{tab:familyh}
+\footnotesize
+\begin{tabular}{@{}p{3.55cm}rrcr@{}}
+\toprule
+Contrast (D minus ...) & $n$ & Mean & Wins & Holm $p$ \\
+\midrule
+Main: B-matched & 5 & +3.78 & 5/5 & 0.0014 \\
+Main: C$'$-matched & 8 & $-$0.005 & 6/8 & 1.000 \\
+2\% spares: C$'$-m. & 3 & +0.49 & 3/3 & 0.247 \\
+5\% spares: C$'$-m. & 3 & +0.70 & 2/3 & 1.000 \\
+10\% spares: C$'$-m. & 3 & +2.33 & 3/3 & 0.325 \\
+15\% faults/wave: C$'$-m. & 3 & +2.69 & 3/3 & 0.325 \\
+20\% faults/wave: C$'$-m. & 3 & +1.35 & 3/3 & 0.255 \\
+25\% faults/wave: C$'$-m. & 3 & +2.14 & 3/3 & 0.065 \\
+Continuous regime: C$'$-m. & 3 & +1.29 & 3/3 & 0.515 \\
+CIFAR-100: best C$'$-m. & 3 & +7.16 & 3/3 & 0.024 \\
+VGG6: C$'$-m. & 5 & $-$0.52 & 3/5 & 1.000 \\
+ViT-tiny: C$'$-m. & 5 & +1.50 & 4/5 & 0.325 \\
+Weibull timing (S1): C$'$-m. & 3 & +0.94 & 3/3 & 0.515 \\
+Stuck-at plus drift (S2): C$'$-m. & 3 & +1.11 & 3/3 & 0.019 \\
+Line faults (S3): C$'$-m. & 3 & +0.73 & 3/3 & 0.515 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Under our rule (Holm below 0.05 and a one-sided sign test below 0.05, which needs $n\ge5$) none of the 3-seed rows can be called significant even when the Holm value is small (CIFAR-100, S2); they are labelled consistent, not significant.
+
+% =================================================================================================
+\section*{Use of AI tools}
+The author used generative AI tools (Claude) to assist with code and writing; the author takes full responsibility for the content.
 
 % =================================================================================================
 \section*{Availability}
-Code, configurations, raw run records and analysis scripts: \url{https://github.com/prateek1656/NeuroFault}. Commit identifiers cited in this paper refer to the author's timestamped development repository, available to reviewers on request.
+Code, configurations, raw run records and analysis scripts: \url{https://github.com/prateek1656/NeuroFault}. Commit identifiers cited in this paper (018276a, 32aa9ae) refer to the author's private, timestamped development repository, which is available to reviewers on request.
 
 % =================================================================================================
 \bibliographystyle{IEEEtran}

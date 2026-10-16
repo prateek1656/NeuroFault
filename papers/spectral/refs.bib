@@ -1,6 +1,4 @@
-% References for the spectral-diagnosis paper draft.
-% Metadata status is stated in each `note`. "abstract-only" or "verify" in a note means
-% not read in full or not checked against the publisher record before submission.
+% Verified copy of papers/spectral/refs.bib (2026-10-16). See REPORT.md.
 
 @article{joshi2020,
   author  = {Joshi, Vinay and Le Gallo, Manuel and Haefeli, Simon and Boybat, Irem and Nandakumar, S. R. and Piveteau, Christophe and Dazzi, Martino and Rajendran, Bipin and Sebastian, Abu and Eleftheriou, Evangelos},
@@ -9,8 +7,7 @@
   volume  = {11},
   pages   = {2473},
   year    = {2020},
-  doi     = {10.1038/s41467-020-16108-9},
-  note    = {Source of the GDC/AdaBS numbers quoted via the repo's research-02 notes; supplement not re-read}
+  doi     = {10.1038/s41467-020-16108-9}
 }
 
 @article{legallo2023,
@@ -18,11 +15,10 @@
   title   = {A 64-core mixed-signal in-memory compute chip based on phase-change memory for deep neural network inference},
   journal = {Nature Electronics},
   volume  = {6},
+  number  = {9},
   pages   = {680--693},
   year    = {2023},
-  doi     = {10.1038/s41928-023-01010-1},
-  number  = {9},
-  note    = {arXiv:2212.02872; drift section read in the repo's prior-art pass}
+  doi     = {10.1038/s41928-023-01010-1}
 }
 
 @article{legallo2018amp,
@@ -33,63 +29,68 @@
   number  = {10},
   pages   = {4304--4312},
   year    = {2018},
-  doi     = {10.1109/TED.2018.2865352},
-  note    = {Cited as the origin of global drift compensation (GDC) per the repo's notes; verify metadata, not re-read}
+  doi     = {10.1109/TED.2018.2865352}
 }
 
 @inproceedings{rasch2021,
   author    = {Rasch, Malte J. and Moreda, Diego and Gokmen, Tayfun and Le Gallo, Manuel and Carta, Fabio and Goldberg, Cindy and El Maghraoui, Kaoutar and Sebastian, Abu and Narayanan, Vijay},
   title     = {A flexible and fast {PyTorch} toolkit for simulating training and inference on analog crossbar arrays},
-  booktitle = {IEEE Int. Conf. on Artificial Intelligence Circuits and Systems (AICAS)},
+  booktitle = {Proc. IEEE Int. Conf. on Artificial Intelligence Circuits and Systems (AICAS)},
+  pages     = {1--4},
   year      = {2021},
-  note      = {arXiv:2104.02184 (AIHWKit); verify metadata}
+  doi       = {10.1109/AICAS51828.2021.9458494},
+  eprint    = {2104.02184},
+  archivePrefix = {arXiv}
 }
 
 @article{rasch2023,
   author  = {Rasch, Malte J. and Mackin, Charles and Le Gallo, Manuel and Chen, An and Fasoli, Andrea and Odermatt, Fr{\'e}d{\'e}ric and Li, Ning and Nandakumar, S. R. and Narayanan, Pritish and Tsai, Hsinyu and Burr, Geoffrey W. and Sebastian, Abu and Narayanan, Vijay},
   title   = {Hardware-aware training for large-scale and diverse deep learning inference workloads using in-memory computing-based accelerators},
   journal = {Nature Communications},
-  year    = {2023},
-  doi     = {10.1038/s41467-023-40770-4},
-  pages   = {5282},
   volume  = {14},
-  note    = {arXiv:2302.08469; current AIHWKit drift constants; verify volume/pages}
+  pages   = {5282},
+  year    = {2023},
+  doi     = {10.1038/s41467-023-40770-4}
 }
 
 @misc{weiroth2024,
   author       = {Wei, Hengjia and Roth, Ron M.},
-  title        = {Multiple-error-correcting codes for analog computing on resistive crossbars},
-  howpublished = {arXiv:2402.13503},
+  title        = {Multiple-Error-Correcting Codes for Analog Computing on Resistive Crossbars},
+  howpublished = {arXiv preprint arXiv:2402.13503},
   year         = {2024},
-  note         = {Full text read in the repo's prior-art pass}
+  eprint       = {2402.13503},
+  archivePrefix = {arXiv}
 }
 
 @inproceedings{neuralchecksums2024,
   author    = {Parrini, Luca and Soliman, Taha and Hettwer, Benjamin and Borrmann, Jan Micha and Singh, Simranjeet and Bende, Ankit and Rana, Vikas and Merchant, Farhad and Wehn, Norbert},
   title     = {Error Detection and Correction Codes for Safe In-Memory Computations},
-  booktitle = {IEEE European Test Symposium (ETS)},
+  booktitle = {Proc. IEEE European Test Symposium (ETS)},
+  pages     = {1--4},
   year      = {2024},
-  note      = {arXiv:2404.09818; ``Neural Checksums'' is the paper's name for its scheme. Full text read; first names not captured}
+  doi       = {10.1109/ETS61313.2024.10567894},
+  eprint    = {2404.09818},
+  archivePrefix = {arXiv}
 }
 
 @misc{khezeli2024,
   author       = {Khezeli, Benyamin and Zarandi, Hamid Reza and Cheshmikhani, Elham},
   title        = {Online Soft Error Tolerance in {ReRAM} Crossbars for Deep Learning Accelerators},
-  howpublished = {arXiv:2412.03089},
+  howpublished = {arXiv preprint arXiv:2412.03089},
   year         = {2024},
-  note         = {Full text read; stored-LSB golden-signature comparison of a test vector's output; first names not captured}
+  eprint       = {2412.03089},
+  archivePrefix = {arXiv}
 }
 
 @article{sun2020eigen,
   author  = {Sun, Zhong and Pedretti, Giacomo and Ambrosi, Elia and Bricalli, Alessandro and Ielmini, Daniele},
   title   = {In-memory eigenvector computation in time {O}(1)},
   journal = {Advanced Intelligent Systems},
-  year    = {2020},
-  doi     = {10.1002/aisy.202000042},
-  pages   = {2000042},
-  number  = {8},
   volume  = {2},
-  note    = {arXiv:2005.04531; body read in the repo's research-01; verify volume/pages}
+  number  = {8},
+  pages   = {2000042},
+  year    = {2020},
+  doi     = {10.1002/aisy.202000042}
 }
 
 @article{sun2019pnas,
@@ -100,16 +101,18 @@
   number  = {10},
   pages   = {4123--4128},
   year    = {2019},
-  doi     = {10.1073/pnas.1815682116},
-  note    = {Linear-system circuit; its 10\% figure is not an eigenvector benchmark}
+  doi     = {10.1073/pnas.1815682116}
 }
 
 @article{msvd2026,
-  author  = {Ding and others},
+  author  = {Ding, Chenchen and Liu, Zhengwu and Zhang, Yibei and Li, Can and Tang, Jianshi and Gao, Bin and Yu, Hao and Wu, Huaqiang and Wong, Ngai},
   title   = {Memristive singular value decomposition},
   journal = {Nature Communications},
+  volume  = {17},
+  number  = {1},
+  pages   = {8006},
   year    = {2026},
-  note    = {doi:10.1038/s41467-026-76272-2; main text read in prior-art pass; author list to verify}
+  doi     = {10.1038/s41467-026-76272-2}
 }
 
 @article{mannocci2024,
@@ -121,8 +124,7 @@
   pages   = {1839--1843},
   month   = apr,
   year    = {2024},
-  doi     = {10.1109/TCSII.2023.3334958},
-  note    = {Full text read (CC-BY); no fault or diagnosis use}
+  doi     = {10.1109/TCSII.2023.3334958}
 }
 
 @article{mannocci2023block,
@@ -134,65 +136,69 @@
   pages   = {47--55},
   month   = jun,
   year    = {2023},
-  doi     = {10.1109/JXCDC.2023.3265803},
-  note    = {Full text read (CC-BY); appendices (supplementary) not read}
+  doi     = {10.1109/JXCDC.2023.3265803}
 }
 
 @inproceedings{xia2017,
   author    = {Xia, Lixue and Liu, Mengyun and Ning, Xuefei and Chakrabarty, Krishnendu and Wang, Yu},
   title     = {Fault-Tolerant Training with On-Line Fault Detection for {RRAM}-Based Neural Computing Systems},
-  booktitle = {ACM/IEEE Design Automation Conference (DAC)},
+  booktitle = {Proc. ACM/IEEE Design Automation Conference (DAC)},
+  pages     = {1--6},
   year      = {2017},
-  doi       = {10.1145/3061639.3062248},
-  note      = {Full text read in the repo's controller prior-art pass}
+  doi       = {10.1145/3061639.3062248}
 }
 
 @misc{vera2026,
   author       = {Dong, Weirong and Zhou, Kai and Kong, Zhen and Yang, Zhengke and Cheng, Quan and Li, Haoyuan and Huang, Junkai and Lan, Jun and Li, Yida and Hashimoto, Masanori and Lin, Longyang},
   title        = {{VeRA+}: Vector-Based Lightweight Digital Compensation for Drift-Resilient {RRAM} In-Memory Computing},
-  howpublished = {arXiv:2603.26016},
+  howpublished = {arXiv preprint arXiv:2603.26016},
   year         = {2026},
-  note         = {Full text read in prior-art pass; title from the arXiv listing (reference-list.md)}
+  eprint       = {2603.26016},
+  archivePrefix = {arXiv}
 }
 
 @misc{halora2025,
-  author       = {Wu, Taiqiang and Ding, Chenchen and Zhou, Wenyong and Cheng, Yuxin and Feng, Xincheng and Wang, Shuqi and Shi, Chufan and Liu, Zhengwu and Wong, Ngai},
+  author       = {Wu, Taiqiang and Ding, Chenchen and Zhou, Wenyong and Cheng, Yuxin and Feng, Xincheng and Wang, Shuqi and Xu, Wendong and Shi, Chufan and Liu, Zhengwu and Wong, Ngai},
   title        = {{HaLoRA}: Hardware-aware Low-Rank Adaptation for Large Language Models Based on Hybrid Compute-in-Memory Architecture},
-  howpublished = {arXiv:2502.19747},
+  howpublished = {arXiv preprint arXiv:2502.19747},
   year         = {2025},
-  note         = {Full text grep-read in prior-art pass; title and authors to verify}
+  eprint       = {2502.19747},
+  archivePrefix = {arXiv}
 }
 
 @misc{doracal2025,
   author       = {Dong, Weirong and Zhou, Kai and Kong, Zhen and Cheng, Quan and Huang, Junkai and Yang, Zhengke and Hashimoto, Masanori and Lin, Longyang},
   title        = {Efficient Calibration for {RRAM}-based In-Memory Computing using {DoRA}},
-  howpublished = {arXiv:2504.03763},
+  howpublished = {arXiv preprint arXiv:2504.03763},
   year         = {2025},
-  note         = {Abstract only; title from the arXiv listing (reference-list.md); full author list not captured}
+  eprint       = {2504.03763},
+  archivePrefix = {arXiv}
 }
 
 @misc{star2026,
   author       = {Khan, Yusuf Ahmed and Han, Zhuangyu and Sengupta, Abhronil},
   title        = {{STAR}: Astrocyte-Inspired State-Augmented Repair for Supervised Memristive {AI} Hardware Systems},
-  howpublished = {arXiv:2607.15415},
+  howpublished = {arXiv preprint arXiv:2607.15415},
   year         = {2026},
-  note         = {Targeted read of abstract, introduction and related work; quoted for ``explicit fault localization that is impractical to perform continuously on-chip'' (verbatim; its own motivation, offered without evidence). STAR repairs without localization}
+  eprint       = {2607.15415},
+  archivePrefix = {arXiv}
 }
 
 @misc{boggaram,
-  author       = {Boggaram},
-  title        = {A per-chip metadata correction framework for neuromorphic memristor crossbars},
-  howpublished = {EngrXiv preprint 6812},
+  author       = {Boggaram, Naman},
+  title        = {A Per-Chip Metadata Correction Framework for Neuromorphic Memristor Crossbars: Theoretical Architecture and Viability Analysis},
+  howpublished = {EngrXiv preprint, doi:10.31224/6812},
   year         = {2026},
-  note         = {Theory-only, not peer reviewed; full text read in prior-art pass; year/first name to verify}
+  doi          = {10.31224/6812}
 }
 
 @misc{summ2026,
-  author       = {Summ and others},
-  title        = {Beyond Noise [subtitle unverified]},
-  howpublished = {arXiv:2609.15527},
+  author       = {Summ, Niklas and Wang, Xiao and Borras, Hendrik and Klein, Bernhard and Fr{\"o}ning, Holger},
+  title        = {Beyond Noise: Understanding and Overcoming Temperature Effects in Analog {DNN} Inference},
+  howpublished = {arXiv preprint arXiv:2609.15527},
   year         = {2026},
-  note         = {BrainScaleS-2 (CMOS ASIC), not PCM/RRAM; title unverified}
+  eprint       = {2609.15527},
+  archivePrefix = {arXiv}
 }
 
 @article{xu2026fault,
@@ -205,75 +211,93 @@
   year    = {2026},
   doi     = {10.1038/s41928-026-01638-9},
   eprint  = {2507.11134},
-  note    = {Read as the arXiv:2507.11134v1 preprint (``Fault-Free Analog Computing with Imperfect Hardware''); published version metadata verified via doi.org 2026-10-14. Assumes known fault positions}
+  archivePrefix = {arXiv}
 }
 
-@misc{ibm12272422,
-  author       = {Mackin and others},
-  title        = {Compensation for conductance drift in analog memory in crossbar array},
-  howpublished = {US Patent 12,272,422 B2 (IBM)},
-  note         = {Claims read in prior-art pass; not legal advice}
+@patent{ibm12272422,
+  author      = {Mackin, Charles},
+  title       = {Compensation for conductance drift in analog memory in crossbar array},
+  nationality = {US},
+  number      = {12,272,422 B2},
+  year        = {2025},
+  month       = apr,
+  note        = {Assignee: International Business Machines Corp.}
 }
 
-@misc{ibm11663458,
-  author       = {{IBM}},
-  title        = {Conductance drift corrections in neuromorphic systems based on crossbar array structures},
-  howpublished = {US Patent 11,663,458 B2},
-  note         = {Claims read in prior-art pass}
+@patent{ibm11663458,
+  author      = {Joshi, Vinay Manikrao and Haefeli, Simon and Le Gallo-Bourdeau, Manuel and Boybat Kara, Irem and Sebastian, Abu},
+  title       = {Conductance drift corrections in neuromorphic systems based on crossbar array structures},
+  nationality = {US},
+  number      = {11,663,458 B2},
+  year        = {2023},
+  month       = may,
+  note        = {Assignee: International Business Machines Corp.}
 }
 
-@misc{hpe11804859,
-  author       = {{Hewlett Packard Enterprise}},
-  title        = {Analog error detection and correction in analog in-memory crossbars},
-  howpublished = {US Patent 11,804,859 B2 (continuation 12,063,052 B2)},
-  note         = {Claims read in prior-art pass}
+@patent{hpe11804859,
+  author      = {Strachan, John Paul and Li, Can and Graves, Catherine},
+  title       = {Analog error detection and correction in analog in-memory crossbars},
+  nationality = {US},
+  number      = {11,804,859 B2},
+  year        = {2023},
+  month       = oct,
+  note        = {Assignee: Hewlett Packard Enterprise Development LP. Continuation: US 12,063,052 B2 (2024)}
 }
 
-@misc{hpe11532356,
-  author       = {{Hewlett Packard Enterprise}},
-  title        = {Self-healing dot-product engine},
-  howpublished = {US Patents 11,532,356 B2 and 10,984,860 B2},
-  note         = {Claims read in prior-art pass}
+@patent{hpe11532356,
+  author      = {Sharma, Amit S. and Strachan, John Paul and Graves, Catherine and Kumar, Suhas and Warner, Craig and Foltin, Martin},
+  title       = {Self-healing dot-product engine},
+  nationality = {US},
+  number      = {11,532,356 B2},
+  year        = {2022},
+  month       = dec,
+  note        = {Assignee: Hewlett Packard Enterprise Development LP. Parent: US 10,984,860 B2 (2021)}
 }
 
-@misc{nvidia11971790,
-  author       = {{NVIDIA and Duke University}},
-  title        = {[ReRAM-crossbar power-monitoring fault estimation; title unverified]},
-  howpublished = {US Patent 11,971,790 B2},
-  note         = {claims read in prior-art pass}
+@patent{nvidia11971790,
+  author      = {Chakrabarty, Krishnendu and Liu, Mengyun},
+  title       = {Online fault detection in {ReRAM}-based {AI/ML}},
+  nationality = {US},
+  number      = {11,971,790 B2},
+  year        = {2024},
+  month       = apr,
+  note        = {Assignee: Nvidia Corp.}
 }
 
-@misc{iedm2025bondi,
-  author       = {Bondi and Ielmini and others},
-  title        = {Linear compensation of drift and mitigation of drift variations in {PCM} arrays},
-  howpublished = {IEEE Int. Electron Devices Meeting (IEDM)},
-  year         = {2025},
-  note         = {Abstract only (Polimi record 11311/1305486); title from that record; first names not captured}
+@inproceedings{iedm2025bondi,
+  author    = {Bond{\`i}, D. and Giangrasso, S. and Salvadore, A. and Panettieri, G. and Al Muktash, A. and Pistolesi, L. and Glukhov, A. and Cattaneo, L. and Lepri, N. and Mannocci, P. and Baldo, M. and Bonfanti, A. and Ielmini, D.},
+  title     = {Linear compensation of drift and mitigation of drift variations in {PCM} arrays for highly accurate, energy efficient in-memory computing},
+  booktitle = {Proc. IEEE Int. Electron Devices Meeting (IEDM)},
+  pages     = {1--4},
+  year      = {2025},
+  doi       = {10.1109/IEDM50572.2025.11353812}
 }
 
 @misc{zhu2026geo,
   author       = {Zhu, Ziyuan and Yuan, Changcheng and Roth, Ron M. and Siegel, Paul H. and Jiang, Anxiao},
   title        = {A New Class of Geometric Analog Error Correction Codes for Crossbar Based In-Memory Computing},
-  howpublished = {arXiv:2603.03723 (v4, cs.IT)},
+  howpublished = {arXiv preprint arXiv:2603.03723},
   year         = {2026},
-  note         = {Full text read; theory, bounded noise, output-entry location; no venue printed}
+  eprint       = {2603.03723},
+  archivePrefix = {arXiv}
 }
 
 @inproceedings{pinto2024touba,
-  author       = {Pinto, Kenrick Xavier and Kodali, Krishnaja and Das, Abhishek and Touba, Nur A.},
-  title        = {Double Adjacent Error Correction in {RRAM} Matrix Multiplication using Weighted Checksums},
-  booktitle    = {IEEE Int. Symp. on On-Line Testing and Robust System Design (IOLTS)},
-  year         = {2024},
-  doi          = {10.1109/IOLTS60994.2024.10616083},
-  note         = {Full text read; venue and DOI from the NSF PAR record 10553436 (the PDF prints no venue line)}
+  author    = {Pinto, Kenrick Xavier and Kodali, Krishnaja and Das, Abhishek and Touba, Nur A.},
+  title     = {Double Adjacent Error Correction in {RRAM} Matrix Multiplication using Weighted Checksums},
+  booktitle = {Proc. IEEE Int. Symp. on On-Line Testing and Robust System Design (IOLTS)},
+  pages     = {1--5},
+  year      = {2024},
+  doi       = {10.1109/IOLTS60994.2024.10616083}
 }
 
 @misc{flare2026,
-  author       = {Venkatasubramanian and Wan and Cadambe},
+  author       = {Venkatasubramanian, Logashree and Wan, Zishen and Cadambe, Viveck},
   title        = {{FLARE}: One-Shot {PE}-Level Fault Localization in Systolic Arrays via Algebraic Test Vectors},
-  howpublished = {arXiv:2605.08594},
+  howpublished = {arXiv preprint arXiv:2605.08594},
   year         = {2026},
-  note         = {Full text read; digital and noise-free; one faulty PE per column}
+  eprint       = {2605.08594},
+  archivePrefix = {arXiv}
 }
 
 @article{huang1984abft,
@@ -293,23 +317,20 @@
   journal = {ACM Transactions on Design Automation of Electronic Systems},
   volume  = {25},
   number  = {3},
-  articleno = {29},
   pages   = {1--31},
   month   = may,
   year    = {2020},
-  doi     = {10.1145/3386360},
-  note    = {Full text read. Extends the ITC 2018 paper ``Fault tolerance for RRAM-based matrix operations'' (not read). Dedicated test vectors, forward reads only}
+  doi     = {10.1145/3386360}
 }
 
 @inproceedings{liu2020dac,
-  author    = {Liu and Liu and Liu and Wen and Yang},
+  author    = {Liu, Qi and Liu, Tao and Liu, Zihao and Wen, Wujie and Yang, Chengmo},
   title     = {Monitoring the Health of Emerging Neural Network Accelerators with Cost-effective Concurrent Test},
-  booktitle = {ACM/IEEE Design Automation Conference (DAC)},
+  booktitle = {Proc. ACM/IEEE Design Automation Conference (DAC)},
+  pages     = {1--6},
   year      = {2020},
-  doi       = {10.1109/DAC18072.2020.9218675},
-  note      = {Full text read; detection only. First names and author order beyond the surnames to verify against the publisher record}
+  doi       = {10.1109/DAC18072.2020.9218675}
 }
-
 
 @article{yadav2022famcrona,
   author  = {Yadav, Dev Narayan and Thangkhiew, Phrangboklang Lyngton and Datta, Kamalika and Chakraborty, Sandip and Drechsler, Rolf and Sengupta, Indranil},
@@ -318,30 +339,27 @@
   volume  = {38},
   number  = {2},
   pages   = {145--163},
-  month   = may,
+  month   = apr,
   year    = {2022},
-  doi     = {10.1007/s10836-022-06001-2},
-  note    = {Full text read. Offline stuck-at diagnosis: global set/reset, then one row driven at a time with all column currents sensed ($2n$ reads, 2 writes for an $n$-row array); forward only, noise-free, exhaustive}
+  doi     = {10.1007/s10836-022-06001-2}
 }
 
 @inproceedings{li2020analogecc,
   author    = {Li, Can and Roth, Ron M. and Graves, Cat and Sheng, Xia and Strachan, John Paul},
   title     = {Analog error correcting codes for defect tolerant matrix multiplication in crossbars},
-  booktitle = {IEEE Int. Electron Devices Meeting (IEDM)},
+  booktitle = {Proc. IEEE Int. Electron Devices Meeting (IEDM)},
   pages     = {36.6.1--36.6.4},
   year      = {2020},
-  doi       = {10.1109/IEDM13553.2020.9371978},
-  note      = {Full text read (4 pp). Experimental analog ECC with redundancy columns; live inputs, threshold detection, single-error output-column location; no input-line localization}
+  doi       = {10.1109/IEDM13553.2020.9371978}
 }
 
 @inproceedings{bommana2024seccim,
   author    = {Bommana, Ashish Reddy and Firouzi, Farshad and Ogbogu, Chukwufumnanya and Joardar, Biresh Kumar and Doppa, Janardhan Rao and Pande, Partha Pratim and Chakrabarty, Krishnendu},
   title     = {{SEC-CiM}: Selective Error Compensation for {ReRAM}-based Compute-in-Memory},
-  booktitle = {IEEE Int. Test Conf. (ITC)},
+  booktitle = {Proc. IEEE Int. Test Conf. (ITC)},
   pages     = {177--186},
   year      = {2024},
-  doi       = {10.1109/ITC51657.2024.00037},
-  note      = {Full text read. Mitigation only; consumes an offline fault map}
+  doi       = {10.1109/ITC51657.2024.00037}
 }
 
 @article{bommana2026seccimplus,
@@ -349,8 +367,7 @@
   title   = {{SEC-CiM+}: Selective and Reconfigurable Error Compensation for {ReRAM}-based Compute-in-Memory},
   journal = {ACM Transactions on Design Automation of Electronic Systems},
   year    = {2026},
-  doi     = {10.1145/3812655},
-  note    = {Full text read. Article, volume and pages not printed in the PDF; fill from the ACM record}
+  doi     = {10.1145/3812655}
 }
 
 @article{tropp2004,
@@ -362,8 +379,7 @@
   pages   = {2231--2242},
   month   = oct,
   year    = {2004},
-  doi     = {10.1109/TIT.2004.834793},
-  note    = {Exact recovery condition}
+  doi     = {10.1109/TIT.2004.834793}
 }
 
 @article{caiwang2011,
@@ -375,6 +391,50 @@
   pages   = {4680--4688},
   month   = jul,
   year    = {2011},
-  doi     = {10.1109/TIT.2011.2146090},
-  note    = {Noisy OMP support recovery; cited by the A5 recovery note}
+  doi     = {10.1109/TIT.2011.2146090}
+}
+
+@book{aldridge2019gt,
+  author    = {Matthew Aldridge and Oliver Johnson and Jonathan Scarlett},
+  title     = {Group Testing: An Information Theory Perspective},
+  publisher = {Now Publishers},
+  series    = {Foundations and Trends in Communications and Information Theory},
+  volume    = {15},
+  number    = {3--4},
+  pages     = {196--392},
+  year      = {2019},
+  doi       = {10.1561/0100000099}
+}
+
+@article{tropp2007omp,
+  author  = {Joel A. Tropp and Anna C. Gilbert},
+  title   = {Signal Recovery From Random Measurements Via Orthogonal Matching Pursuit},
+  journal = {IEEE Trans. Inf. Theory},
+  volume  = {53},
+  number  = {12},
+  pages   = {4655--4666},
+  year    = {2007},
+  doi     = {10.1109/TIT.2007.909108}
+}
+
+@article{donoho2006cs,
+  author  = {David L. Donoho},
+  title   = {Compressed sensing},
+  journal = {IEEE Trans. Inf. Theory},
+  volume  = {52},
+  number  = {4},
+  pages   = {1289--1306},
+  year    = {2006},
+  doi     = {10.1109/TIT.2006.871582}
+}
+
+@article{candes2006robust,
+  author  = {Emmanuel J. Cand{\`e}s and Justin Romberg and Terence Tao},
+  title   = {Robust uncertainty principles: exact signal reconstruction from highly incomplete frequency information},
+  journal = {IEEE Trans. Inf. Theory},
+  volume  = {52},
+  number  = {2},
+  pages   = {489--509},
+  year    = {2006},
+  doi     = {10.1109/TIT.2005.862083}
 }
